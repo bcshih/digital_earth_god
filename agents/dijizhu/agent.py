@@ -31,6 +31,28 @@ from deg.schemas import BiddingProposal  # noqa: E402
 _MCP_MODULE = "deg.mcp.spatial_db.server"
 
 
+def get_env_sensor(street_id: str) -> dict:
+    """Returns the current environment/crowd/weather summary for a street.
+
+    Args:
+        street_id: One of: shennong, haian, zhengxing.
+    """
+    from deg.adapters.sensor_adapter import get_sensor_summary  # noqa: PLC0415
+
+    return {"street_id": street_id, "sensor_summary": get_sensor_summary(street_id)}
+
+
+def get_social_intel(street_id: str) -> dict:
+    """Returns the social media and commercial buzz summary for a street.
+
+    Args:
+        street_id: One of: shennong, haian, zhengxing.
+    """
+    from deg.adapters.social_adapter import get_social_summary  # noqa: PLC0415
+
+    return {"street_id": street_id, "social_summary": get_social_summary(street_id)}
+
+
 def create_dijizhu(
     street_id: str,
     street_name: str,
@@ -56,14 +78,16 @@ def create_dijizhu(
         description=f"台南{street_name}的地基主，專責該街廓的空間情報投標。",
         instruction=f"""你是「{street_name}」的地基主 (agent_id: {agent_id})，守護這條街道的神明管理員。
 
-你的職責是：收到 TaskBroadcast JSON 後，調查轄區、計算適配分數，回傳投標書（BiddingProposal）。
+你的職責是：收到 TaskBroadcast JSON 後，調查轄區、蒐集情報、計算適配分數，回傳投標書（BiddingProposal）。
 
 【投標步驟】
 1. 呼叫 get_street_info("{street_id}") 了解你轄區的歷史與特色。
 2. 根據 TaskBroadcast 的 constraints，呼叫 search_pois_by_constraints("{street_id}", constraints) 找候選地點。
    若 constraints 為空，改呼叫 get_street_pois("{street_id}") 取得所有 POI。
-3. 評估適配度：考慮 POI 類型與需求符合程度、街廓特色、人情味，給出 fitness_score（0.0~10.0）。
-4. 在 reasoning 欄位用繁體中文寫下你的投標理由，充分展現護航在地的自豪與性格。
+3. 呼叫 get_env_sensor("{street_id}") 取得即時環境情報（人流/天氣），記下 sensor_summary。
+4. 呼叫 get_social_intel("{street_id}") 取得社群熱搜情報，記下 social_summary。
+5. 評估適配度：考慮 POI 類型與需求符合程度、街廓特色、人情味、環境與社群加成，給出 fitness_score（0.0~10.0）。
+6. 在 reasoning 欄位用繁體中文寫下你的投標理由，充分展現護航在地的自豪與性格。
 
 【你的性格】
 強烈的護航在地精神，充滿對自己街道的自豪感，語氣有神明威嚴但接地氣，
@@ -77,9 +101,9 @@ def create_dijizhu(
 - spatial_data: {{"lat": <centroid lat>, "lng": <centroid lng>}}（從 get_street_info 取得）
 - tags: 你推薦的標籤列表
 - candidate_pois: 符合條件的 POI 資料（含 name, category, location, tags, note）
-- evidence: {{"sensor": null, "social": null}}（巡境使/虎爺情報 M4 後填入）
+- evidence: {{"sensor": <get_env_sensor 的 sensor_summary>, "social": <get_social_intel 的 social_summary>}}
 - confidence: 0.0~1.0""",
-        tools=[toolset],
+        tools=[toolset, get_env_sensor, get_social_intel],
         output_schema=BiddingProposal,
     )
 
