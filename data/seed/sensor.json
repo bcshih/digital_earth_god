@@ -1,0 +1,21 @@
+{
+  "_note": "示意用 seed 資料 — 台南中西區環境感測 mock，非真實數據",
+  "shennong": {
+    "crowd_level": "low",
+    "weather": "晴天",
+    "temp_c": 28,
+    "summary": "神農街目前人流稀少，晴天28°C，悠靜適合老宅咖啡漫步"
+  },
+  "haian": {
+    "crowd_level": "medium",
+    "weather": "晴天",
+    "temp_c": 29,
+    "summary": "海安路人流中等，晴天29°C，藝術街區氣氛佳，傍晚人潮增加"
+  },
+  "zhengxing": {
+    "crowd_level": "high",
+    "weather": "多雲",
+    "temp_c": 27,
+    "summary": "正興街人流較多，多雲27°C，美食聚集熱鬧，週末尤為擁擠"
+  }
+}
