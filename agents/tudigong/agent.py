@@ -84,5 +84,65 @@ def create_pipeline() -> SequentialAgent:
     )
 
 
+def create_pipeline_remote(
+    base_urls: dict[str, str] | None = None,
+) -> SequentialAgent:
+    """Create the 土地公 Contract Net pipeline using remote A2A 地基主 servers.
+
+    Args:
+        base_urls: Mapping of street_id → server base URL.
+                   Defaults to localhost ports 9001/9002/9003.
+                   Example: {"shennong": "http://127.0.0.1:9001", ...}
+
+    Returns a SequentialAgent:
+        1. ParallelAgent — calls all 3 地基主 A2A servers concurrently via RemoteA2aAgent
+        2. LlmAgent (tudigong_judge) — reads 3 BiddingProposals → JudgmentResult
+    """
+    from google.adk.agents.remote_a2a_agent import RemoteA2aAgent  # noqa: PLC0415
+
+    _default_urls = {
+        "shennong": "http://127.0.0.1:9001",
+        "haian": "http://127.0.0.1:9002",
+        "zhengxing": "http://127.0.0.1:9003",
+    }
+    urls = base_urls or _default_urls
+    agent_card_path = "/.well-known/agent-card.json"
+
+    remote_shennong = RemoteA2aAgent(
+        name="dijizhu_shennong",
+        agent_card=f"{urls['shennong']}{agent_card_path}",
+        description="台南神農街的地基主（remote A2A）",
+    )
+    remote_haian = RemoteA2aAgent(
+        name="dijizhu_haian",
+        agent_card=f"{urls['haian']}{agent_card_path}",
+        description="台南海安路的地基主（remote A2A）",
+    )
+    remote_zhengxing = RemoteA2aAgent(
+        name="dijizhu_zhengxing",
+        agent_card=f"{urls['zhengxing']}{agent_card_path}",
+        description="台南正興街的地基主（remote A2A）",
+    )
+
+    bidding_round_remote = ParallelAgent(
+        name="bidding_round_remote",
+        sub_agents=[remote_shennong, remote_haian, remote_zhengxing],
+    )
+
+    tudigong_judge = LlmAgent(
+        name="tudigong_judge",
+        model="gemini-flash-latest",
+        description="土地公：Contract Net 裁決者，從三份投標書中選出最佳推薦。",
+        instruction=_JUDGE_INSTRUCTION,
+        output_schema=JudgmentResult,
+    )
+
+    return SequentialAgent(
+        name="tudigong_pipeline_remote",
+        description="土地公 Contract Net 編排（遠端 A2A）：並行投標 → LLM-as-Judge → 裁決推薦。",
+        sub_agents=[bidding_round_remote, tudigong_judge],
+    )
+
+
 # Module-level root_agent required by `adk run tudigong`.
 root_agent = create_pipeline()
