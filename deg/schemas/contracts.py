@@ -68,3 +68,15 @@ class Wish(BaseModel):
     photo_ref: str | None = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     status: str = "received"
+
+
+class JudgmentResult(BaseModel):
+    """土地公 LLM-as-Judge final output for a Contract Net round."""
+
+    task_id: str
+    winner_agent_id: str
+    winner_street: str
+    recommendation: str
+    recommended_pois: list[Poi] = Field(default_factory=list)
+    ranked_agent_ids: list[str] = Field(default_factory=list)
+    reasoning: str

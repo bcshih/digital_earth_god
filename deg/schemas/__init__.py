@@ -3,6 +3,7 @@
 from deg.schemas.contracts import (
     BiddingProposal,
     Evidence,
+    JudgmentResult,
     LatLng,
     Poi,
     TaskBroadcast,
@@ -16,4 +17,5 @@ __all__ = [
     "TaskBroadcast",
     "BiddingProposal",
     "Wish",
+    "JudgmentResult",
 ]
