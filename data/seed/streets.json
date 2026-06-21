@@ -1,0 +1,41 @@
+{
+  "_note": "示意用 seed 資料（台南中西區），非真實營業資訊。Illustrative demo data only.",
+  "streets": [
+    {
+      "street_id": "shennong",
+      "name": "神農街",
+      "agent_id": "street_shennong_node",
+      "centroid": {"lat": 22.9974, "lng": 120.1966},
+      "history": "清代五條港之一，老屋與街屋林立，近年成為老宅咖啡與文創聚落，夜間靜謐。",
+      "pois": [
+        {"name": "老宅咖啡・神農38", "category": "cafe", "location": {"lat": 22.9975, "lng": 120.1968}, "tags": ["老宅", "安靜", "手沖"], "note": "改建自清代街屋的二樓咖啡，座位少、氛圍靜。"},
+        {"name": "巷弄手沖", "category": "cafe", "location": {"lat": 22.9972, "lng": 120.1963}, "tags": ["手沖", "獨立"], "note": "單品手沖小店，常有在地常客。"},
+        {"name": "永川工藝街屋", "category": "culture", "location": {"lat": 22.9976, "lng": 120.1969}, "tags": ["文化", "老工藝"], "note": "傳統神轎工藝，文化導覽點。"}
+      ]
+    },
+    {
+      "street_id": "haian",
+      "name": "海安路",
+      "agent_id": "street_haian_node",
+      "centroid": {"lat": 22.9958, "lng": 120.1992},
+      "history": "藝術造街後成為夜生活與餐酒聚落，入夜人流高、氣氛熱鬧。",
+      "pois": [
+        {"name": "海安餐酒館", "category": "bar", "location": {"lat": 22.9960, "lng": 120.1994}, "tags": ["熱鬧", "餐酒"], "note": "夜間人氣餐酒館。"},
+        {"name": "街角麵攤", "category": "food", "location": {"lat": 22.9955, "lng": 120.1990}, "tags": ["小吃", "在地"], "note": "在地老麵攤，宵夜首選。"},
+        {"name": "海安路藝術牆", "category": "culture", "location": {"lat": 22.9959, "lng": 120.1993}, "tags": ["文化", "拍照"], "note": "造街藝術裝置，打卡點。"}
+      ]
+    },
+    {
+      "street_id": "zhengxing",
+      "name": "正興街",
+      "agent_id": "street_zhengxing_node",
+      "centroid": {"lat": 22.9931, "lng": 120.2008},
+      "history": "文青小店與冰品聚集的窄街，假日人潮多、巷弄藏有小咖啡。",
+      "pois": [
+        {"name": "正興冰舖", "category": "dessert", "location": {"lat": 22.9932, "lng": 120.2009}, "tags": ["冰品", "排隊"], "note": "假日排隊名店。"},
+        {"name": "窄巷咖啡", "category": "cafe", "location": {"lat": 22.9929, "lng": 120.2006}, "tags": ["老宅", "安靜", "巷弄"], "note": "藏在巷弄的小宅咖啡，平日清靜。"},
+        {"name": "正興選物店", "category": "shop", "location": {"lat": 22.9933, "lng": 120.2010}, "tags": ["文創", "選物"], "note": "在地文創選物。"}
+      ]
+    }
+  ]
+}
