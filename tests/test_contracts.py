@@ -60,15 +60,37 @@ def test_bidding_proposal_valid_and_roundtrip():
     assert restored.candidate_pois[0].name == "老宅咖啡・神農38"
 
 
-def test_bidding_proposal_score_out_of_range_rejected():
+def _proposal(**overrides):
+    base = dict(
+        agent_id="x",
+        task_id="t",
+        fitness_score=5.0,
+        reasoning="r",
+        spatial_data=LatLng(lat=0.0, lng=0.0),
+    )
+    base.update(overrides)
+    return BiddingProposal(**base)
+
+
+@pytest.mark.parametrize("fitness_score", [11.0, -0.1])
+def test_bidding_proposal_fitness_score_out_of_range_rejected(fitness_score):
     with pytest.raises(ValidationError):
-        BiddingProposal(
-            agent_id="x",
-            task_id="t",
-            fitness_score=11.0,  # > 10 not allowed
-            reasoning="r",
-            spatial_data=LatLng(lat=0.0, lng=0.0),
-        )
+        _proposal(fitness_score=fitness_score)
+
+
+@pytest.mark.parametrize("confidence", [1.1, -0.1])
+def test_bidding_proposal_confidence_out_of_range_rejected(confidence):
+    with pytest.raises(ValidationError):
+        _proposal(confidence=confidence)
+
+
+@pytest.mark.parametrize(
+    "lat,lng",
+    [(91.0, 0.0), (-91.0, 0.0), (0.0, 181.0), (0.0, -181.0)],
+)
+def test_latlng_out_of_range_rejected(lat, lng):
+    with pytest.raises(ValidationError):
+        LatLng(lat=lat, lng=lng)
 
 
 def test_wish_defaults_and_minimal():
@@ -81,3 +103,4 @@ def test_wish_defaults_and_minimal():
     assert w.status == "received"
     assert w.photo_ref is None
     assert w.created_at is not None
+    assert w.created_at.tzinfo is not None  # must be timezone-aware (UTC)
