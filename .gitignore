@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+
+# Env / secrets
+.env
+.env.local
+
+# Node (frontend, later)
+node_modules/
+.next/
+out/
+
+# OS
+.DS_Store
+Thumbs.db
