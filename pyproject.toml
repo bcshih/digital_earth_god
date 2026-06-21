@@ -6,10 +6,12 @@ requires-python = ">=3.11"
 dependencies = [
     "pydantic>=2.6",
     "python-dotenv>=1.0",
+    "mcp>=1.0",
+    "google-adk>=2.0",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0", "ruff>=0.4"]
+dev = ["pytest>=8.0", "ruff>=0.4", "pytest-asyncio>=0.23"]
 
 [build-system]
 requires = ["setuptools>=68"]
@@ -21,6 +23,10 @@ include = ["deg*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+asyncio_mode = "auto"
+markers = [
+    "integration: requires GOOGLE_API_KEY and makes live LLM calls (slow)",
+]
 
 [tool.ruff]
 line-length = 100
