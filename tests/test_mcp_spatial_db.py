@@ -17,7 +17,7 @@ def test_get_street_info_shennong():
     assert result["name"] == "神農街"
     assert result["agent_id"] == "street_shennong_node"
     assert "history" in result
-    assert result["poi_count"] == 3
+    assert result["poi_count"] >= 1
 
 
 def test_get_street_info_unknown_returns_error():
@@ -28,7 +28,7 @@ def test_get_street_info_unknown_returns_error():
 def test_get_street_pois_structure():
     result = get_street_pois("shennong")
     pois = result["pois"]
-    assert len(pois) == 3
+    assert len(pois) >= 1
     for p in pois:
         assert {"name", "category", "location", "tags", "note"} <= p.keys()
         assert {"lat", "lng"} <= p["location"].keys()

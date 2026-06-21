@@ -15,6 +15,7 @@ from __future__ import annotations
 
 from mcp.server.fastmcp import FastMCP
 
+from deg.schemas import Poi
 from deg.seed.loader import load_streets
 
 mcp = FastMCP("deg-spatial-db", instructions="台南中西區空間資料庫 MCP 服務")
@@ -23,7 +24,7 @@ mcp = FastMCP("deg-spatial-db", instructions="台南中西區空間資料庫 MCP
 _STREETS = {s.street_id: s for s in load_streets()}
 
 
-def _poi_to_dict(p) -> dict:
+def _poi_to_dict(p: Poi) -> dict:
     return {
         "name": p.name,
         "category": p.category,
