@@ -19,13 +19,23 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+import os  # noqa: E402
+
 from dotenv import load_dotenv  # noqa: E402
 
 load_dotenv(_REPO_ROOT / ".env")
 
 from google.adk.agents import LlmAgent  # noqa: E402
+from google.adk.models.lite_llm import LiteLlm  # noqa: E402
 
 from deg.schemas import WuyingOutput  # noqa: E402
+
+_DASHSCOPE_BASE = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+_QWEN = LiteLlm(
+    model="openai/" + os.environ.get("DASHSCOPE_MODEL", "qwen-plus"),
+    api_base=_DASHSCOPE_BASE,
+    api_key=os.environ.get("DASHSCOPE_API_KEY", ""),
+)
 
 _WUYING_INSTRUCTION = """你是五營兵將，土地公麾下的基層調查兵將。你的工作是透過自然對話，
 了解凡人的旅遊需求，再轉譯成招標單（TaskBroadcast）。
@@ -99,7 +109,7 @@ def create_wuying() -> LlmAgent:
     """
     return LlmAgent(
         name="wuying",
-        model="gemini-2.5-flash-lite",
+        model=_QWEN,
         description="五營兵將：透過追問確認旅遊需求，轉譯為 TaskBroadcast。",
         instruction=_WUYING_INSTRUCTION,
         output_schema=WuyingOutput,

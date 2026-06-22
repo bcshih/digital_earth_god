@@ -18,14 +18,24 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+import os  # noqa: E402
+
 from dotenv import load_dotenv  # noqa: E402
 
 load_dotenv(_REPO_ROOT / ".env")  # load GOOGLE_API_KEY + GOOGLE_GENAI_USE_VERTEXAI
 
 from google.adk.agents import LlmAgent  # noqa: E402
+from google.adk.models.lite_llm import LiteLlm  # noqa: E402
 from google.adk.tools.mcp_tool.mcp_toolset import McpToolset, StdioServerParameters  # noqa: E402
 
 from deg.schemas import BiddingProposal  # noqa: E402
+
+_DASHSCOPE_BASE = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+_QWEN = LiteLlm(
+    model="openai/" + os.environ.get("DASHSCOPE_MODEL", "qwen-plus"),
+    api_base=_DASHSCOPE_BASE,
+    api_key=os.environ.get("DASHSCOPE_API_KEY", ""),
+)
 
 # MCP server launched as subprocess using the same interpreter.
 _MCP_MODULE = "deg.mcp.spatial_db.server"
@@ -74,7 +84,7 @@ def create_dijizhu(
 
     return LlmAgent(
         name=f"dijizhu_{street_id}",
-        model="gemini-2.5-flash-lite",
+        model=_QWEN,
         description=f"台南{street_name}的地基主，專責該街廓的空間情報投標。",
         instruction=f"""你是「{street_name}」的地基主 (agent_id: {agent_id})，守護這條街道的神明管理員。
 

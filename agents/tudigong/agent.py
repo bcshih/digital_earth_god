@@ -21,14 +21,24 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+import os  # noqa: E402
+
 from dotenv import load_dotenv  # noqa: E402
 
 load_dotenv(_REPO_ROOT / ".env")
 
 from google.adk.agents import LlmAgent, ParallelAgent, SequentialAgent  # noqa: E402
+from google.adk.models.lite_llm import LiteLlm  # noqa: E402
 
 from deg.schemas import JudgmentResult  # noqa: E402
 from dijizhu.agent import create_dijizhu  # noqa: E402
+
+_DASHSCOPE_BASE = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+_QWEN = LiteLlm(
+    model="openai/" + os.environ.get("DASHSCOPE_MODEL", "qwen-plus"),
+    api_base=_DASHSCOPE_BASE,
+    api_key=os.environ.get("DASHSCOPE_API_KEY", ""),
+)
 
 _MOOD_POOL = [
     "今日心情開朗，偏愛有故事有溫度的角落，分數高不如人情濃",
@@ -95,7 +105,7 @@ def create_pipeline() -> SequentialAgent:
 
     tudigong_judge = LlmAgent(
         name="tudigong_judge",
-        model="gemini-2.5-flash-lite",
+        model=_QWEN,
         description="土地公：Contract Net 裁決者，從三份投標書中選出最佳推薦。",
         instruction=_JUDGE_INSTRUCTION,
         output_schema=JudgmentResult,
@@ -155,7 +165,7 @@ def create_pipeline_remote(
 
     tudigong_judge = LlmAgent(
         name="tudigong_judge",
-        model="gemini-2.5-flash-lite",
+        model=_QWEN,
         description="土地公：Contract Net 裁決者，從三份投標書中選出最佳推薦。",
         instruction=_JUDGE_INSTRUCTION,
         output_schema=JudgmentResult,
