@@ -20,7 +20,7 @@ from google.adk.agents import LlmAgent  # noqa: E402
 
 from deg.schemas import WishAnalysis  # noqa: E402
 
-_MODEL = "gemini-2.5-flash"
+_MODEL = "gemini-3.1-flash-lite"
 
 _CATEGORIES = "交通、環境清潔、公共安全、公共設施、社區營造、商業活動、其他"
 

@@ -27,7 +27,7 @@ from google.adk.tools.mcp_tool.mcp_toolset import McpToolset, StdioServerParamet
 
 from deg.schemas import BiddingProposal  # noqa: E402
 
-_MODEL = "gemini-2.5-flash"
+_MODEL = "gemini-3.1-flash-lite"
 
 # MCP server launched as subprocess using the same interpreter.
 _MCP_MODULE = "deg.mcp.spatial_db.server"
