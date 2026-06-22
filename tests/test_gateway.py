@@ -40,3 +40,10 @@ def test_routes_registered():
     assert "/health" in paths
     assert "/intent" in paths
     assert "/ws/explore" in paths
+
+
+def test_a2ui_route_registered():
+    from apps.api.gateway import create_app
+    app = create_app()
+    paths = {getattr(r, "path", None) for r in app.routes}
+    assert "/ws/explore/a2ui" in paths

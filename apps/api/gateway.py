@@ -40,9 +40,20 @@ from google.adk.sessions import InMemorySessionService  # noqa: E402
 from google.genai import types as genai_types  # noqa: E402
 from pydantic import BaseModel, Field  # noqa: E402
 
-from deg.schemas import JudgmentResult, LatLng, TaskBroadcast  # noqa: E402
+from deg.schemas import BiddingProposal, JudgmentResult, LatLng, TaskBroadcast  # noqa: E402
 from tudigong.agent import create_pipeline  # noqa: E402
 from wuying.agent import create_wuying  # noqa: E402
+
+from deg.a2ui import create_surface, update_components, update_data_model  # noqa: E402
+from deg.a2ui.surfaces import (  # noqa: E402
+    SURFACE_ID,
+    bid_data,
+    broadcast_data,
+    intent_input_components,
+    judgment_components,
+    judgment_data,
+    negotiation_components,
+)
 
 # Event callback type for streaming negotiation phases.
 EventSink = Callable[[dict[str, Any]], Awaitable[None]]
@@ -201,6 +212,90 @@ def create_app() -> FastAPI:
         except Exception as exc:  # surface errors to the client, then close
             try:
                 await ws.send_json({"type": "error", "message": str(exc)})
+            except Exception:
+                pass
+        finally:
+            try:
+                await ws.close()
+            except Exception:
+                pass
+
+    @app.websocket("/ws/explore/a2ui")
+    async def ws_explore_a2ui(ws: WebSocket) -> None:
+        """Stream the golden path as STANDARD A2UI v0.9.1 JSONL messages.
+
+        Sequence:
+            createSurface(explore, sendDataModel=true)
+            updateComponents(intent input)              # prompt surface
+            updateDataModel(/intent, {"text": ""})
+            ← client sends {intent_text, lat, lng}
+            updateComponents(negotiation skeleton)      # broadcast + bids List + verdict placeholder
+            updateDataModel(/broadcast, ...)
+            updateDataModel(/bids, [])
+            per 地基主 bid: updateDataModel(/bids/<i>, bid_data)   # data append, no component msg
+            updateComponents(verdict)                   # redefines verdict-card subtree in place
+            updateDataModel(/verdict, ...)
+            {"a2uiDone": true}
+        """
+        await ws.accept()
+        try:
+            await ws.send_json(create_surface(SURFACE_ID, send_data_model=True))
+            await ws.send_json(update_components(SURFACE_ID, intent_input_components()))
+            await ws.send_json(update_data_model(SURFACE_ID, "/intent", {"text": ""}))
+
+            req_data = await ws.receive_json()
+            req = IntentRequest.model_validate(req_data)
+
+            task_id = uuid4().hex
+            tb = await _run_wuying(
+                wuying_runner, session_service, req.intent_text, req.lat, req.lng, task_id
+            )
+            await ws.send_json(update_components(SURFACE_ID, negotiation_components()))
+            await ws.send_json(update_data_model(SURFACE_ID, "/broadcast", broadcast_data(tb)))
+            await ws.send_json(update_data_model(SURFACE_ID, "/bids", []))
+
+            # Run the pipeline; append a bid per 地基主, capture the judge verdict.
+            session_id = uuid4().hex
+            await session_service.create_session(
+                app_name="deg", user_id="gateway", session_id=session_id
+            )
+            msg = genai_types.Content(
+                role="user", parts=[genai_types.Part(text=tb.model_dump_json())]
+            )
+            bid_index = 0
+            verdict_text = ""
+            async for event in pipeline_runner.run_async(
+                user_id="gateway", session_id=session_id, new_message=msg
+            ):
+                author = getattr(event, "author", None)
+                if not (event.content and event.content.parts):
+                    continue
+                text = event.content.parts[0].text or ""
+                if not text:
+                    continue
+                if author and author.startswith("dijizhu_") and event.is_final_response():
+                    try:
+                        proposal = BiddingProposal.model_validate_json(text)
+                    except Exception:
+                        continue
+                    await ws.send_json(
+                        update_data_model(SURFACE_ID, f"/bids/{bid_index}", bid_data(proposal))
+                    )
+                    bid_index += 1
+                elif author == "tudigong_judge" and event.is_final_response():
+                    verdict_text = text
+
+            if verdict_text:
+                result = JudgmentResult.model_validate_json(verdict_text)
+                await ws.send_json(update_components(SURFACE_ID, judgment_components()))
+                await ws.send_json(update_data_model(SURFACE_ID, "/verdict", judgment_data(result)))
+
+            await ws.send_json({"a2uiDone": True})
+        except WebSocketDisconnect:
+            return
+        except Exception as exc:
+            try:
+                await ws.send_json({"a2uiError": str(exc)})
             except Exception:
                 pass
         finally:
