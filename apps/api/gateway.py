@@ -51,8 +51,10 @@ from deg.schemas import (  # noqa: E402
     JudgmentResult,
     LatLng,
     TaskBroadcast,
+    TravelContext,
     Wish,
     WishAnalysis,
+    WuyingOutput,
 )
 from tudigong.agent import create_pipeline, get_random_mood  # noqa: E402
 from tudigong.blessing_agent import create_blessing_agent  # noqa: E402
@@ -66,6 +68,7 @@ from deg.a2ui.surfaces import (  # noqa: E402
     bid_data,
     blessing_components,
     broadcast_data,
+    clarification_components,
     intent_input_components,
     judgment_components,
     judgment_data,
@@ -93,21 +96,34 @@ class WishRequest(BaseModel):
     photo_ref: str | None = None
 
 
-async def _run_wuying(
+async def _run_wuying_round(
     wuying_runner: Runner,
     session_service: InMemorySessionService,
-    intent_text: str,
+    raw_text: str,
     lat: float,
     lng: float,
     task_id: str,
-) -> TaskBroadcast:
-    """Run 五營兵將 to extract a TaskBroadcast, then guarantee exact task_id + location."""
+    collected: TravelContext,
+    previous_question: str | None,
+    answer: str | None,
+    round_n: int,
+    force_ready: bool = False,
+) -> WuyingOutput:
+    """Run one clarification round of 五營兵將. Returns WuyingOutput (ready or clarifying)."""
     session_id = uuid4().hex
     await session_service.create_session(
         app_name="deg", user_id="gateway", session_id=session_id
     )
     payload = json.dumps(
-        {"raw_text": intent_text, "lat": lat, "lng": lng, "task_id": task_id},
+        {
+            "raw_text": raw_text,
+            "lat": lat, "lng": lng, "task_id": task_id,
+            "round": round_n,
+            "collected": collected.model_dump(),
+            "previous_question": previous_question,
+            "answer": answer,
+            "force_ready": force_ready,
+        },
         ensure_ascii=False,
     )
     msg = genai_types.Content(role="user", parts=[genai_types.Part(text=payload)])
@@ -123,13 +139,31 @@ async def _run_wuying(
     if not final_text:
         raise RuntimeError("五營兵將未能解析意圖，請再試一次。")
     try:
-        tb = TaskBroadcast.model_validate_json(final_text)
+        return WuyingOutput.model_validate_json(final_text)
     except Exception as exc:
         raise RuntimeError(f"五營兵將回傳格式有誤：{exc}") from exc
-    # Trust the LLM for intent/constraints; guarantee the exact data fields.
-    tb.task_id = task_id
-    tb.user_location = LatLng(lat=lat, lng=lng)
-    return tb
+
+
+async def _run_wuying(
+    wuying_runner: Runner,
+    session_service: InMemorySessionService,
+    intent_text: str,
+    lat: float,
+    lng: float,
+    task_id: str,
+) -> TaskBroadcast:
+    """Single-shot 五營兵將 (force_ready=True). Used by POST /intent (non-interactive)."""
+    output = await _run_wuying_round(
+        wuying_runner, session_service,
+        intent_text, lat, lng, task_id,
+        TravelContext(), None, None, 0, force_ready=True,
+    )
+    if output.task_broadcast:
+        tb = output.task_broadcast
+        tb.task_id = task_id
+        tb.user_location = LatLng(lat=lat, lng=lng)
+        return tb
+    raise RuntimeError("五營兵將未能生成招標令，請再試一次。")
 
 
 async def _run_pipeline(
@@ -333,14 +367,22 @@ def create_app() -> FastAPI:
 
         Sequence:
             createSurface(explore, sendDataModel=true)
-            updateComponents(intent input)              # prompt surface
+            updateComponents(intent input)
             updateDataModel(/intent, {"text": ""})
             ← client sends {intent_text, lat, lng}
-            updateComponents(negotiation skeleton)      # broadcast + bids List + verdict placeholder
+
+            [clarification loop, 0–3 rounds]
+            {"a2uiPhase": "clarifying"}
+            updateComponents(clarification surface)     # shows question + answer field
+            updateDataModel(/clarify, {question, answer})
+            ← client sends {answer_text}
+
+            {"a2uiPhase": "negotiating"}
+            updateComponents(negotiation skeleton)
             updateDataModel(/broadcast, ...)
             updateDataModel(/bids, [])
-            per 地基主 bid: updateDataModel(/bids/<i>, bid_data)   # data append, no component msg
-            updateComponents(verdict)                   # redefines verdict-card subtree in place
+            per 地基主 bid: updateDataModel(/bids/<i>, bid_data)
+            updateComponents(verdict)
             updateDataModel(/verdict, ...)
             {"a2uiDone": true}
         """
@@ -354,46 +396,81 @@ def create_app() -> FastAPI:
             req = IntentRequest.model_validate(req_data)
 
             task_id = uuid4().hex
-            async with asyncio.timeout(_PIPELINE_TIMEOUT):
-                tb = await _run_wuying(
-                    wuying_runner, session_service, req.intent_text, req.lat, req.lng, task_id
-                )
-                await ws.send_json(update_components(SURFACE_ID, negotiation_components()))
-                await ws.send_json(update_data_model(SURFACE_ID, "/broadcast", broadcast_data(tb)))
-                await ws.send_json(update_data_model(SURFACE_ID, "/bids", []))
+            # ── 五營兵將 clarification loop (max 3 questions) ──────────────────
+            collected = TravelContext()
+            previous_question: str | None = None
+            answer: str | None = None
+            tb: TaskBroadcast | None = None
 
-                # Run the pipeline; append a bid per 地基主, capture the judge verdict.
-                session_id = uuid4().hex
-                await session_service.create_session(
-                    app_name="deg", user_id="gateway", session_id=session_id
-                )
-                mood = get_random_mood()
-                msg_text = tb.model_dump_json() + f"\n\n【今日神明心情】{mood}"
-                msg = genai_types.Content(
-                    role="user", parts=[genai_types.Part(text=msg_text)]
-                )
-                bid_index = 0
-                verdict_text = ""
-                async for event in pipeline_runner.run_async(
-                    user_id="gateway", session_id=session_id, new_message=msg
-                ):
-                    author = getattr(event, "author", None)
-                    if not (event.content and event.content.parts):
-                        continue
-                    text = event.content.parts[0].text or ""
-                    if not text:
-                        continue
-                    if author and author.startswith("dijizhu_") and event.is_final_response():
-                        try:
-                            proposal = BiddingProposal.model_validate_json(text)
-                        except Exception:
-                            continue
+            async with asyncio.timeout(_PIPELINE_TIMEOUT):
+                for round_n in range(4):
+                    force_ready = round_n >= 3
+                    output = await _run_wuying_round(
+                        wuying_runner, session_service,
+                        req.intent_text, req.lat, req.lng, task_id,
+                        collected, previous_question, answer, round_n, force_ready,
+                    )
+                    collected = output.collected
+
+                    if output.status == "ready" and output.task_broadcast:
+                        tb = output.task_broadcast
+                        tb.task_id = task_id
+                        tb.user_location = LatLng(lat=req.lat, lng=req.lng)
+                        break
+
+                    if output.question:
+                        await ws.send_json({"a2uiPhase": "clarifying"})
                         await ws.send_json(
-                            update_data_model(SURFACE_ID, f"/bids/{bid_index}", bid_data(proposal))
+                            update_components(SURFACE_ID, clarification_components(output.question, round_n))
                         )
-                        bid_index += 1
-                    elif author == "tudigong_judge" and event.is_final_response():
-                        verdict_text = text
+                        await ws.send_json(
+                            update_data_model(SURFACE_ID, "/clarify",
+                                             {"question": output.question, "answer": ""})
+                        )
+                        ans_data = await ws.receive_json()
+                        answer = ans_data.get("answer_text", "")
+                        previous_question = output.question
+
+            if tb is None:
+                raise RuntimeError("五營兵將未能生成招標令，請再試一次。")
+
+            await ws.send_json({"a2uiPhase": "negotiating"})
+            await ws.send_json(update_components(SURFACE_ID, negotiation_components()))
+            await ws.send_json(update_data_model(SURFACE_ID, "/broadcast", broadcast_data(tb)))
+            await ws.send_json(update_data_model(SURFACE_ID, "/bids", []))
+
+            # Run the pipeline; append a bid per 地基主, capture the judge verdict.
+            session_id = uuid4().hex
+            await session_service.create_session(
+                app_name="deg", user_id="gateway", session_id=session_id
+            )
+            mood = get_random_mood()
+            msg_text = tb.model_dump_json() + f"\n\n【今日神明心情】{mood}"
+            msg = genai_types.Content(
+                role="user", parts=[genai_types.Part(text=msg_text)]
+            )
+            bid_index = 0
+            verdict_text = ""
+            async for event in pipeline_runner.run_async(
+                user_id="gateway", session_id=session_id, new_message=msg
+            ):
+                author = getattr(event, "author", None)
+                if not (event.content and event.content.parts):
+                    continue
+                text = event.content.parts[0].text or ""
+                if not text:
+                    continue
+                if author and author.startswith("dijizhu_") and event.is_final_response():
+                    try:
+                        proposal = BiddingProposal.model_validate_json(text)
+                    except Exception:
+                        continue
+                    await ws.send_json(
+                        update_data_model(SURFACE_ID, f"/bids/{bid_index}", bid_data(proposal))
+                    )
+                    bid_index += 1
+                elif author == "tudigong_judge" and event.is_final_response():
+                    verdict_text = text
 
             if verdict_text:
                 try:

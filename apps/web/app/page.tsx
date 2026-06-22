@@ -19,7 +19,7 @@ const WS_URL =
 const DEFAULT_LAT = 22.9971;
 const DEFAULT_LNG = 120.201;
 
-type Conn = "connecting" | "open" | "submitted" | "done" | "error" | "failed";
+type Conn = "connecting" | "open" | "clarifying" | "submitted" | "done" | "error" | "failed";
 
 function getLatLng(): Promise<{ lat: number; lng: number }> {
   return new Promise((resolve) => {
@@ -81,6 +81,13 @@ export default function Home() {
         setConn("error");
         return;
       }
+      // Phase signals from the gateway (non-A2UI control frames)
+      if ("a2uiPhase" in msg) {
+        const phase = (msg as { a2uiPhase: string }).a2uiPhase;
+        if (phase === "clarifying") setConn("clarifying");
+        if (phase === "negotiating") setConn("submitted");
+        return;
+      }
       setState((prev) => applyMessage(prev, msg));
     };
 
@@ -108,17 +115,22 @@ export default function Home() {
 
   // The user submitted the sealed intent button → send the one client→server msg.
   const onEvent = useCallback(async (name: string, context: EventContext) => {
-    if (name !== "submit_intent") return;
-    const fromCtx = typeof context.text === "string" ? context.text : null;
-    const fromModel = getAtPointer(stateRef.current.dataModel, "/intent/text");
-    const intentText = (fromCtx ?? (typeof fromModel === "string" ? fromModel : "")) || "";
-    if (!intentText.trim()) return;
-
-    const { lat, lng } = await getLatLng();
     const ws = wsRef.current;
-    if (ws && ws.readyState === WebSocket.OPEN) {
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+
+    if (name === "submit_intent") {
+      const fromCtx = typeof context.text === "string" ? context.text : null;
+      const fromModel = getAtPointer(stateRef.current.dataModel, "/intent/text");
+      const intentText = (fromCtx ?? (typeof fromModel === "string" ? fromModel : "")) || "";
+      if (!intentText.trim()) return;
+      const { lat, lng } = await getLatLng();
       ws.send(JSON.stringify({ intent_text: intentText, lat, lng }));
-      setConn("submitted");
+      // conn transitions to "clarifying" or "submitted" via a2uiPhase server signal
+    } else if (name === "submit_clarify") {
+      const fromCtx = typeof context.answer === "string" ? context.answer : null;
+      const fromModel = getAtPointer(stateRef.current.dataModel, "/clarify/answer");
+      const answerText = (fromCtx ?? (typeof fromModel === "string" ? fromModel : "")) || "";
+      ws.send(JSON.stringify({ answer_text: answerText }));
     }
   }, []);
 
@@ -235,6 +247,8 @@ function statusLabel(conn: Conn): string {
       return "連接中…";
     case "open":
       return "土地公已臨壇 · 待稟報";
+    case "clarifying":
+      return "五營兵將正在追問…";
     case "submitted":
       return "招標令已發 · 地基主競標中…";
     case "done":

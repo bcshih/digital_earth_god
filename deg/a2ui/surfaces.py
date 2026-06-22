@@ -67,6 +67,34 @@ def intent_input_components() -> list[dict[str, Any]]:
     ]
 
 
+# ── 五營兵將 clarification question surface ───────────────────────────────────
+
+def clarification_components(question: str, round_n: int = 0) -> list[dict[str, Any]]:
+    """Ask one clarifying question; user types answer and presses 稟報.
+
+    Replaces the intent-input root in place — old intent-* components are
+    orphaned (not reachable from root) and the renderer won't draw them.
+    The fragment is self-contained: root → clarify-* only.
+    """
+    round_label = f"第 {round_n + 1} 問"
+    return [
+        {"id": "root", "component": "Column",
+         "children": ["clarify-badge", "clarify-q", "clarify-field", "clarify-submit"]},
+        {"id": "clarify-badge", "component": "Text",
+         "text": f"五營兵將追問 · {round_label}", "variant": "caption"},
+        {"id": "clarify-q", "component": "Text",
+         "text": question, "variant": "h2"},
+        {"id": "clarify-field", "component": "TextField",
+         "label": "請稟報",
+         "value": {"path": "/clarify/answer"}, "textFieldType": "text"},
+        {"id": "clarify-submit-label", "component": "Text", "text": "稟報"},
+        {"id": "clarify-submit", "component": "Button", "child": "clarify-submit-label",
+         "variant": "primary",
+         "action": {"event": {"name": "submit_clarify",
+                              "context": {"answer": {"path": "/clarify/answer"}}}}},
+    ]
+
+
 # ── Task broadcast data (招標令) ──────────────────────────────────────────────
 
 def broadcast_data(tb: TaskBroadcast) -> dict[str, Any]:

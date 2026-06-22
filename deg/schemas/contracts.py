@@ -8,6 +8,7 @@ The JSON they serialize is what gets carried inside A2A message DataParts.
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -34,6 +35,19 @@ class Evidence(BaseModel):
     social: str | None = None  # 虎爺: social/IG intel summary
 
 
+class TravelContext(BaseModel):
+    """Structured travel-party context gathered by 五營兵將 during clarification."""
+
+    trip_type: str | None = None            # solo / couple / family / group
+    travel_date: str | None = None          # 旅遊時間 (free text, e.g. "週末下午")
+    party_size: int | None = None           # 人數
+    has_elderly: bool | None = None         # 有老人
+    has_children: bool | None = None        # 有小孩
+    interests: list[str] = Field(default_factory=list)            # 偏好
+    dietary_restrictions: list[str] = Field(default_factory=list) # 忌口
+    wishlist: list[str] = Field(default_factory=list)             # 使用者想去的地點
+
+
 class TaskBroadcast(BaseModel):
     """Schema A — the call-for-proposals 土地公 broadcasts to all 地基主."""
 
@@ -42,6 +56,8 @@ class TaskBroadcast(BaseModel):
     user_location: LatLng
     constraints: list[str] = Field(default_factory=list)
     timeout_ms: int = 3000  # soft preference hint; real-LLM bidding uses a wider window
+    travel_context: TravelContext | None = None
+    wishlist: list[str] = Field(default_factory=list)  # must-visit places from user
 
 
 class BiddingProposal(BaseModel):
@@ -96,3 +112,12 @@ class JudgmentResult(BaseModel):
     recommended_pois: list[Poi] = Field(default_factory=list)
     ranked_agent_ids: list[str] = Field(default_factory=list)
     reasoning: str
+
+
+class WuyingOutput(BaseModel):
+    """五營兵將's per-round output: either a clarifying question or the final TaskBroadcast."""
+
+    status: Literal["ready", "clarifying"]
+    question: str | None = None                                   # clarification question (when status=clarifying)
+    collected: TravelContext = Field(default_factory=TravelContext)  # updated after each round
+    task_broadcast: TaskBroadcast | None = None                   # populated when status=ready

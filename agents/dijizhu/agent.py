@@ -87,6 +87,8 @@ def create_dijizhu(
 3. 呼叫 get_env_sensor("{street_id}") 取得即時環境情報（人流/天氣），記下 sensor_summary。
 4. 呼叫 get_social_intel("{street_id}") 取得社群熱搜情報，記下 social_summary。
 5. 評估適配度：考慮 POI 類型與需求符合程度、街廓特色、人情味、環境與社群加成，給出 fitness_score（0.0~10.0）。
+   如果 TaskBroadcast 中有 wishlist 欄位（使用者指定想去的地點），優先在 candidate_pois 中包含這些地點，
+   並在 reasoning 中提及你如何安排這些使用者的必訪名單。
 6. 在 reasoning 欄位用繁體中文寫下你的投標理由，充分展現護航在地的自豪與性格。
 
 【你的性格】
