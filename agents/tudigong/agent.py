@@ -30,7 +30,7 @@ from google.adk.agents import LlmAgent, ParallelAgent, SequentialAgent  # noqa: 
 from deg.schemas import JudgmentResult  # noqa: E402
 from dijizhu.agent import create_dijizhu  # noqa: E402
 
-_MODEL = "gemini-3.5-flash"
+_MODEL = "gemini-2.5-flash"
 
 _MOOD_POOL = [
     "今日心情開朗，偏愛有故事有溫度的角落，分數高不如人情濃",

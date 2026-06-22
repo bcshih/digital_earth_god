@@ -20,7 +20,7 @@ from google.adk.agents import LlmAgent  # noqa: E402
 
 from deg.schemas import Blessing  # noqa: E402
 
-_MODEL = "gemini-3.5-flash"
+_MODEL = "gemini-2.5-flash"
 
 _BLESSING_INSTRUCTION = """你是土地公，台南中西區慈悲宏觀的守護神。
 一位凡人剛剛上香許願，向你訴說對社區的期望。請以神明的口吻回應。

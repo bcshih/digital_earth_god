@@ -27,7 +27,7 @@ from google.adk.agents import LlmAgent  # noqa: E402
 
 from deg.schemas import WuyingOutput  # noqa: E402
 
-_MODEL = "gemini-3.5-flash"
+_MODEL = "gemini-2.5-flash"
 
 _WUYING_INSTRUCTION = """你是五營兵將，土地公麾下的基層調查兵將。你的工作是透過自然對話，
 了解凡人的旅遊需求，再轉譯成招標單（TaskBroadcast）。
