@@ -1,0 +1,585 @@
+@import "tailwindcss";
+
+/* ============================================================
+   數位土地公 — Divine-Tech (神・科技) design tokens
+   Dark night-temple sanctum; divine negotiation as luminous ritual.
+   ============================================================ */
+:root {
+  --ink: #0b0e14;
+  --sanctum: #12161f;
+  --gold: #e8b04b;
+  --gold-glow: #f5d78e;
+  --vermillion: #c8442e;
+  --seal: #e5533d;
+  --jade: #4fa88b;
+  --ash: #c9ccd6;
+  --smoke: #6b7180;
+
+  --background: var(--ink);
+  --foreground: var(--ash);
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-sanctum: var(--sanctum);
+  --color-gold: var(--gold);
+  --color-gold-glow: var(--gold-glow);
+  --color-vermillion: var(--vermillion);
+  --color-seal: var(--seal);
+  --color-jade: var(--jade);
+  --color-ash: var(--ash);
+  --color-smoke: var(--smoke);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-serif: var(--font-noto-serif-tc);
+  --font-sans: var(--font-noto-sans-tc);
+  --font-mono: var(--font-space-mono);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  color: var(--foreground);
+  font-family: var(--font-noto-sans-tc), "PingFang TC", "Microsoft JhengHei", sans-serif;
+  background-color: var(--ink);
+  /* Layered radial gold / vermillion glows on near-black */
+  background-image:
+    radial-gradient(
+      60rem 60rem at 18% -8%,
+      rgba(232, 176, 75, 0.16),
+      transparent 60%
+    ),
+    radial-gradient(
+      48rem 48rem at 110% 12%,
+      rgba(200, 68, 46, 0.14),
+      transparent 55%
+    ),
+    radial-gradient(
+      70rem 50rem at 50% 120%,
+      rgba(79, 168, 139, 0.08),
+      transparent 60%
+    );
+  background-attachment: fixed;
+  min-height: 100dvh;
+}
+
+/* Faint grain / noise overlay over everything */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ============================================================
+   Page shell / sanctum chrome
+   ============================================================ */
+.sanctum {
+  position: relative;
+  z-index: 1;
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: clamp(2rem, 6vw, 5rem) clamp(1.1rem, 4vw, 2.5rem) 6rem;
+}
+
+.sanctum__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 0.4rem;
+}
+.sanctum__seal {
+  display: inline-grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border: 1px solid rgba(232, 176, 75, 0.5);
+  border-radius: 8px;
+  color: var(--gold);
+  font-family: var(--font-noto-serif-tc), serif;
+  font-weight: 900;
+  font-size: 1.2rem;
+  background: radial-gradient(circle at 50% 40%, rgba(200, 68, 46, 0.25), transparent);
+  box-shadow: inset 0 0 14px rgba(232, 176, 75, 0.18);
+}
+.sanctum__kicker {
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--smoke);
+}
+
+.sanctum__hero {
+  font-family: var(--font-noto-serif-tc), serif;
+  font-weight: 900;
+  font-size: clamp(2.2rem, 6vw, 3.6rem);
+  letter-spacing: 0.16em;
+  color: var(--gold);
+  margin: 1.5rem 0 0.6rem;
+  text-shadow: 0 0 26px rgba(245, 215, 142, 0.3);
+}
+.sanctum__lede {
+  font-family: var(--font-noto-sans-tc), sans-serif;
+  color: var(--ash);
+  line-height: 1.9;
+  max-width: 34rem;
+}
+
+.sanctum__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 2.2rem;
+  padding: 0.85rem 2rem;
+  border-radius: 6px;
+  border: 1px solid rgba(245, 215, 142, 0.55);
+  background: linear-gradient(180deg, var(--seal), var(--vermillion));
+  color: #fff5e8;
+  text-decoration: none;
+  font-family: var(--font-noto-serif-tc), serif;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  box-shadow: 0 10px 28px rgba(200, 68, 46, 0.4);
+  transition: transform 0.18s ease, box-shadow 0.25s ease;
+}
+.sanctum__cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 26px rgba(232, 176, 75, 0.45), 0 14px 34px rgba(200, 68, 46, 0.5);
+}
+
+/* ---- Telemetry / ritual log strip for the demo theater ---- */
+.ritual-log {
+  margin-top: 2.4rem;
+  border-top: 1px solid rgba(107, 113, 128, 0.25);
+  padding-top: 1rem;
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--smoke);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  max-height: 9rem;
+  overflow: hidden;
+}
+.ritual-log__line {
+  display: flex;
+  gap: 0.7rem;
+}
+.ritual-log__tick {
+  color: var(--vermillion);
+}
+.ritual-log__msg {
+  color: var(--ash);
+}
+.ritual-log__done {
+  color: var(--jade);
+}
+.ritual-log__err {
+  color: var(--seal);
+}
+
+.demo-replay {
+  margin-bottom: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.demo-replay__status {
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--smoke);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.demo-replay__pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 10px var(--gold-glow);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+.demo-replay__pulse[data-done="true"] {
+  background: var(--jade);
+  box-shadow: 0 0 10px var(--jade);
+  animation: none;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+.demo-replay__btn {
+  appearance: none;
+  background: transparent;
+  border: 1px solid rgba(232, 176, 75, 0.45);
+  color: var(--gold);
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  padding: 0.55rem 1.2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+.demo-replay__btn:hover {
+  background: rgba(232, 176, 75, 0.1);
+  box-shadow: 0 0 16px rgba(232, 176, 75, 0.2);
+}
+
+/* Frames animate in as they arrive */
+.a2-card,
+.a2-list__item {
+  animation: rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================
+   A2UI catalog component styles
+   ============================================================ */
+
+.a2-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.a2-row {
+  display: flex;
+  flex-direction: row;
+  gap: 1.1rem;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.a2-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1.1rem;
+}
+.a2-list__item {
+  display: flex;
+}
+.a2-list__item > * {
+  width: 100%;
+}
+
+/* ---- Text ---- */
+.a2-text {
+  margin: 0;
+}
+.a2-text--h1 {
+  font-family: var(--font-noto-serif-tc), serif;
+  font-weight: 900;
+  font-size: clamp(1.7rem, 3.6vw, 2.7rem);
+  line-height: 1.18;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+  text-shadow:
+    0 0 18px rgba(245, 215, 142, 0.35),
+    0 0 2px rgba(232, 176, 75, 0.6);
+}
+.a2-text--h2 {
+  font-family: var(--font-noto-serif-tc), serif;
+  font-weight: 700;
+  font-size: clamp(1.18rem, 2.2vw, 1.55rem);
+  line-height: 1.3;
+  letter-spacing: 0.1em;
+  color: var(--gold-glow);
+}
+.a2-text--body {
+  font-family: var(--font-noto-sans-tc), sans-serif;
+  font-size: 0.98rem;
+  line-height: 1.85;
+  color: var(--ash);
+}
+.a2-text--caption {
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--smoke);
+}
+.a2-text--score {
+  font-family: var(--font-space-mono), monospace;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--gold);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.a2-text--score::before {
+  content: "▌";
+  color: var(--vermillion);
+  font-size: 0.85em;
+}
+
+/* ---- Image ---- */
+.a2-image {
+  display: block;
+  max-width: 100%;
+  border-radius: 6px;
+  border: 1px solid rgba(232, 176, 75, 0.3);
+}
+.a2-image--empty {
+  width: 100%;
+  height: 6rem;
+  border-radius: 6px;
+  border: 1px dashed rgba(107, 113, 128, 0.4);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* ---- Icon ---- */
+.a2-icon {
+  color: var(--gold);
+  font-size: 1.1rem;
+  filter: drop-shadow(0 0 6px rgba(245, 215, 142, 0.5));
+}
+
+/* ---- Divider ---- */
+.a2-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin: 0.4rem 0;
+}
+.a2-divider::before,
+.a2-divider::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(232, 176, 75, 0.45),
+    transparent
+  );
+}
+.a2-divider__sigil {
+  color: var(--gold);
+  font-size: 0.7rem;
+  opacity: 0.8;
+}
+
+/* ---- Card: sanctum panel with gold filigree + inner glow ---- */
+.a2-card {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(232, 176, 75, 0.05), transparent 40%),
+    var(--sanctum);
+  border: 1px solid rgba(232, 176, 75, 0.28);
+  border-radius: 10px;
+  padding: 1.4rem 1.5rem;
+  box-shadow:
+    inset 0 0 28px rgba(232, 176, 75, 0.06),
+    0 14px 40px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+}
+.a2-card::after {
+  /* faint vermillion incense glow rising from base */
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -40%;
+  width: 80%;
+  height: 80%;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(200, 68, 46, 0.12),
+    transparent 70%
+  );
+  pointer-events: none;
+}
+.a2-card__body {
+  position: relative;
+  z-index: 1;
+}
+.a2-card__corner {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-color: var(--gold);
+  opacity: 0.7;
+  z-index: 2;
+}
+.a2-card__corner--tl {
+  top: 7px;
+  left: 7px;
+  border-top: 1px solid;
+  border-left: 1px solid;
+}
+.a2-card__corner--tr {
+  top: 7px;
+  right: 7px;
+  border-top: 1px solid;
+  border-right: 1px solid;
+}
+.a2-card__corner--bl {
+  bottom: 7px;
+  left: 7px;
+  border-bottom: 1px solid;
+  border-left: 1px solid;
+}
+.a2-card__corner--br {
+  bottom: 7px;
+  right: 7px;
+  border-bottom: 1px solid;
+  border-right: 1px solid;
+}
+
+/* ---- Button: vermillion seal ---- */
+.a2-button-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.a2-button {
+  position: relative;
+  appearance: none;
+  border: 1px solid rgba(245, 215, 142, 0.55);
+  border-radius: 6px;
+  padding: 0.85rem 2.2rem;
+  cursor: pointer;
+  background: linear-gradient(180deg, var(--seal), var(--vermillion));
+  color: #fff5e8;
+  font-family: var(--font-noto-serif-tc), serif;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  font-size: 1rem;
+  overflow: hidden;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.25s ease,
+    filter 0.25s ease;
+  box-shadow:
+    0 0 0 rgba(232, 176, 75, 0),
+    0 8px 22px rgba(200, 68, 46, 0.35);
+}
+.a2-button .a2-text {
+  color: inherit;
+  font-family: inherit;
+  letter-spacing: inherit;
+}
+.a2-button__glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 120%,
+    rgba(245, 215, 142, 0.5),
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.a2-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 26px rgba(232, 176, 75, 0.45),
+    0 12px 30px rgba(200, 68, 46, 0.5);
+}
+.a2-button:hover:not(:disabled) .a2-button__glow {
+  opacity: 1;
+}
+.a2-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+.a2-button:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.55) brightness(0.7);
+  opacity: 0.7;
+}
+.a2-button__label {
+  position: relative;
+  z-index: 1;
+}
+.a2-button__hint {
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: var(--seal);
+}
+
+/* ---- TextField ---- */
+.a2-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.a2-field__label {
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  color: var(--smoke);
+}
+.a2-field__shell {
+  position: relative;
+  display: block;
+}
+.a2-field__input {
+  width: 100%;
+  background: rgba(11, 14, 20, 0.7);
+  border: 1px solid rgba(107, 113, 128, 0.4);
+  border-radius: 6px;
+  padding: 0.85rem 1rem;
+  color: var(--ash);
+  font-family: var(--font-noto-sans-tc), sans-serif;
+  font-size: 1rem;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.a2-field__input::placeholder {
+  color: var(--smoke);
+}
+.a2-field__input:focus {
+  border-color: var(--gold);
+  box-shadow:
+    0 0 0 1px rgba(232, 176, 75, 0.4),
+    0 0 22px rgba(232, 176, 75, 0.2);
+}
+.a2-field__rule {
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.a2-field__input:focus + .a2-field__rule {
+  opacity: 1;
+}
