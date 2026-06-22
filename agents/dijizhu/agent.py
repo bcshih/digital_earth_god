@@ -26,7 +26,10 @@ load_dotenv(_REPO_ROOT / ".env")  # load GOOGLE_API_KEY + GOOGLE_GENAI_USE_VERTE
 
 if os.environ.get("DASHSCOPE_API_KEY"):
     os.environ["OPENAI_API_KEY"] = os.environ["DASHSCOPE_API_KEY"]
-    os.environ.setdefault("OPENAI_API_BASE", "https://dashscope.aliyuncs.com/compatible-mode/v1")
+    os.environ.setdefault(
+        "OPENAI_API_BASE",
+        os.environ.get("DASHSCOPE_BASE_URL", "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"),
+    )
 
 from google.adk.agents import LlmAgent  # noqa: E402
 from google.adk.models.lite_llm import LiteLlm  # noqa: E402
