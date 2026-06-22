@@ -207,10 +207,20 @@ export default function Home() {
           </Link>
         </div>
 
-        {conn === "error" && errorDetail ? (
-          <p className="a2-text a2-text--caption" style={{ marginTop: "0.6rem", color: "var(--color-error, #f87171)", wordBreak: "break-all" }}>
-            {errorDetail}
-          </p>
+        {conn === "error" ? (
+          <div style={{ marginTop: "0.6rem" }}>
+            {errorDetail ? (
+              <p className="a2-text a2-text--caption" style={{ color: "var(--color-error, #f87171)", wordBreak: "break-all", marginBottom: "0.8rem" }}>
+                {errorDetail}
+              </p>
+            ) : null}
+            <button
+              className="a2-button a2-button--primary"
+              onClick={() => window.location.reload()}
+            >
+              重新連接
+            </button>
+          </div>
         ) : null}
 
         {offline ? (

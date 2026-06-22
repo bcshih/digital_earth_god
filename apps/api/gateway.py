@@ -99,6 +99,12 @@ class WishRequest(BaseModel):
     photo_ref: str | None = None
 
 
+def _is_retryable(exc: Exception) -> bool:
+    """Return True for transient Gemini errors worth retrying (503, overload)."""
+    msg = str(exc)
+    return "503" in msg or "UNAVAILABLE" in msg or "overload" in msg.lower()
+
+
 async def _send_wuying_message(
     wuying_runner: Runner,
     session_service: InMemorySessionService,
@@ -106,28 +112,39 @@ async def _send_wuying_message(
 ) -> WuyingOutput:
     """Run 五營兵將 in a FRESH session with explicit conversation history in payload.
 
-    A new session per round avoids ADK multi-turn + output_schema instability.
-    The full chat history is embedded in the payload JSON so the LLM has all
-    context and never repeats a question.
+    Retries up to 2 times on transient 503/UNAVAILABLE errors with exponential backoff.
     """
-    session_id = uuid4().hex
-    await session_service.create_session(
-        app_name="deg", user_id="gateway", session_id=session_id
-    )
-    msg = genai_types.Content(role="user", parts=[genai_types.Part(text=payload)])
-    final_text = ""
-    async for event in wuying_runner.run_async(
-        user_id="gateway", session_id=session_id, new_message=msg
-    ):
-        if event.is_final_response() and event.content and event.content.parts:
-            final_text = event.content.parts[0].text or ""
-            break
-    if not final_text:
-        raise RuntimeError("五營兵將未能解析意圖，請再試一次。")
-    try:
-        return WuyingOutput.model_validate_json(final_text)
-    except Exception as exc:
-        raise RuntimeError(f"五營兵將回傳格式有誤：{exc}") from exc
+    for attempt in range(3):
+        session_id = uuid4().hex
+        await session_service.create_session(
+            app_name="deg", user_id="gateway", session_id=session_id
+        )
+        msg = genai_types.Content(role="user", parts=[genai_types.Part(text=payload)])
+        final_text = ""
+        try:
+            async for event in wuying_runner.run_async(
+                user_id="gateway", session_id=session_id, new_message=msg
+            ):
+                if event.is_final_response() and event.content and event.content.parts:
+                    final_text = event.content.parts[0].text or ""
+                    break
+        except Exception as exc:
+            if _is_retryable(exc) and attempt < 2:
+                wait = 2 ** attempt
+                logger.warning("五營兵將 503 (attempt %d), retry in %ds: %s", attempt + 1, wait, exc)
+                await asyncio.sleep(wait)
+                continue
+            raise
+        if not final_text:
+            if attempt < 2:
+                await asyncio.sleep(2 ** attempt)
+                continue
+            raise RuntimeError("五營兵將未能解析意圖，請再試一次。")
+        try:
+            return WuyingOutput.model_validate_json(final_text)
+        except Exception as exc:
+            raise RuntimeError(f"五營兵將回傳格式有誤：{exc}") from exc
+    raise RuntimeError("五營兵將未能解析意圖，請再試一次。")
 
 
 def _wuying_payload(
@@ -452,30 +469,48 @@ def create_app() -> FastAPI:
             bid_index = 0
             verdict_text = ""
             pipeline_error: str | None = None
-            try:
-                async for event in pipeline_runner.run_async(
-                    user_id="gateway", session_id=session_id, new_message=msg
-                ):
-                    author = getattr(event, "author", None)
-                    if not (event.content and event.content.parts):
-                        continue
-                    text = event.content.parts[0].text or ""
-                    if not text:
-                        continue
-                    if author and author.startswith("dijizhu_") and event.is_final_response():
-                        try:
-                            proposal = BiddingProposal.model_validate_json(text)
-                        except Exception:
+            for _pipeline_attempt in range(3):
+                try:
+                    async for event in pipeline_runner.run_async(
+                        user_id="gateway", session_id=session_id, new_message=msg
+                    ):
+                        author = getattr(event, "author", None)
+                        if not (event.content and event.content.parts):
                             continue
-                        await ws.send_json(
-                            update_data_model(SURFACE_ID, f"/bids/{bid_index}", bid_data(proposal))
+                        text = event.content.parts[0].text or ""
+                        if not text:
+                            continue
+                        if author and author.startswith("dijizhu_") and event.is_final_response():
+                            try:
+                                proposal = BiddingProposal.model_validate_json(text)
+                            except Exception:
+                                continue
+                            await ws.send_json(
+                                update_data_model(SURFACE_ID, f"/bids/{bid_index}", bid_data(proposal))
+                            )
+                            bid_index += 1
+                        elif author == "tudigong_judge" and event.is_final_response():
+                            verdict_text = text
+                    break  # pipeline finished without exception
+                except Exception as pipeline_exc:
+                    if _is_retryable(pipeline_exc) and _pipeline_attempt < 2:
+                        wait = 2 ** _pipeline_attempt
+                        logger.warning(
+                            "Pipeline 503 (attempt %d), retry in %ds: %s",
+                            _pipeline_attempt + 1, wait, pipeline_exc,
                         )
-                        bid_index += 1
-                    elif author == "tudigong_judge" and event.is_final_response():
-                        verdict_text = text
-            except Exception as pipeline_exc:
-                pipeline_error = str(pipeline_exc)
-                logger.error("Pipeline error:\n%s", traceback.format_exc())
+                        bid_index = 0
+                        verdict_text = ""
+                        # Re-create session for clean retry
+                        session_id = uuid4().hex
+                        await session_service.create_session(
+                            app_name="deg", user_id="gateway", session_id=session_id
+                        )
+                        await asyncio.sleep(wait)
+                        continue
+                    pipeline_error = str(pipeline_exc)
+                    logger.error("Pipeline error:\n%s", traceback.format_exc())
+                    break
 
             if verdict_text:
                 try:
