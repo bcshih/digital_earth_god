@@ -1,12 +1,8 @@
 """地基主 (Street Guardian) ADK LlmAgent.
 
-Each 地基主 is bound to one Tainan 街廓 and bids into 土地公's Contract Net
+Each 地基主 is bound to one Tainan 里/街廓 and bids into 土地公's Contract Net
 by reasoning over pre-loaded spatial / sensor / social data — no tool calls,
 single LLM pass, returns BiddingProposal.
-
-Run interactively (from agents/ directory, needs GOOGLE_API_KEY in .env):
-    adk run dijizhu
-    adk web
 """
 
 from __future__ import annotations
@@ -21,59 +17,50 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 from dotenv import load_dotenv  # noqa: E402
-
 load_dotenv(_REPO_ROOT / ".env")
 
+from typing import Union
 from google.adk.agents import LlmAgent  # noqa: E402
-
-from deg.schemas import BiddingProposal  # noqa: E402
+from deg.schemas import BiddingProposal, DebateMessage, ScoutResult  # noqa: E402
+from deg.seed.loader import load_agents, LiAgentData  # noqa: E402
 
 _MODEL = "gemini-3.1-flash-lite"
-
-_SEED_DIR = _REPO_ROOT / "data" / "seed"
-
-
-def _load_seeds() -> tuple[dict, dict, dict]:
-    """Return (streets_by_id, sensor_by_id, social_by_id) from seed JSON files."""
-    streets_raw = json.loads((_SEED_DIR / "streets.json").read_text(encoding="utf-8"))
-    streets_by_id = {s["street_id"]: s for s in streets_raw["streets"]}
-    sensor_by_id = json.loads((_SEED_DIR / "sensor.json").read_text(encoding="utf-8"))
-    social_by_id = json.loads((_SEED_DIR / "social.json").read_text(encoding="utf-8"))
-    return streets_by_id, sensor_by_id, social_by_id
 
 
 def create_dijizhu(
     street_id: str,
     street_name: str,
     agent_id: str,
-    street_info: dict | None = None,
-    sensor_info: dict | None = None,
-    social_info: dict | None = None,
+    li_data: LiAgentData | None = None,
 ) -> LlmAgent:
-    """Create a 地基主 LlmAgent bound to a specific street.
+    """Create a 地基主 LlmAgent bound to a specific street/li.
 
     Data is injected directly into the instruction — no tool calls needed,
     single LLM round-trip to produce BiddingProposal.
-
-    Args:
-        street_id:   seed identifier (shennong | haian | zhengxing)
-        street_name: human-readable Chinese name for prompts
-        agent_id:    the value placed in BiddingProposal.agent_id
-        street_info: dict from streets.json for this street_id (loaded if None)
-        sensor_info: dict from sensor.json for this street_id (loaded if None)
-        social_info: dict from social.json for this street_id (loaded if None)
     """
-    if street_info is None or sensor_info is None or social_info is None:
-        streets_by_id, sensor_by_id, social_by_id = _load_seeds()
-        street_info = street_info or streets_by_id.get(street_id, {})
-        sensor_info = sensor_info or sensor_by_id.get(street_id, {})
-        social_info = social_info or social_by_id.get(street_id, {})
+    if li_data is None:
+        agents = load_agents()
+        for a in agents:
+            if a.id.endswith(street_id.capitalize()) or a.id.endswith(street_id):
+                li_data = a
+                break
+        else:
+            raise ValueError(f"Agent data for {street_id} not found.")
 
-    history = street_info.get("history", "（無資料）")
-    centroid = street_info.get("centroid", {"lat": 0.0, "lng": 0.0})
-    pois_json = json.dumps(street_info.get("pois", []), ensure_ascii=False, indent=2)
-    sensor_summary = sensor_info.get("summary", "（無感測資料）")
-    social_summary = social_info.get("summary", "（無社群資料）")
+    street_obj = li_data.to_street()
+    
+    history = street_obj.history or "（無歷史資料）"
+    centroid = {"lat": street_obj.centroid.lat, "lng": street_obj.centroid.lng}
+    pois_dict = [{"name": p.name, "category": p.category, "note": p.note} for p in street_obj.pois]
+    pois_json = json.dumps(pois_dict, ensure_ascii=False, indent=2)
+    
+    # We can extract citizen opinions and dynamic activities from NGSI-LD
+    social_posts = []
+    if li_data.layer_4_citizen_opinions and "value" in li_data.layer_4_citizen_opinions:
+        social_posts = li_data.layer_4_citizen_opinions["value"]
+    social_summary = json.dumps(social_posts, ensure_ascii=False) if social_posts else "（無社群資料）"
+    
+    sensor_summary = "（無感測資料）" # Could be populated from layer 2 or other layers
 
     instruction = f"""你是「{street_name}」的地基主 (agent_id: {agent_id})，守護這條街道的神明管理員。
 
@@ -88,54 +75,82 @@ lat: {centroid["lat"]}, lng: {centroid["lng"]}
 【POI 清單】
 {pois_json}
 
-【環境情報（巡境使）】
-{sensor_summary}
-
-【社群情報（虎爺）】
+【動態/社群情報】
 {social_summary}
 
-━━━━━━ 投標步驟 ━━━━━━
+━━━━━━ 任務判斷：第一輪（投標） vs 第二輪（辯論） ━━━━━━
 
-收到 TaskBroadcast JSON 後，按下列步驟投標：
-
+若對話紀錄中【只有 TaskBroadcast】：代表這是第一輪投標。
+請按下列步驟投標：
 1. 閱讀 TaskBroadcast 的 constraints 與 wishlist。
 2. 從 POI 清單中篩選符合 constraints 的候選地點放入 candidate_pois。
    若 wishlist 中有指名地點，優先納入並在 reasoning 中提及。
    若 constraints 為空，所有 POI 均可候選。
 3. 根據 POI 符合度、街廓特色、環境情報、社群情報綜合評估，給出 fitness_score（0.0~10.0）。
-4. 用繁體中文寫下投標理由 reasoning（至少 2 句），展現護航在地的自豪與性格。
+4. 用繁體中文寫下投標理由 reasoning（至少 2 句），展現護航在地的自豪與性格：{li_data.metadata.personality}
+回傳：必須回傳完整的 BiddingProposal JSON。
+
+若對話紀錄中【已經有其他地基主的 BiddingProposal 或推薦】：代表這是第二輪辯論。
+請按下列步驟辯論：
+1. 檢視其他里提出的景點與理由。
+2. 提出批評、反駁，或者說明你的景點如何跟他們的景點完美串聯。
+3. 強烈表達你的辯論觀點（debate_text）。
+回傳：必須回傳 DebateMessage JSON。
 
 ━━━━━━ 你的性格 ━━━━━━
 
 強烈的護航在地精神，充滿對自己街道的自豪感，語氣有神明威嚴但接地氣，
 絕對不會推薦轄區以外的地方，永遠優先維護{street_name}的利益。
-
-━━━━━━ 回傳格式 ━━━━━━
-
-必須回傳完整的 BiddingProposal JSON：
-- agent_id: "{agent_id}"
-- task_id: 從輸入 TaskBroadcast 取出
-- fitness_score: 0.0~10.0
-- reasoning: 繁體中文投標理由（至少 2 句）
-- spatial_data: {{"lat": {centroid["lat"]}, "lng": {centroid["lng"]}}}
-- tags: 你推薦的標籤列表
-- candidate_pois: 符合條件的 POI（含 name, category, location, tags, note）
-- evidence: {{"sensor": "{sensor_summary}", "social": "{social_summary}"}}
-- confidence: 0.0~1.0"""
+"""
 
     return LlmAgent(
         name=f"dijizhu_{street_id}",
         model=_MODEL,
-        description=f"台南{street_name}的地基主，專責該街廓的空間情報投標。",
+        description=f"台南{street_name}的地基主，專責該街廓的空間情報投標與辯論。",
         instruction=instruction,
-        output_schema=BiddingProposal,
+        output_schema=Union[BiddingProposal, DebateMessage],
     )
 
 
+def create_scout(
+    street_id: str,
+    street_name: str,
+    agent_id: str,
+    li_data: LiAgentData | None = None,
+) -> LlmAgent:
+    """Create a lightweight Scout Agent for quick decentralized bidding."""
+    if li_data is None:
+        agents = load_agents()
+        for a in agents:
+            if a.id.endswith(street_id.capitalize()) or a.id.endswith(street_id):
+                li_data = a
+                break
+        else:
+            raise ValueError(f"Agent data for {street_id} not found.")
+
+    street_obj = li_data.to_street()
+    pois_dict = [{"name": p.name, "category": p.category, "tags": p.tags} for p in street_obj.pois]
+    pois_json = json.dumps(pois_dict, ensure_ascii=False)
+
+    instruction = f"""你是「{street_name}」的地基主前哨 (agent_id: {agent_id})。
+    
+這是一個快速舉手階段。請根據傳入的 TaskBroadcast (包含意圖與限制)，以及你轄區內的景點：
+{pois_json}
+
+判斷你的轄區是否符合需求。請不要廢話，只給出一個 0 到 10 的 confidence_score（0 分代表完全無關，10 分代表完美符合），以及用一句話解釋 reason。
+回傳必須是 ScoutResult JSON 格式。
+"""
+    return LlmAgent(
+        name=f"dijizhu_scout_{street_id}",
+        model=_MODEL,
+        description="地基主前哨，負責極速評估意圖吻合度",
+        instruction=instruction,
+        output_schema=ScoutResult,
+    )
+
 # Module-level root_agent required by `adk run dijizhu`.
-# Default to 神農街; create_pipeline() instantiates all three.
 root_agent = create_dijizhu(
-    street_id="shennong",
-    street_name="神農街",
-    agent_id="street_shennong_node",
+    street_id="wutiaogang",
+    street_name="五條港里",
+    agent_id="street_wutiaogang_node",
 )

@@ -57,7 +57,17 @@ class TaskBroadcast(BaseModel):
     constraints: list[str] = Field(default_factory=list)
     timeout_ms: int = 3000  # soft preference hint; real-LLM bidding uses a wider window
     travel_context: TravelContext | None = None
-    wishlist: list[str] = Field(default_factory=list)  # must-visit places from user
+    wishlist: list[str] = Field(
+        default_factory=list, description="Specific named places the user wants to visit"
+    )
+
+
+class ScoutResult(BaseModel):
+    agent_id: str = Field(description="The ID of the responding agent")
+    confidence_score: float = Field(
+        ge=0.0, le=10.0, description="How confident the agent is in fulfilling the task (0-10)"
+    )
+    reason: str = Field(description="A single sentence explaining the score")
 
 
 class BiddingProposal(BaseModel):
@@ -72,6 +82,12 @@ class BiddingProposal(BaseModel):
     candidate_pois: list[Poi] = Field(default_factory=list)
     evidence: Evidence | None = None
     confidence: float = Field(default=0.5, ge=0.0, le=1.0)
+
+
+class DebateMessage(BaseModel):
+    """地基主在第二輪辯論階段互相反駁或支持的發言"""
+    agent_id: str
+    debate_text: str
 
 
 class Wish(BaseModel):
@@ -102,15 +118,22 @@ class Blessing(BaseModel):
     blessing: str           # 神明口吻 的祝福（繁體中文）
 
 
+class ItineraryStop(BaseModel):
+    day: int = 1
+    poi: Poi
+    agent_id: str
+    duration_mins: int
+    activity: str
+    transit_to_next: str | None = None
+
+
 class JudgmentResult(BaseModel):
     """土地公 LLM-as-Judge final output for a Contract Net round."""
 
     task_id: str
-    winner_agent_id: str
-    winner_street: str
     recommendation: str
-    recommended_pois: list[Poi] = Field(default_factory=list)
-    ranked_agent_ids: list[str] = Field(default_factory=list)
+    itinerary: list[ItineraryStop] = Field(default_factory=list)
+    contributing_agent_ids: list[str] = Field(default_factory=list)
     reasoning: str
 
 

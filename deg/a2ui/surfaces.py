@@ -20,16 +20,19 @@ from __future__ import annotations
 
 from typing import Any
 
-from deg.schemas import BiddingProposal, JudgmentResult, Poi, TaskBroadcast
+from deg.schemas import BiddingProposal, DebateMessage, JudgmentResult, Poi, TaskBroadcast
 
 SURFACE_ID = "explore"
 
-# agent_id → human street label (BiddingProposal carries only agent_id).
-_STREET_LABELS = {
-    "street_shennong_node": "神農街",
-    "street_haian_node": "海安路",
-    "street_zhengxing_node": "正興街",
-}
+from deg.seed.loader import load_agents
+
+def _get_street_labels() -> dict[str, str]:
+    try:
+        return {a.to_street().agent_id: a.to_street().name for a in load_agents()}
+    except Exception:
+        return {}
+
+_STREET_LABELS = _get_street_labels()
 
 
 def _poi_dict(p: Poi) -> dict[str, Any]:
@@ -120,7 +123,7 @@ def negotiation_components() -> list[dict[str, Any]]:
     """
     return [
         {"id": "root", "component": "Column",
-         "children": ["broadcast-card", "bids-row", "verdict-card"]},
+         "children": ["broadcast-card", "bids-row", "debates-row", "verdict-card"]},
         # — broadcast (招標令) —
         {"id": "broadcast-card", "component": "Card", "child": "broadcast-body"},
         {"id": "broadcast-body", "component": "Column",
@@ -138,6 +141,15 @@ def negotiation_components() -> list[dict[str, Any]]:
          "text": {"path": "street"}, "variant": "h2"},
         {"id": "bid-card-score", "component": "Text", "text": {"path": "fitness_score"}},
         {"id": "bid-card-reason", "component": "Text", "text": {"path": "reasoning"}},
+        # — debates (地基主辯論) as a data-bound List + card template —
+        {"id": "debates-row", "component": "List",
+         "children": {"path": "/debates", "componentId": "debate-card"}},
+        {"id": "debate-card", "component": "Card", "child": "debate-card-body"},
+        {"id": "debate-card-body", "component": "Column",
+         "children": ["debate-card-street", "debate-card-text"]},
+        {"id": "debate-card-street", "component": "Text",
+         "text": {"path": "street"}, "variant": "h2"},
+        {"id": "debate-card-text", "component": "Text", "text": {"path": "debate_text"}},
         # — verdict placeholder (filled in place by judgment_components) —
         {"id": "verdict-card", "component": "Card", "child": "verdict-wait"},
         {"id": "verdict-wait", "component": "Text",
@@ -160,17 +172,38 @@ def bid_data(proposal: BiddingProposal) -> dict[str, Any]:
         "candidate_pois": [_poi_dict(p) for p in proposal.candidate_pois],
     }
 
+def debate_data(msg: DebateMessage) -> dict[str, Any]:
+    return {
+        "agent_id": msg.agent_id,
+        "street": _STREET_LABELS.get(msg.agent_id, msg.agent_id),
+        "debate_text": msg.debate_text,
+    }
+
 
 # ── Verdict / recommendation (土地公裁決) ─────────────────────────────────────
 
 def judgment_data(result: JudgmentResult) -> dict[str, Any]:
+    itinerary_data = []
+    for idx, stop in enumerate(result.itinerary):
+        street_name = _STREET_LABELS.get(stop.agent_id, stop.agent_id)
+        itinerary_data.append({
+            "day": stop.day,
+            "poi_name": stop.poi.name,
+            "lat": stop.poi.location.lat,
+            "lng": stop.poi.location.lng,
+            "category": stop.poi.category,
+            "note": stop.poi.note,
+            "tags": stop.poi.tags,
+            "stop_title": f"第 {stop.day} 天，第 {idx+1} 站：{stop.poi.name} ({street_name})",
+            "stop_duration": f"停留 {stop.duration_mins} 分鐘",
+            "stop_activity": stop.activity,
+            "transit": f"前往下一站：{stop.transit_to_next}" if stop.transit_to_next else "本日行程結束"
+        })
+
     return {
-        "winner_agent_id": result.winner_agent_id,
-        "winner_street": result.winner_street,
         "recommendation": result.recommendation,
         "reasoning": result.reasoning,
-        "ranked_agent_ids": result.ranked_agent_ids,
-        "recommended_pois": [_poi_dict(p) for p in result.recommended_pois],
+        "itinerary": itinerary_data,
     }
 
 
@@ -184,11 +217,19 @@ def judgment_components() -> list[dict[str, Any]]:
     return [
         {"id": "verdict-card", "component": "Card", "child": "verdict-body"},
         {"id": "verdict-body", "component": "Column",
-         "children": ["verdict-title", "verdict-street", "verdict-text"]},
-        {"id": "verdict-title", "component": "Text", "text": "土地公親降裁決", "variant": "h1"},
-        {"id": "verdict-street", "component": "Text",
-         "text": {"path": "/verdict/winner_street"}, "variant": "h2"},
+         "children": ["verdict-title", "verdict-text", "itinerary-list"]},
+        {"id": "verdict-title", "component": "Text", "text": "土地公為您安排的跨區行程", "variant": "h1"},
         {"id": "verdict-text", "component": "Text", "text": {"path": "/verdict/recommendation"}},
+        {"id": "itinerary-list", "component": "List",
+         "children": {"path": "/verdict/itinerary", "componentId": "itinerary-stop"}},
+        
+        {"id": "itinerary-stop", "component": "Card", "child": "itinerary-stop-col"},
+        {"id": "itinerary-stop-col", "component": "Column",
+         "children": ["stop-title", "stop-duration", "stop-activity", "stop-transit"]},
+        {"id": "stop-title", "component": "Text", "text": {"path": "stop_title"}, "variant": "h2"},
+        {"id": "stop-duration", "component": "Text", "text": {"path": "stop_duration"}, "variant": "caption"},
+        {"id": "stop-activity", "component": "Text", "text": {"path": "stop_activity"}},
+        {"id": "stop-transit", "component": "Text", "text": {"path": "transit"}, "variant": "caption"},
     ]
 
 

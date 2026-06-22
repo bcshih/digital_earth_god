@@ -31,7 +31,7 @@ async def test_dijizhu_returns_evidence_in_proposal():
 
     from dijizhu.agent import create_dijizhu  # noqa: PLC0415
 
-    agent = create_dijizhu("shennong", "神農街", "street_shennong_node")
+    agent = create_dijizhu("wutiaogang", "五條港里", "street_wutiaogang_node")
     task = TaskBroadcast(
         task_id="evidence_test_001",
         intent="find_quiet_cafe",
@@ -65,7 +65,7 @@ async def test_dijizhu_returns_evidence_in_proposal():
             f"Validation error:\n{exc}"
         )
 
-    assert proposal.agent_id == "street_shennong_node"
+    assert proposal.agent_id == "street_wutiaogang_node"
     assert 0.0 <= proposal.fitness_score <= 10.0
 
     # Evidence should now be populated (sensor + social)

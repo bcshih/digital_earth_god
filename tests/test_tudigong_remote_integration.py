@@ -113,13 +113,9 @@ async def test_remote_pipeline_returns_judgment():
             )
 
         assert result.task_id == "m3_integration_001"
-        assert result.winner_agent_id in {
-            "street_shennong_node",
-            "street_haian_node",
-            "street_zhengxing_node",
-        }
+        assert len(result.contributing_agent_ids) >= 1
         assert len(result.recommendation) > 10
-        assert len(result.ranked_agent_ids) == 3
+        assert len(result.itinerary) >= 1
 
     finally:
         # Graceful shutdown of all A2A servers.

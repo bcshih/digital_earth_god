@@ -72,17 +72,14 @@ async def test_full_contract_net_returns_judgment():
         )
 
     assert result.task_id == "m2_integration_001"
-    assert result.winner_agent_id in {
-        "street_shennong_node", "street_haian_node", "street_zhengxing_node"
-    }
+    assert len(result.contributing_agent_ids) >= 1
     assert len(result.recommendation) > 10
     assert len(result.reasoning) > 10
-    assert len(result.ranked_agent_ids) == 3
 
 
 @pytest.mark.integration
-async def test_judgment_winner_has_recommended_pois():
-    """Verify the judge included POIs in the recommendation (MCP data flowed through)."""
+async def test_judgment_returns_itinerary_with_pois():
+    """Verify the judge included POIs in the itinerary (MCP data flowed through)."""
     _require_api_key()
 
     from tudigong.agent import create_pipeline  # noqa: PLC0415
@@ -112,7 +109,7 @@ async def test_judgment_winner_has_recommended_pois():
             break
 
     result = JudgmentResult.model_validate_json(final_text)
-    assert len(result.recommended_pois) >= 1, (
-        "Expected ≥1 recommended_poi — judge may not have included POI data. "
+    assert len(result.itinerary) >= 1, (
+        "Expected ≥1 itinerary stop — judge may not have included POI data. "
         f"Raw response:\n{final_text}"
     )

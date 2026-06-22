@@ -11,13 +11,11 @@ from deg.mcp.spatial_db.server import (
 )
 
 
-def test_get_street_info_shennong():
-    result = get_street_info("shennong")
-    assert result["street_id"] == "shennong"
-    assert result["name"] == "神農街"
-    assert result["agent_id"] == "street_shennong_node"
-    assert "history" in result
-    assert result["poi_count"] >= 1
+def test_get_street_info_wutiaogang():
+    info = get_street_info("wutiaogang")
+    assert info["street_id"] == "wutiaogang"
+    assert info["name"] == "五條港里"
+    assert "pois" not in info
 
 
 def test_get_street_info_unknown_returns_error():
@@ -26,28 +24,36 @@ def test_get_street_info_unknown_returns_error():
 
 
 def test_get_street_pois_structure():
-    result = get_street_pois("shennong")
+    result = get_street_pois("wutiaogang")
     pois = result["pois"]
-    assert len(pois) >= 1
-    for p in pois:
-        assert {"name", "category", "location", "tags", "note"} <= p.keys()
-        assert {"lat", "lng"} <= p["location"].keys()
+    assert isinstance(pois, list)
+    assert len(pois) > 0
+    p = pois[0]
+    assert "name" in p
+    assert "category" in p
+    assert "location" in p
+    assert "tags" in p
+    assert "note" in p
+    assert "lat" in p["location"]
+    assert "lng" in p["location"]
 
 
 def test_search_pois_cafe_constraint():
-    result = search_pois_by_constraints("shennong", ["cafe"])
-    assert result["matching_count"] >= 1
-    for p in result["matching_pois"]:
-        text = " ".join([p["name"], p["category"], p.get("note", "")] + p.get("tags", []))
-        assert "cafe" in text.lower() or "咖啡" in text
+    result = search_pois_by_constraints("chihkan", ["歷史"])
+    results = result["matching_pois"]
+    for p in results:
+        # either category is history, or tags contain history, or note contains history
+        # (This is just a loose check on the data we seeded)
+        is_history = p["category"] == "history" or "歷史" in p["tags"] or "歷史" in p["note"]
+        assert is_history
 
 
 def test_search_pois_empty_constraints_returns_all():
-    result = search_pois_by_constraints("haian", [])
-    assert result["matching_count"] == result["total_pois"]
+    all_pois = get_street_pois("chihkan")["pois"]
+    searched = search_pois_by_constraints("chihkan", [])["matching_pois"]
+    assert len(all_pois) == len(searched)
 
 
-def test_all_three_streets_have_pois():
-    for street_id in ["shennong", "haian", "zhengxing"]:
-        result = get_street_pois(street_id)
-        assert len(result["pois"]) >= 1, f"{street_id} has no POIs"
+def test_all_streets_have_pois():
+    for node in ["wutiaogang", "chihkan", "junwang"]:
+        assert len(get_street_pois(node)["pois"]) > 0

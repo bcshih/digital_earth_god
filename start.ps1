@@ -1,4 +1,4 @@
-﻿# start.ps1 -- Digital Earth God one-click launcher
+# start.ps1 -- Digital Earth God one-click launcher
 # Usage: double-click start.bat, or right-click this file -> Run with PowerShell
 
 $root = $PSScriptRoot
@@ -33,8 +33,17 @@ function Check-Prereqs {
 Write-Banner
 Check-Prereqs
 
+# -- Swarm Server --
+Write-Host "  [1/3] Starting Swarm Server (port 9000)..." -ForegroundColor Magenta
+$swarmCmd = "Set-Location '$root\agents'; " +
+    "Write-Host '=== DEG Swarm Server  http://localhost:9000 ===' -ForegroundColor Magenta; " +
+    "..\.venv\Scripts\python -m dijizhu.swarm_server"
+Start-Process powershell -ArgumentList "-NoExit", "-Command", $swarmCmd
+
+Start-Sleep -Seconds 3
+
 # -- Gateway --
-Write-Host "  [1/2] Starting Gateway (port 8080)..." -ForegroundColor Green
+Write-Host "  [2/3] Starting Gateway (port 8080)..." -ForegroundColor Green
 $gatewayCmd = "Set-Location '$root'; " +
     "Write-Host '=== DEG Gateway  http://localhost:8080 ===' -ForegroundColor Yellow; " +
     ".\.venv\Scripts\python -m uvicorn apps.api.gateway:app --port 8080 --reload"
@@ -43,7 +52,7 @@ Start-Process powershell -ArgumentList "-NoExit", "-Command", $gatewayCmd
 Start-Sleep -Seconds 3
 
 # -- Frontend --
-Write-Host "  [2/2] Starting Frontend (port 3000)..." -ForegroundColor Cyan
+Write-Host "  [3/3] Starting Frontend (port 3000)..." -ForegroundColor Cyan
 $frontendCmd = "Set-Location '$root\apps\web'; " +
     "Write-Host '=== DEG Frontend  http://localhost:3000 ===' -ForegroundColor Cyan; " +
     "npm run dev"

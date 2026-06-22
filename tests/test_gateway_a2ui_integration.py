@@ -45,7 +45,7 @@ def test_a2ui_transcript_is_valid_and_reaches_verdict():
             assert_valid_components(m["updateComponents"]["components"])
     verdicts = [m for m in msgs if m.get("updateDataModel", {}).get("path") == "/verdict"]
     assert verdicts, "no verdict surface emitted"
-    assert verdicts[-1]["updateDataModel"]["value"]["winner_street"]
+    assert len(verdicts[-1]["updateDataModel"]["value"]["itinerary"]) >= 1
     bid_updates = [
         m for m in msgs
         if m.get("updateDataModel", {}).get("path", "").startswith("/bids/")

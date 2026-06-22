@@ -61,8 +61,8 @@ def test_broadcast_data_roundtrips():
 
 
 def test_bid_data_carries_street_label_and_evidence():
-    data = bid_data(_proposal("street_haian_node"))
-    assert data["street"] == "海安路"
+    data = bid_data(_proposal("street_wutiaogang_node"))
+    assert data["street"] == "五條港里"
     assert data["fitness_score"] == 8.5
     assert data["sensor"] is not None
     assert data["social"] is not None
@@ -79,14 +79,21 @@ def test_judgment_components_valid_and_self_contained():
 
 
 def test_judgment_data_roundtrips():
+    from deg.schemas import JudgmentResult, ItineraryStop, Poi, LatLng
+    stop = ItineraryStop(
+        poi=Poi(name="舊來發", category="cafe", location=LatLng(lat=22.999, lng=120.222)),
+        agent_id="wutiaogang",
+        duration_mins=60,
+        activity="喝咖啡",
+        transit_to_next="步行"
+    )
     result = JudgmentResult(
-        task_id="t1", winner_agent_id="street_shennong_node", winner_street="神農街",
+        task_id="t1",
         recommendation="土地公推薦神農街老宅咖啡。", reasoning="分數最高且最有人情味。",
-        recommended_pois=[Poi(name="舊來發", category="cafe",
-                              location=LatLng(lat=22.999, lng=120.222))],
-        ranked_agent_ids=["street_shennong_node", "street_haian_node", "street_zhengxing_node"],
+        itinerary=[stop],
+        contributing_agent_ids=["wutiaogang"],
     )
     data = judgment_data(result)
-    assert data["winner_street"] == "神農街"
-    assert len(data["recommended_pois"]) == 1
-    assert len(data["ranked_agent_ids"]) == 3
+    assert len(data["itinerary"]) == 1
+    assert data["itinerary"][0]["stop_activity"] == "喝咖啡"
+    assert data["itinerary"][0]["stop_duration"] == "停留 60 分鐘"

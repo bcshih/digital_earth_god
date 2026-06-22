@@ -27,7 +27,7 @@ def _require_api_key():
 
 
 @pytest.mark.integration
-async def test_shennong_returns_valid_bidding_proposal():
+async def test_wutiaogang_returns_valid_bidding_proposal():
     """End-to-end: TaskBroadcast → 地基主 → Gemini + MCP tools → BiddingProposal."""
     _require_api_key()
 
@@ -35,9 +35,9 @@ async def test_shennong_returns_valid_bidding_proposal():
     from dijizhu.agent import create_dijizhu  # noqa: PLC0415
 
     agent = create_dijizhu(
-        street_id="shennong",
-        street_name="神農街",
-        agent_id="street_shennong_node",
+        street_id="wutiaogang",
+        street_name="五條港里",
+        agent_id="street_wutiaogang_node",
     )
 
     task = TaskBroadcast(
@@ -74,7 +74,7 @@ async def test_shennong_returns_valid_bidding_proposal():
             f"Validation error:\n{exc}"
         )
 
-    assert proposal.agent_id == "street_shennong_node"
+    assert proposal.agent_id == "street_wutiaogang_node"
     assert proposal.task_id == "integration_001"
     assert 0.0 <= proposal.fitness_score <= 10.0
     assert len(proposal.reasoning) > 10, "reasoning should be a meaningful sentence"
@@ -89,9 +89,9 @@ async def test_mcp_tools_actually_called():
     from dijizhu.agent import create_dijizhu  # noqa: PLC0415
 
     agent = create_dijizhu(
-        street_id="shennong",
-        street_name="神農街",
-        agent_id="street_shennong_node",
+        street_id="wutiaogang",
+        street_name="五條港里",
+        agent_id="street_wutiaogang_node",
     )
 
     task = TaskBroadcast(

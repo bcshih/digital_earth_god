@@ -9,7 +9,7 @@ import { SurfaceState, A2uiMessage } from "@/lib/a2ui/types";
 import { IncenseBackground } from "@/components/theater/IncenseBackground";
 import { SealStamp } from "@/components/theater/SealStamp";
 import { Jiaobei } from "@/components/theater/Jiaobei";
-import { ResultMap, MapPoi } from "@/components/ResultMap";
+import { ResultMap, MapItineraryStop } from "@/components/ResultMap";
 import { TempleNav } from "@/components/TempleNav";
 
 const WS_URL =
@@ -184,13 +184,25 @@ export default function Home() {
   // Has the verdict data actually arrived? (Distinguishes the filled verdict
   // card from the skeleton placeholder so 擲筊 only plays on the real verdict.)
   const verdict = getAtPointer(state.dataModel, "/verdict") as
-    | { recommended_pois?: MapPoi[] }
+    | { itinerary?: MapItineraryStop[] }
     | undefined;
   const verdictReady = !!verdict && typeof verdict === "object";
-  const recommendedPois = useMemo<MapPoi[]>(() => {
-    const arr = verdict?.recommended_pois;
+  const itinerary = useMemo<MapItineraryStop[]>(() => {
+    const arr = verdict?.itinerary;
     return Array.isArray(arr) ? arr : [];
   }, [verdict]);
+
+  // Group by day for the map
+  const itineraryByDay = useMemo(() => {
+    if (!itinerary.length) return [];
+    const grouped = new Map<number, MapItineraryStop[]>();
+    for (const stop of itinerary) {
+      const d = stop.day || 1;
+      if (!grouped.has(d)) grouped.set(d, []);
+      grouped.get(d)!.push(stop);
+    }
+    return Array.from(grouped.entries()).sort((a, b) => a[0] - b[0]);
+  }, [itinerary]);
 
   // The domain-agnostic decoration hook handed to the generic Renderer. It only
   // layers presentation onto two well-known ids; everything else passes through.
@@ -211,18 +223,18 @@ export default function Home() {
         return (
           <Jiaobei key="jiaobei">
             {element}
-            {recommendedPois.length > 0 ? (
-              <div className="verdict-map-shell">
-                <span className="verdict-map-shell__kicker">神界輿圖 · RECOMMENDED</span>
-                <ResultMap pois={recommendedPois} />
+            {itineraryByDay.map(([day, stops]) => (
+              <div key={`map-day-${day}`} className="verdict-map-shell">
+                <span className="verdict-map-shell__kicker">神界輿圖 · 第 {day} 天</span>
+                <ResultMap itinerary={stops} />
               </div>
-            ) : null}
+            ))}
           </Jiaobei>
         );
       }
       return null;
     },
-    [verdictReady, recommendedPois],
+    [verdictReady, itineraryByDay],
   );
 
   const offline = conn === "failed";

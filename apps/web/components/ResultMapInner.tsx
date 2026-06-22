@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import type { MapPoi } from "./ResultMap";
+import type { MapItineraryStop } from "./ResultMap";
 
 // 台南中西區 — the sanctum's earthly seat.
 const TAINAN_CENTER: [number, number] = [22.997, 120.201];
@@ -28,7 +28,7 @@ function goldIcon() {
   });
 }
 
-export default function ResultMapInner({ pois }: { pois: MapPoi[] }) {
+export default function ResultMapInner({ itinerary }: { itinerary: MapItineraryStop[] }) {
   const elRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
 
@@ -54,20 +54,27 @@ export default function ResultMapInner({ pois }: { pois: MapPoi[] }) {
     ).addTo(map);
 
     const bounds: [number, number][] = [];
-    for (const p of pois) {
+    const latlngs: L.LatLngExpression[] = [];
+    
+    for (const p of itinerary) {
       if (typeof p.lat !== "number" || typeof p.lng !== "number") continue;
       bounds.push([p.lat, p.lng]);
+      latlngs.push([p.lat, p.lng]);
       const note = p.note ? `<div class="poi-popup__note">${escapeHtml(p.note)}</div>` : "";
       const cat = p.category ? `<div class="poi-popup__cat">${escapeHtml(p.category)}</div>` : "";
       L.marker([p.lat, p.lng], { icon: goldIcon() })
         .addTo(map)
         .bindPopup(
           `<div class="poi-popup">
-             <div class="poi-popup__name">${escapeHtml(p.name)}</div>
+             <div class="poi-popup__name">${escapeHtml(p.poi_name)}</div>
              ${cat}${note}
            </div>`,
           { className: "poi-popup-wrap" },
         );
+    }
+
+    if (latlngs.length > 1) {
+      L.polyline(latlngs, { color: 'var(--color-primary, gold)', weight: 3, dashArray: '5, 10' }).addTo(map);
     }
 
     if (bounds.length === 1) {
@@ -84,7 +91,7 @@ export default function ResultMapInner({ pois }: { pois: MapPoi[] }) {
       map.remove();
       mapRef.current = null;
     };
-  }, [pois]);
+  }, [itinerary]);
 
   return <div ref={elRef} className="result-map" role="region" aria-label="土地公推薦地點輿圖" />;
 }

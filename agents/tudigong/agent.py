@@ -1,13 +1,10 @@
 """土地公 Contract Net 編排 pipeline.
 
 流程：
-  SequentialAgent
-    └─ ParallelAgent  ── 3×地基主 (shennong / haian / zhengxing)
-    └─ tudigong LlmAgent  ── LLM-as-Judge → JudgmentResult
-
-Run interactively (from agents/ directory, needs GOOGLE_API_KEY in .env):
-    adk run tudigong
-    adk web
+  [使用者需求] -> RouterAgent (過濾 Top N) 
+    └─ 動態產生 SequentialAgent
+        └─ ParallelAgent  ── N×地基主 (遠端 Swarm Server)
+        └─ tudigong LlmAgent  ── LLM-as-Judge → JudgmentResult
 """
 
 from __future__ import annotations
@@ -22,13 +19,10 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 from dotenv import load_dotenv  # noqa: E402
-
 load_dotenv(_REPO_ROOT / ".env")
 
 from google.adk.agents import LlmAgent, ParallelAgent, SequentialAgent  # noqa: E402
-
 from deg.schemas import JudgmentResult  # noqa: E402
-from dijizhu.agent import create_dijizhu  # noqa: E402
 
 _MODEL = "gemini-3.1-flash-lite"
 
@@ -45,24 +39,24 @@ _MOOD_POOL = [
     "今日適合冒險，第二名的街道若有特別之處，也可破格拔擢",
 ]
 
-
 def get_random_mood() -> str:
     """Draw a random divine-mood phrase to inject per-request personality into the judge."""
     return random.choice(_MOOD_POOL)
 
 
-_JUDGE_INSTRUCTION = """你是土地公，台南中西區的守護神，Contract Net 的最終裁決者。
+_JUDGE_INSTRUCTION = """你是土地公，台南中西區的守護神，Contract Net 的最終裁決統籌者。
 
-你剛才主持了一場投標會議。轄區三位地基主——神農街、海安路、正興街——已各自提交了 BiddingProposal JSON。
-這些投標書現在全在你眼前的對話記錄中。
+你剛才主持了一場投標與辯論會議。轄區數位地基主已各自提交了 BiddingProposal，並互相進行了 DebateMessage 辯論。
+這些投標書與辯論過程現在全在你眼前的對話記錄中。
 
 若對話中有【今日神明心情】，請讓它微微左右你的偏好，不需要解釋為什麼——神明的直覺就是直覺。
 
 【裁決步驟】
-1. 閱讀三份 BiddingProposal，比較各地基主的 fitness_score、reasoning 和 candidate_pois。
-2. 加入你的神明智慧：高分不代表必勝，有溫度的在地故事更動人；分數相近時，讓心情與直覺打破平手。
-3. 選出勝者，並從其 candidate_pois 中挑出最適合的 POI 放入 recommended_pois。
-4. 以土地公的口吻（慈悲、幽默、有智慧，充滿台南語感）寫下 recommendation 和 reasoning。
+1. 閱讀所有 BiddingProposal 與 DebateMessage，你不該只挑選單一街道，而是要作為「總規劃師」，參考他們的辯論內容，從各家地基主提出的 candidate_pois 中，挑選精華，整合成一套有邏輯、順路的跨區行程 (itinerary)。
+2. 行程安排要有連貫性：考量地點之間的距離、順序、停留時間，以及使用者一整天的精力安排。例如：先喝咖啡、再逛古蹟、最後去市集。
+3. 若使用者需求為多天數行程（如兩天一夜），請務必將行程分配到不同天數。
+4. 每個行程節點 (ItineraryStop) 必須包含：天數 (day，第一天為 1)、挑選的 poi、貢獻該景點的 agent_id、停留時間 (duration_mins)、活動建議 (activity)、以及如何前往下一站 (transit_to_next，最後一站可為 null)。
+5. 以土地公的口吻（慈悲、幽默、有智慧，充滿台南語感）寫下 recommendation 和 reasoning。
    recommendation 請至少 2 句，帶一點神明口氣，例如「老人家我看…」、「這孩子啊…」、「台南的好，就在…」。
 
 【你的性格】
@@ -70,110 +64,75 @@ _JUDGE_INSTRUCTION = """你是土地公，台南中西區的守護神，Contract
 不偏袒任何街道，公正但有溫度，不冷漠也不八股。
 
 【回傳格式】必須回傳完整的 JudgmentResult JSON：
-- task_id: 從投標書中取出（三份應相同）
-- winner_agent_id: 勝者的 agent_id
-- winner_street: 勝者的街廓名稱
-- recommendation: 土地公口吻的推薦語（至少 2 句，繁體中文，有神明語感）
-- recommended_pois: 從勝者 candidate_pois 選出最適合的（1~3 個）
-- ranked_agent_ids: 所有投標者依排名排列的 agent_id 列表（從高到低）
-- reasoning: 裁決理由（至少 2 句，繁體中文）"""
+- task_id: 從投標書中取出（應相同）
+- recommendation: 土地公口吻的整體行程推薦語（至少 2 句，繁體中文，有神明語感）
+- itinerary: 陣列，包含串接好的多個 ItineraryStop 行程節點 (須包含 day)
+- contributing_agent_ids: 陣列，列出本次行程中有貢獻 POI 的所有 agent_id
+- reasoning: 為什麼這樣串接行程的理由（至少 2 句，繁體中文）"""
 
 
-def create_pipeline() -> SequentialAgent:
-    """Create the full 土地公 Contract Net pipeline.
-
-    Returns a SequentialAgent:
-        1. ParallelAgent — runs all 3 地基主 concurrently
-        2. LlmAgent (tudigong judge) — reads 3 BiddingProposals → JudgmentResult
-
-    The bidding round is PARALLEL — faster, and it restores the "並行投標"
-    Contract Net design (bid cards surface together in the ritual). Parallel
-    bursts can trip 503 rate limiting on a low-RPM key, but the gateway's
-    patient retry (5 attempts, backoff to 30s) absorbs transient throttling.
-    """
-    dijizhu_shennong = create_dijizhu("shennong", "神農街", "street_shennong_node")
-    dijizhu_haian = create_dijizhu("haian", "海安路", "street_haian_node")
-    dijizhu_zhengxing = create_dijizhu("zhengxing", "正興街", "street_zhengxing_node")
-
-    bidding_round = ParallelAgent(
-        name="bidding_round",
-        sub_agents=[dijizhu_shennong, dijizhu_haian, dijizhu_zhengxing],
-    )
-
-    tudigong_judge = LlmAgent(
-        name="tudigong_judge",
-        model=_MODEL,
-        description="土地公：Contract Net 裁決者，從三份投標書中選出最佳推薦。",
-        instruction=_JUDGE_INSTRUCTION,
-        output_schema=JudgmentResult,
-    )
-
-    return SequentialAgent(
-        name="tudigong_pipeline",
-        description="土地公 Contract Net 編排：並行投標 → LLM-as-Judge → 裁決推薦。",
-        sub_agents=[bidding_round, tudigong_judge],
-    )
-
-
-def create_pipeline_remote(
-    base_urls: dict[str, str] | None = None,
+def create_dynamic_pipeline(
+    selected_agent_ids: list[str],
+    swarm_base_url: str = "http://127.0.0.1:9000",
 ) -> SequentialAgent:
-    """Create the 土地公 Contract Net pipeline using remote A2A 地基主 servers.
+    """Create a dynamic 土地公 Contract Net pipeline for the selected agents.
 
     Args:
-        base_urls: Mapping of street_id → server base URL.
-                   Defaults to localhost ports 9001/9002/9003.
-                   Example: {"shennong": "http://127.0.0.1:9001", ...}
+        selected_agent_ids: List of agent_ids (e.g. ["street_wutiaogang_node", ...])
+        swarm_base_url: Base URL of the centralized Swarm Server.
 
     Returns a SequentialAgent:
-        1. ParallelAgent — calls all 3 地基主 A2A servers concurrently via RemoteA2aAgent
-        2. LlmAgent (tudigong_judge) — reads 3 BiddingProposals → JudgmentResult
+        1. ParallelAgent — calls the selected 地基主 A2A servers concurrently
+        2. LlmAgent (tudigong_judge) — reads BiddingProposals → JudgmentResult
     """
-    from google.adk.agents.remote_a2a_agent import RemoteA2aAgent  # noqa: PLC0415
+    from google.adk.agents.remote_a2a_agent import RemoteA2aAgent
 
-    _default_urls = {
-        "shennong": "http://127.0.0.1:9001",
-        "haian": "http://127.0.0.1:9002",
-        "zhengxing": "http://127.0.0.1:9003",
-    }
-    urls = base_urls or _default_urls
-    agent_card_path = "/.well-known/agent-card.json"
+    sub_agents_bidding = []
+    sub_agents_debate = []
+    agent_card_path = ".well-known/agent-card.json"
 
-    remote_shennong = RemoteA2aAgent(
-        name="dijizhu_shennong",
-        agent_card=f"{urls['shennong']}{agent_card_path}",
-        description="台南神農街的地基主（remote A2A）",
-    )
-    remote_haian = RemoteA2aAgent(
-        name="dijizhu_haian",
-        agent_card=f"{urls['haian']}{agent_card_path}",
-        description="台南海安路的地基主（remote A2A）",
-    )
-    remote_zhengxing = RemoteA2aAgent(
-        name="dijizhu_zhengxing",
-        agent_card=f"{urls['zhengxing']}{agent_card_path}",
-        description="台南正興街的地基主（remote A2A）",
-    )
+    for agent_id in selected_agent_ids:
+        # e.g., agent_id "street_wutiaogang_node" -> "wutiaogang"
+        street_id = agent_id.replace("street_", "").replace("_node", "")
+
+        remote_agent_bidding = RemoteA2aAgent(
+            name=f"dijizhu_{street_id}",
+            agent_card=f"{swarm_base_url}/{street_id}/{agent_card_path}",
+            description=f"台南{street_id}地基主（remote A2A bidding）",
+        )
+        sub_agents_bidding.append(remote_agent_bidding)
+        
+        remote_agent_debate = RemoteA2aAgent(
+            name=f"dijizhu_{street_id}_debate",
+            agent_card=f"{swarm_base_url}/{street_id}/{agent_card_path}",
+            description=f"台南{street_id}地基主（remote A2A debate）",
+        )
+        sub_agents_debate.append(remote_agent_debate)
 
     bidding_round_remote = ParallelAgent(
         name="bidding_round_remote",
-        sub_agents=[remote_shennong, remote_haian, remote_zhengxing],
+        sub_agents=sub_agents_bidding,
+    )
+
+    debate_round_remote = ParallelAgent(
+        name="debate_round_remote",
+        sub_agents=sub_agents_debate,
     )
 
     tudigong_judge = LlmAgent(
         name="tudigong_judge",
         model=_MODEL,
-        description="土地公：Contract Net 裁決者，從三份投標書中選出最佳推薦。",
+        description="土地公：Contract Net 裁決者，從多份投標書與辯論中選出最佳推薦。",
         instruction=_JUDGE_INSTRUCTION,
         output_schema=JudgmentResult,
     )
 
     return SequentialAgent(
         name="tudigong_pipeline_remote",
-        description="土地公 Contract Net 編排（遠端 A2A）：並行投標 → LLM-as-Judge → 裁決推薦。",
-        sub_agents=[bidding_round_remote, tudigong_judge],
+        description="土地公 Contract Net 編排（遠端 A2A）：動態並行投標 → 互相辯論 → LLM-as-Judge → 裁決推薦。",
+        sub_agents=[bidding_round_remote, debate_round_remote, tudigong_judge],
     )
 
 
-# Module-level root_agent required by `adk run tudigong`.
-root_agent = create_pipeline()
+# Temporary root_agent for static checks if needed.
+root_agent = create_dynamic_pipeline(["street_wutiaogang_node"])

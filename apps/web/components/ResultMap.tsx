@@ -2,13 +2,18 @@
 
 import dynamic from "next/dynamic";
 
-export type MapPoi = {
-  name: string;
+export type MapItineraryStop = {
+  day: number;
+  poi_name: string;
   category?: string;
   lat: number;
   lng: number;
   tags?: string[];
   note?: string | null;
+  stop_title: string;
+  stop_duration: string;
+  stop_activity: string;
+  transit: string;
 };
 
 /**
@@ -26,9 +31,9 @@ const MapInner = dynamic(() => import("./ResultMapInner"), {
   ),
 });
 
-export function ResultMap({ pois }: { pois: MapPoi[] }) {
-  if (!pois || pois.length === 0) return null;
-  return <MapInner pois={pois} />;
+export function ResultMap({ itinerary }: { itinerary: MapItineraryStop[] }) {
+  if (!itinerary || itinerary.length === 0) return null;
+  return <MapInner itinerary={itinerary} />;
 }
 
 export default ResultMap;

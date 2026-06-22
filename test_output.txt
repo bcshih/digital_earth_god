@@ -1,0 +1,19 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.13.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: C:\Users\User\Desktop\digital earth god
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.14.0, langsmith-0.8.18, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 106 items
+
+tests\test_a2ui_builder.py ........                                      [  7%]
+tests\test_a2ui_surfaces.py ....F..                                      [ 14%]
+tests\test_a2ui_wish_surfaces.py ..                                      [ 16%]
+tests\test_adapters.py ......                                            [ 21%]
+tests\test_clarification_feature.py .............                        [ 33%]
+tests\test_contracts.py ...............                                  [ 48%]
+tests\test_dijizhu_a2a_server.py FFFF                                    [ 51%]
+tests\test_dijizhu_evidence_integration.py F                             [ 52%]
+tests\test_dijizhu_integration.py FF                                     [ 54%]
+tests\test_gateway.py .....                                              [ 59%]

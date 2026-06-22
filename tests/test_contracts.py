@@ -112,47 +112,49 @@ def test_judgment_result_minimal():
     from deg.schemas import JudgmentResult
     jr = JudgmentResult(
         task_id="t1",
-        winner_agent_id="street_shennong_node",
-        winner_street="神農街",
-        recommendation="神農街老宅咖啡是最佳選擇。",
-        reasoning="fitness_score 最高且最符合安靜需求。",
+        recommendation="這是一套為您量身打造的台南跨區行程。",
+        reasoning="整合了最好的咖啡與景點。",
     )
-    assert jr.winner_agent_id == "street_shennong_node"
-    assert jr.recommended_pois == []
-    assert jr.ranked_agent_ids == []
+    assert jr.recommendation == "這是一套為您量身打造的台南跨區行程。"
+    assert jr.itinerary == []
+    assert jr.contributing_agent_ids == []
 
 
-def test_judgment_result_full_with_pois():
-    from deg.schemas import JudgmentResult, Poi, LatLng
+def test_judgment_result_full_with_itinerary():
+    from deg.schemas import JudgmentResult, Poi, LatLng, ItineraryStop
     poi = Poi(
         name="舊來發", category="cafe",
         location=LatLng(lat=22.999, lng=120.222),
         tags=["安靜", "老宅"],
         note="好咖啡",
     )
+    stop = ItineraryStop(
+        poi=poi,
+        agent_id="wutiaogang",
+        duration_mins=60,
+        activity="喝杯老宅咖啡",
+        transit_to_next="步行前往下一個景點"
+    )
     jr = JudgmentResult(
         task_id="t2",
-        winner_agent_id="street_shennong_node",
-        winner_street="神農街",
-        recommendation="去神農街找老宅咖啡吧。",
-        recommended_pois=[poi],
-        ranked_agent_ids=["street_shennong_node", "street_haian_node", "street_zhengxing_node"],
-        reasoning="神農街歷史最豐富，非常適合安靜品咖啡。",
+        recommendation="去台南走走吧。",
+        itinerary=[stop],
+        contributing_agent_ids=["wutiaogang"],
+        reasoning="非常適合安靜品咖啡。",
     )
-    assert len(jr.recommended_pois) == 1
-    assert jr.ranked_agent_ids[0] == "street_shennong_node"
+    assert len(jr.itinerary) == 1
+    assert jr.itinerary[0].duration_mins == 60
+    assert jr.contributing_agent_ids[0] == "wutiaogang"
 
 
 def test_judgment_result_serializes_to_json():
     from deg.schemas import JudgmentResult
     jr = JudgmentResult(
         task_id="t3",
-        winner_agent_id="street_haian_node",
-        winner_street="海安路",
         recommendation="海安路藝術氛圍最濃。",
         reasoning="候選地點最多。",
     )
     raw = jr.model_dump_json()
     jr2 = JudgmentResult.model_validate_json(raw)
     assert jr2.task_id == "t3"
-    assert jr2.winner_street == "海安路"
+    assert jr2.recommendation == "海安路藝術氛圍最濃。"

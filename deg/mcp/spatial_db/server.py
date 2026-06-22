@@ -36,10 +36,10 @@ def _poi_to_dict(p: Poi) -> dict:
 
 @mcp.tool()
 def get_street_info(street_id: str) -> dict:
-    """Returns historical context and metadata for a street.
+    """Returns historical context and metadata for a street/li.
 
     Args:
-        street_id: One of: shennong, haian, zhengxing.
+        street_id: The identifier of the street or li (e.g. wutiaogang).
     """
     st = _STREETS.get(street_id)
     if st is None:
@@ -56,10 +56,10 @@ def get_street_info(street_id: str) -> dict:
 
 @mcp.tool()
 def get_street_pois(street_id: str) -> dict:
-    """Returns all points of interest in a street.
+    """Returns all points of interest in a street/li.
 
     Args:
-        street_id: One of: shennong, haian, zhengxing.
+        street_id: The identifier of the street or li.
     """
     st = _STREETS.get(street_id)
     if st is None:
@@ -69,10 +69,10 @@ def get_street_pois(street_id: str) -> dict:
 
 @mcp.tool()
 def search_pois_by_constraints(street_id: str, constraints: list[str]) -> dict:
-    """Finds POIs in a street that match keyword constraints.
+    """Finds POIs in a street/li that match keyword constraints.
 
     Args:
-        street_id: One of: shennong, haian, zhengxing.
+        street_id: The identifier of the street or li.
         constraints: Keywords to match against name/category/note/tags (e.g. ["quiet", "安靜"]).
                      Empty list returns all POIs.
     """
@@ -94,6 +94,12 @@ def search_pois_by_constraints(street_id: str, constraints: list[str]) -> dict:
         "matching_count": len(matching),
         "matching_pois": [_poi_to_dict(p) for p in matching],
     }
+
+
+@mcp.tool()
+def get_all_agents() -> list[dict]:
+    """Returns a list of all available street/li agents."""
+    return [{"street_id": st.street_id, "name": st.name, "agent_id": st.agent_id} for st in _STREETS.values()]
 
 
 if __name__ == "__main__":

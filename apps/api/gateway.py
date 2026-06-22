@@ -3,16 +3,14 @@
 Pipeline per request:
     intent_text + GPS
       → 五營兵將 (LlmAgent)            → TaskBroadcast
-      → 土地公 create_pipeline()       → ParallelAgent(3×地基主) + LLM-as-Judge
+      → 選派使者 (RouterAgent)         → RouterResult (Top N agents)
+      → 土地公 create_dynamic_pipeline → ParallelAgent(N×地基主) + LLM-as-Judge
       → JudgmentResult
 
 Endpoints:
     GET  /health        liveness probe
     POST /intent        non-streaming: returns the final JudgmentResult
     WS   /ws/explore    streaming: phase / task_broadcast / agent_event / judgment
-
-Run:
-    uvicorn apps.api.gateway:app --reload --port 8080
 """
 
 from __future__ import annotations
@@ -31,19 +29,16 @@ logger = logging.getLogger(__name__)
 
 _PIPELINE_TIMEOUT = 120.0  # seconds per full Contract Net round-trip
 _WISH_TIMEOUT = 60.0
-# Pipeline retry: be patient through transient 503/429 rate limiting rather
-# than failing fast to a reconnect prompt. Backoff lets the throttle window clear.
 _PIPELINE_MAX_ATTEMPTS = 5
 _PIPELINE_BACKOFF_CAP = 30  # seconds
 
-# Repo root + agents/ on sys.path so wuying.agent / tudigong.agent import cleanly.
+# Repo root + agents/ on sys.path so agents import cleanly.
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 for _p in (_REPO_ROOT, _REPO_ROOT / "agents"):
     if str(_p) not in sys.path:
         sys.path.insert(0, str(_p))
 
 from dotenv import load_dotenv  # noqa: E402
-
 load_dotenv(_REPO_ROOT / ".env")
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect  # noqa: E402
@@ -63,7 +58,8 @@ from deg.schemas import (  # noqa: E402
     WishAnalysis,
     WuyingOutput,
 )
-from tudigong.agent import create_pipeline, get_random_mood  # noqa: E402
+from tudigong.agent import create_dynamic_pipeline, get_random_mood  # noqa: E402
+from dijizhu.agent import create_scout  # noqa: E402
 from tudigong.blessing_agent import create_blessing_agent  # noqa: E402
 from wuying.agent import create_wuying  # noqa: E402
 from wuying.wish_agent import create_wish_categorizer  # noqa: E402
@@ -73,6 +69,7 @@ from deg.a2ui.surfaces import (  # noqa: E402
     SURFACE_ID,
     WISH_SURFACE_ID,
     bid_data,
+    debate_data,
     blessing_components,
     broadcast_data,
     clarification_components,
@@ -84,13 +81,10 @@ from deg.a2ui.surfaces import (  # noqa: E402
 )
 from deg.warmdata import WarmDataStore  # noqa: E402
 
-# Event callback type for streaming negotiation phases.
 EventSink = Callable[[dict[str, Any]], Awaitable[None]]
 
 
 class IntentRequest(BaseModel):
-    """A citizen's exploration request."""
-
     intent_text: str = Field(min_length=1)
     lat: float = Field(ge=-90.0, le=90.0)
     lng: float = Field(ge=-180.0, le=180.0)
@@ -104,12 +98,6 @@ class WishRequest(BaseModel):
 
 
 def _is_retryable(exc: Exception) -> bool:
-    """Return True for transient Gemini errors worth retrying (503, overload).
-
-    Recurses into ExceptionGroup (raised by ParallelAgent's asyncio TaskGroup
-    when a 地基主 fails) so a wrapped 503 is still recognised — its own str()
-    is just "unhandled errors in a taskgroup" and would otherwise be missed.
-    """
     msg = str(exc).lower()
     markers = ("503", "unavailable", "overload", "429", "resource_exhausted", "rate limit", "quota")
     if any(m in msg for m in markers):
@@ -121,13 +109,6 @@ def _is_retryable(exc: Exception) -> bool:
 
 
 def _extract_json(text: str) -> str:
-    """Isolate the outermost JSON object from an LLM response.
-
-    Non-Gemini models (Qwen via DashScope) don't honour ADK output_schema as
-    strictly as Gemini's native structured output, so they sometimes wrap the
-    JSON in ```json fences or add prose/reasoning around it. Grabbing the span
-    from the first '{' to the last '}' recovers the object in those cases.
-    """
     if not text:
         return text
     start = text.find("{")
@@ -142,10 +123,6 @@ async def _send_wuying_message(
     session_service: InMemorySessionService,
     payload: str,
 ) -> WuyingOutput:
-    """Run 五營兵將 in a FRESH session with explicit conversation history in payload.
-
-    Retries up to 2 times on transient 503/UNAVAILABLE errors with exponential backoff.
-    """
     for attempt in range(3):
         session_id = uuid4().hex
         await session_service.create_session(
@@ -175,12 +152,8 @@ async def _send_wuying_message(
         try:
             return WuyingOutput.model_validate_json(_extract_json(final_text))
         except Exception as exc:
-            # Qwen is non-deterministic — a one-off non-JSON reply should retry.
             if attempt < 2:
-                logger.warning(
-                    "五營兵將 JSON parse failed (attempt %d), retry: %s",
-                    attempt + 1, exc,
-                )
+                logger.warning("五營兵將 JSON parse failed (attempt %d), retry: %s", attempt + 1, exc)
                 await asyncio.sleep(2 ** attempt)
                 continue
             raise RuntimeError(f"五營兵將回傳格式有誤：{exc}") from exc
@@ -206,7 +179,6 @@ async def _run_wuying(
     lng: float,
     task_id: str,
 ) -> TaskBroadcast:
-    """Single-shot 五營兵將 (force_ready=True). Used by POST /intent (non-interactive)."""
     payload = _wuying_payload(
         lat, lng, task_id,
         history=[{"role": "user", "text": intent_text}],
@@ -221,16 +193,77 @@ async def _run_wuying(
     raise RuntimeError("五營兵將未能生成招標令，請再試一次。")
 
 
-async def _run_pipeline(
-    pipeline_runner: Runner,
+async def _run_scout_round(
     session_service: InMemorySessionService,
     task: TaskBroadcast,
     on_event: EventSink | None,
-) -> JudgmentResult:
-    """Run the 土地公 pipeline, streaming intermediate agent events; return the judgment.
+) -> list[str]:
+    if on_event:
+        await on_event({"type": "phase", "phase": "routing", "message": "全體地基主前哨正在評估轄區資源..."})
 
-    A random divine mood is appended to the message to give 土地公 per-request personality.
-    """
+    from deg.seed.loader import load_agents
+    from google.adk.agents import ParallelAgent
+    
+    all_li = load_agents()
+    scouts = []
+    for li in all_li:
+        street = li.to_street()
+        scouts.append(create_scout(street.street_id, street.name, street.agent_id, li))
+        
+    scout_round_agent = ParallelAgent(
+        name="scout_round",
+        sub_agents=scouts,
+    )
+    
+    scout_runner = Runner(agent=scout_round_agent, app_name="deg", session_service=session_service)
+    session_id = uuid4().hex
+    await session_service.create_session(app_name="deg", user_id="gateway", session_id=session_id)
+    msg = genai_types.Content(role="user", parts=[genai_types.Part(text=task.model_dump_json())])
+
+    from deg.schemas import ScoutResult
+    
+    results: list[ScoutResult] = []
+    async for event in scout_runner.run_async(user_id="gateway", session_id=session_id, new_message=msg):
+        if event.is_final_response() and event.content and event.content.parts:
+            text = event.content.parts[0].text or ""
+            try:
+                res = ScoutResult.model_validate_json(_extract_json(text))
+                results.append(res)
+            except Exception as e:
+                logger.warning("Scout parsing failed: %s, text: %s", e, text)
+                pass
+
+    # Sort descending by confidence_score
+    results.sort(key=lambda x: x.confidence_score, reverse=True)
+    
+    # Determine how many agents to select based on duration
+    days = 1
+    if task.travel_context and task.travel_context.travel_date:
+        # crude heuristic
+        if "兩天" in task.travel_context.travel_date or "三天" in task.travel_context.travel_date or "2天" in task.travel_context.travel_date:
+            days = 2
+    
+    select_count = 5 if days == 1 else 8
+    top_agents = results[:select_count]
+    if not top_agents:
+        raise RuntimeError("所有地基主均放棄投標。")
+        
+    return [r.agent_id for r in top_agents]
+
+
+
+async def _run_pipeline(
+    session_service: InMemorySessionService,
+    task: TaskBroadcast,
+    selected_agent_ids: list[str],
+    on_event: EventSink | None,
+) -> JudgmentResult:
+    pipeline_runner = Runner(
+        agent=create_dynamic_pipeline(selected_agent_ids), 
+        app_name="deg", 
+        session_service=session_service
+    )
+    
     session_id = uuid4().hex
     await session_service.create_session(
         app_name="deg", user_id="gateway", session_id=session_id
@@ -253,7 +286,7 @@ async def _run_pipeline(
                     {"type": "agent_event", "agent": author, "text": text}
                 )
             if event.is_final_response() and text:
-                final_text = text  # judge runs last → last final response is the verdict
+                final_text = text  
 
     if not final_text:
         raise RuntimeError("土地公未能作出裁決，請再試一次。")
@@ -317,7 +350,6 @@ async def _process_wish(
 
 
 def create_app() -> FastAPI:
-    """Build the gateway FastAPI app. Agent construction here does NOT call the LLM."""
     app = FastAPI(title="數位土地公 Gateway", version="0.1.0")
     app.add_middleware(
         CORSMiddleware,
@@ -329,9 +361,6 @@ def create_app() -> FastAPI:
     session_service = InMemorySessionService()
     wuying_runner = Runner(
         agent=create_wuying(), app_name="deg", session_service=session_service
-    )
-    pipeline_runner = Runner(
-        agent=create_pipeline(), app_name="deg", session_service=session_service
     )
     warm_store = WarmDataStore(os.environ.get("DEG_WARMDATA_DB") or None)
     wish_runner = Runner(
@@ -351,7 +380,8 @@ def create_app() -> FastAPI:
         tb = await _run_wuying(
             wuying_runner, session_service, req.intent_text, req.lat, req.lng, task_id
         )
-        result = await _run_pipeline(pipeline_runner, session_service, tb, on_event=None)
+        selected_agent_ids = await _run_scout_round(session_service, tb, on_event=None)
+        result = await _run_pipeline(session_service, tb, selected_agent_ids, on_event=None)
         return {
             "task_broadcast": tb.model_dump(),
             "judgment": result.model_dump(),
@@ -385,16 +415,17 @@ def create_app() -> FastAPI:
                     task_id,
                 )
                 await sink({"type": "task_broadcast", "data": tb.model_dump()})
+                selected_agent_ids = await _run_scout_round(session_service, tb, on_event=sink)
 
                 await sink(
                     {
                         "type": "phase",
                         "phase": "bidding",
-                        "message": "土地公發出招標，地基主們開始投標…",
+                        "message": f"土地公向分數最高的 {len(selected_agent_ids)} 個候選里發出正式招標，地基主們開始投標…",
                     }
                 )
                 result = await _run_pipeline(
-                    pipeline_runner, session_service, tb, on_event=sink
+                    session_service, tb, selected_agent_ids, on_event=sink
                 )
             await sink({"type": "judgment", "data": result.model_dump()})
             await sink({"type": "done"})
@@ -405,7 +436,7 @@ def create_app() -> FastAPI:
                 await ws.send_json({"type": "error", "message": "神明降神逾時，請稍後再試。"})
             except Exception:
                 pass
-        except Exception as exc:  # surface errors to the client, then close
+        except Exception as exc:  
             try:
                 await ws.send_json({"type": "error", "message": str(exc)})
             except Exception:
@@ -418,29 +449,6 @@ def create_app() -> FastAPI:
 
     @app.websocket("/ws/explore/a2ui")
     async def ws_explore_a2ui(ws: WebSocket) -> None:
-        """Stream the golden path as STANDARD A2UI v0.9.1 JSONL messages.
-
-        Sequence:
-            createSurface(explore, sendDataModel=true)
-            updateComponents(intent input)
-            updateDataModel(/intent, {"text": ""})
-            ← client sends {intent_text, lat, lng}
-
-            [clarification loop, 0–3 rounds]
-            {"a2uiPhase": "clarifying"}
-            updateComponents(clarification surface)     # shows question + answer field
-            updateDataModel(/clarify, {question, answer})
-            ← client sends {answer_text}
-
-            {"a2uiPhase": "negotiating"}
-            updateComponents(negotiation skeleton)
-            updateDataModel(/broadcast, ...)
-            updateDataModel(/bids, [])
-            per 地基主 bid: updateDataModel(/bids/<i>, bid_data)
-            updateComponents(verdict)
-            updateDataModel(/verdict, ...)
-            {"a2uiDone": true}
-        """
         await ws.accept()
         try:
             await ws.send_json(create_surface(SURFACE_ID, send_data_model=True))
@@ -451,24 +459,17 @@ def create_app() -> FastAPI:
 
             task_id = uuid4().hex
             tb: TaskBroadcast | None = None
+            selected_agent_ids: list[str] = []
 
-            # ── Resume path ───────────────────────────────────────────────────
-            # If the client reconnects carrying an already-built TaskBroadcast
-            # (e.g. user hit 重新連接 after a pipeline rate-limit error), skip the
-            # whole 五營兵將 clarification — don't make them answer everything again.
             if isinstance(first_msg, dict) and first_msg.get("task_broadcast"):
                 try:
                     tb = TaskBroadcast.model_validate(first_msg["task_broadcast"])
                     task_id = tb.task_id or task_id
                 except Exception:
-                    tb = None  # malformed cache → fall through to fresh flow
+                    tb = None  
 
             if tb is None:
                 req = IntentRequest.model_validate(first_msg)
-                # ── 五營兵將 clarification loop (max 3 questions) ──────────────
-                # Each round uses a FRESH ADK session but receives the full chat
-                # history in the payload — this avoids multi-turn + output_schema
-                # instability while still giving the LLM full context.
                 history: list[dict] = [{"role": "user", "text": req.intent_text}]
 
                 for round_n in range(4):
@@ -503,17 +504,24 @@ def create_app() -> FastAPI:
 
             if tb is None:
                 raise RuntimeError("五營兵將未能生成招標令，請再試一次。")
+                
+            await ws.send_json({"a2uiPhase": "routing"})
+            selected_agent_ids = await _run_scout_round(session_service, tb, on_event=None)
 
             await ws.send_json({"a2uiPhase": "negotiating"})
             await ws.send_json(update_components(SURFACE_ID, negotiation_components()))
             await ws.send_json(update_data_model(SURFACE_ID, "/broadcast", broadcast_data(tb)))
             await ws.send_json(update_data_model(SURFACE_ID, "/bids", []))
-            # Resume token: the full TaskBroadcast, so if the bidding phase fails
-            # and the user reconnects, the client can resend this to skip straight
-            # back to bidding instead of re-running the whole clarification.
+            await ws.send_json(update_data_model(SURFACE_ID, "/debates", []))
             await ws.send_json({"a2uiResumeToken": tb.model_dump(mode="json")})
 
-            # Run the pipeline; append a bid per 地基主, capture the judge verdict.
+            # Prepare dynamic pipeline
+            pipeline_runner = Runner(
+                agent=create_dynamic_pipeline(selected_agent_ids), 
+                app_name="deg", 
+                session_service=session_service
+            )
+
             session_id = uuid4().hex
             await session_service.create_session(
                 app_name="deg", user_id="gateway", session_id=session_id
@@ -524,6 +532,7 @@ def create_app() -> FastAPI:
                 role="user", parts=[genai_types.Part(text=msg_text)]
             )
             bid_index = 0
+            debate_index = 0
             verdict_text = ""
             pipeline_error: str | None = None
             for _pipeline_attempt in range(_PIPELINE_MAX_ATTEMPTS):
@@ -539,16 +548,24 @@ def create_app() -> FastAPI:
                             continue
                         if author and author.startswith("dijizhu_") and event.is_final_response():
                             try:
-                                proposal = BiddingProposal.model_validate_json(_extract_json(text))
+                                json_str = _extract_json(text)
+                                if "debate_text" in json_str:
+                                    debate = DebateMessage.model_validate_json(json_str)
+                                    await ws.send_json(
+                                        update_data_model(SURFACE_ID, f"/debates/{debate_index}", debate_data(debate))
+                                    )
+                                    debate_index += 1
+                                else:
+                                    proposal = BiddingProposal.model_validate_json(json_str)
+                                    await ws.send_json(
+                                        update_data_model(SURFACE_ID, f"/bids/{bid_index}", bid_data(proposal))
+                                    )
+                                    bid_index += 1
                             except Exception:
                                 continue
-                            await ws.send_json(
-                                update_data_model(SURFACE_ID, f"/bids/{bid_index}", bid_data(proposal))
-                            )
-                            bid_index += 1
                         elif author == "tudigong_judge" and event.is_final_response():
                             verdict_text = text
-                    break  # pipeline finished without exception
+                    break  
                 except Exception as pipeline_exc:
                     if _is_retryable(pipeline_exc) and _pipeline_attempt < _PIPELINE_MAX_ATTEMPTS - 1:
                         wait = min(3 * (2 ** _pipeline_attempt), _PIPELINE_BACKOFF_CAP)
@@ -557,12 +574,11 @@ def create_app() -> FastAPI:
                             _pipeline_attempt + 1, _PIPELINE_MAX_ATTEMPTS, wait, pipeline_exc,
                         )
                         bid_index = 0
+                        debate_index = 0
                         verdict_text = ""
-                        # Tell the UI we're patiently waiting, not dead — keeps it
-                        # on the ritual screen instead of jumping to reconnect.
                         await ws.send_json({"a2uiPhase": "retrying"})
                         await ws.send_json(update_data_model(SURFACE_ID, "/bids", []))
-                        # Re-create session for clean retry
+                        await ws.send_json(update_data_model(SURFACE_ID, "/debates", []))
                         session_id = uuid4().hex
                         await session_service.create_session(
                             app_name="deg", user_id="gateway", session_id=session_id
@@ -586,10 +602,9 @@ def create_app() -> FastAPI:
                         update_data_model(SURFACE_ID, "/verdict", judgment_data(result))
                     )
                 except Exception:
-                    pass  # best-effort — don't crash the WS if verdict parse fails
+                    pass  
 
             if pipeline_error and not verdict_text:
-                # Pipeline failed with no usable output — surface the error
                 await ws.send_json({"a2uiError": pipeline_error})
             else:
                 await ws.send_json({"a2uiDone": True})
