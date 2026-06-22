@@ -19,7 +19,12 @@ const WS_URL =
 const DEFAULT_LAT = 22.9971;
 const DEFAULT_LNG = 120.201;
 
-type Conn = "connecting" | "open" | "clarifying" | "submitted" | "done" | "error" | "failed";
+type Conn = "connecting" | "open" | "clarifying" | "submitted" | "retrying" | "done" | "error" | "failed";
+
+// Persist the completed TaskBroadcast across a manual reconnect so the user
+// doesn't have to answer the 五營兵將 questions again. Session-scoped (per tab).
+const RESUME_TOKEN_KEY = "deg.resumeBroadcast";
+const RESUME_FLAG_KEY = "deg.doResume";
 
 function getLatLng(): Promise<{ lat: number; lng: number }> {
   return new Promise((resolve) => {
@@ -61,7 +66,23 @@ export default function Home() {
     }
     wsRef.current = ws;
 
-    ws.onopen = () => setConn((c) => (c === "connecting" ? "open" : c));
+    ws.onopen = () => {
+      setConn((c) => (c === "connecting" ? "open" : c));
+      // Resume path: if the user hit 重新連接, replay the cached broadcast so the
+      // server skips clarification and goes straight back to bidding.
+      try {
+        if (sessionStorage.getItem(RESUME_FLAG_KEY) === "1") {
+          const cached = sessionStorage.getItem(RESUME_TOKEN_KEY);
+          if (cached) {
+            ws.send(JSON.stringify({ task_broadcast: JSON.parse(cached) }));
+            setConn("submitted");
+          }
+          sessionStorage.removeItem(RESUME_FLAG_KEY); // one-shot
+        }
+      } catch {
+        /* sessionStorage unavailable — fall back to fresh flow */
+      }
+    };
 
     ws.onmessage = (ev) => {
       let msg: A2uiMessage;
@@ -72,6 +93,12 @@ export default function Home() {
       }
       if ("a2uiDone" in msg) {
         terminalRef.current = true;
+        try {
+          sessionStorage.removeItem(RESUME_TOKEN_KEY);
+          sessionStorage.removeItem(RESUME_FLAG_KEY);
+        } catch {
+          /* noop */
+        }
         setConn("done");
         return;
       }
@@ -81,11 +108,22 @@ export default function Home() {
         setConn("error");
         return;
       }
+      // Resume token: cache the full broadcast for a possible reconnect.
+      if ("a2uiResumeToken" in msg) {
+        try {
+          const tok = (msg as { a2uiResumeToken: unknown }).a2uiResumeToken;
+          sessionStorage.setItem(RESUME_TOKEN_KEY, JSON.stringify(tok));
+        } catch {
+          /* noop */
+        }
+        return;
+      }
       // Phase signals from the gateway (non-A2UI control frames)
       if ("a2uiPhase" in msg) {
         const phase = (msg as { a2uiPhase: string }).a2uiPhase;
         if (phase === "clarifying") setConn("clarifying");
         if (phase === "negotiating") setConn("submitted");
+        if (phase === "retrying") setConn("retrying");
         return;
       }
       setState((prev) => applyMessage(prev, msg));
@@ -216,7 +254,18 @@ export default function Home() {
             ) : null}
             <button
               className="a2-button a2-button--primary"
-              onClick={() => window.location.reload()}
+              onClick={() => {
+                // Arm resume so the reload skips clarification if we already
+                // have a completed broadcast cached.
+                try {
+                  if (sessionStorage.getItem(RESUME_TOKEN_KEY)) {
+                    sessionStorage.setItem(RESUME_FLAG_KEY, "1");
+                  }
+                } catch {
+                  /* noop */
+                }
+                window.location.reload();
+              }}
             >
               重新連接
             </button>
@@ -268,6 +317,8 @@ function statusLabel(conn: Conn): string {
       return "五營兵將正在追問…";
     case "submitted":
       return "招標令已發 · 地基主競標中…";
+    case "retrying":
+      return "香火過旺 · 稍候片刻再請神…";
     case "done":
       return "擲筊三聖 · 裁決已下";
     case "error":

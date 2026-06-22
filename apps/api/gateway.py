@@ -31,6 +31,10 @@ logger = logging.getLogger(__name__)
 
 _PIPELINE_TIMEOUT = 120.0  # seconds per full Contract Net round-trip
 _WISH_TIMEOUT = 60.0
+# Pipeline retry: be patient through transient 503/429 rate limiting rather
+# than failing fast to a reconnect prompt. Backoff lets the throttle window clear.
+_PIPELINE_MAX_ATTEMPTS = 5
+_PIPELINE_BACKOFF_CAP = 30  # seconds
 
 # Repo root + agents/ on sys.path so wuying.agent / tudigong.agent import cleanly.
 _REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -106,8 +110,9 @@ def _is_retryable(exc: Exception) -> bool:
     when a 地基主 fails) so a wrapped 503 is still recognised — its own str()
     is just "unhandled errors in a taskgroup" and would otherwise be missed.
     """
-    msg = str(exc)
-    if "503" in msg or "UNAVAILABLE" in msg or "overload" in msg.lower():
+    msg = str(exc).lower()
+    markers = ("503", "unavailable", "overload", "429", "resource_exhausted", "rate limit", "quota")
+    if any(m in msg for m in markers):
         return True
     sub_exceptions = getattr(exc, "exceptions", None)
     if sub_exceptions:
@@ -442,46 +447,59 @@ def create_app() -> FastAPI:
             await ws.send_json(update_components(SURFACE_ID, intent_input_components()))
             await ws.send_json(update_data_model(SURFACE_ID, "/intent", {"text": ""}))
 
-            req_data = await ws.receive_json()
-            req = IntentRequest.model_validate(req_data)
+            first_msg = await ws.receive_json()
 
             task_id = uuid4().hex
-            # ── 五營兵將 clarification loop (max 3 questions) ──────────────────
-            # Each round uses a FRESH ADK session but receives the full chat
-            # history in the payload — this avoids multi-turn + output_schema
-            # instability while still giving the LLM full context.
-            history: list[dict] = [{"role": "user", "text": req.intent_text}]
             tb: TaskBroadcast | None = None
 
-            for round_n in range(4):
-                force_ready = round_n >= 3
-                payload = _wuying_payload(
-                    req.lat, req.lng, task_id, history, force_ready,
-                )
-                async with asyncio.timeout(_PIPELINE_TIMEOUT):
-                    output = await _send_wuying_message(
-                        wuying_runner, session_service, payload
-                    )
+            # ── Resume path ───────────────────────────────────────────────────
+            # If the client reconnects carrying an already-built TaskBroadcast
+            # (e.g. user hit 重新連接 after a pipeline rate-limit error), skip the
+            # whole 五營兵將 clarification — don't make them answer everything again.
+            if isinstance(first_msg, dict) and first_msg.get("task_broadcast"):
+                try:
+                    tb = TaskBroadcast.model_validate(first_msg["task_broadcast"])
+                    task_id = tb.task_id or task_id
+                except Exception:
+                    tb = None  # malformed cache → fall through to fresh flow
 
-                if output.status == "ready" and output.task_broadcast:
-                    tb = output.task_broadcast
-                    tb.task_id = task_id
-                    tb.user_location = LatLng(lat=req.lat, lng=req.lng)
-                    break
+            if tb is None:
+                req = IntentRequest.model_validate(first_msg)
+                # ── 五營兵將 clarification loop (max 3 questions) ──────────────
+                # Each round uses a FRESH ADK session but receives the full chat
+                # history in the payload — this avoids multi-turn + output_schema
+                # instability while still giving the LLM full context.
+                history: list[dict] = [{"role": "user", "text": req.intent_text}]
 
-                if output.question:
-                    history.append({"role": "assistant", "question": output.question})
-                    await ws.send_json({"a2uiPhase": "clarifying"})
-                    await ws.send_json(
-                        update_components(SURFACE_ID, clarification_components(output.question, round_n))
+                for round_n in range(4):
+                    force_ready = round_n >= 3
+                    payload = _wuying_payload(
+                        req.lat, req.lng, task_id, history, force_ready,
                     )
-                    await ws.send_json(
-                        update_data_model(SURFACE_ID, "/clarify",
-                                         {"question": output.question, "answer": ""})
-                    )
-                    ans_data = await ws.receive_json()
-                    answer = ans_data.get("answer_text", "")
-                    history.append({"role": "user", "answer": answer})
+                    async with asyncio.timeout(_PIPELINE_TIMEOUT):
+                        output = await _send_wuying_message(
+                            wuying_runner, session_service, payload
+                        )
+
+                    if output.status == "ready" and output.task_broadcast:
+                        tb = output.task_broadcast
+                        tb.task_id = task_id
+                        tb.user_location = LatLng(lat=req.lat, lng=req.lng)
+                        break
+
+                    if output.question:
+                        history.append({"role": "assistant", "question": output.question})
+                        await ws.send_json({"a2uiPhase": "clarifying"})
+                        await ws.send_json(
+                            update_components(SURFACE_ID, clarification_components(output.question, round_n))
+                        )
+                        await ws.send_json(
+                            update_data_model(SURFACE_ID, "/clarify",
+                                             {"question": output.question, "answer": ""})
+                        )
+                        ans_data = await ws.receive_json()
+                        answer = ans_data.get("answer_text", "")
+                        history.append({"role": "user", "answer": answer})
 
             if tb is None:
                 raise RuntimeError("五營兵將未能生成招標令，請再試一次。")
@@ -490,6 +508,10 @@ def create_app() -> FastAPI:
             await ws.send_json(update_components(SURFACE_ID, negotiation_components()))
             await ws.send_json(update_data_model(SURFACE_ID, "/broadcast", broadcast_data(tb)))
             await ws.send_json(update_data_model(SURFACE_ID, "/bids", []))
+            # Resume token: the full TaskBroadcast, so if the bidding phase fails
+            # and the user reconnects, the client can resend this to skip straight
+            # back to bidding instead of re-running the whole clarification.
+            await ws.send_json({"a2uiResumeToken": tb.model_dump(mode="json")})
 
             # Run the pipeline; append a bid per 地基主, capture the judge verdict.
             session_id = uuid4().hex
@@ -504,7 +526,7 @@ def create_app() -> FastAPI:
             bid_index = 0
             verdict_text = ""
             pipeline_error: str | None = None
-            for _pipeline_attempt in range(3):
+            for _pipeline_attempt in range(_PIPELINE_MAX_ATTEMPTS):
                 try:
                     async for event in pipeline_runner.run_async(
                         user_id="gateway", session_id=session_id, new_message=msg
@@ -528,20 +550,25 @@ def create_app() -> FastAPI:
                             verdict_text = text
                     break  # pipeline finished without exception
                 except Exception as pipeline_exc:
-                    if _is_retryable(pipeline_exc) and _pipeline_attempt < 2:
-                        wait = 2 ** _pipeline_attempt
+                    if _is_retryable(pipeline_exc) and _pipeline_attempt < _PIPELINE_MAX_ATTEMPTS - 1:
+                        wait = min(3 * (2 ** _pipeline_attempt), _PIPELINE_BACKOFF_CAP)
                         logger.warning(
-                            "Pipeline 503 (attempt %d), retry in %ds: %s",
-                            _pipeline_attempt + 1, wait, pipeline_exc,
+                            "Pipeline rate-limited (attempt %d/%d), retry in %ds: %s",
+                            _pipeline_attempt + 1, _PIPELINE_MAX_ATTEMPTS, wait, pipeline_exc,
                         )
                         bid_index = 0
                         verdict_text = ""
+                        # Tell the UI we're patiently waiting, not dead — keeps it
+                        # on the ritual screen instead of jumping to reconnect.
+                        await ws.send_json({"a2uiPhase": "retrying"})
+                        await ws.send_json(update_data_model(SURFACE_ID, "/bids", []))
                         # Re-create session for clean retry
                         session_id = uuid4().hex
                         await session_service.create_session(
                             app_name="deg", user_id="gateway", session_id=session_id
                         )
                         await asyncio.sleep(wait)
+                        await ws.send_json({"a2uiPhase": "negotiating"})
                         continue
                     pipeline_error = (
                         "神明降神時香火過旺（模型暫時繁忙），請稍後再試一次。"
