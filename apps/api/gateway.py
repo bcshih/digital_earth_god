@@ -105,6 +105,23 @@ def _is_retryable(exc: Exception) -> bool:
     return "503" in msg or "UNAVAILABLE" in msg or "overload" in msg.lower()
 
 
+def _extract_json(text: str) -> str:
+    """Isolate the outermost JSON object from an LLM response.
+
+    Non-Gemini models (Qwen via DashScope) don't honour ADK output_schema as
+    strictly as Gemini's native structured output, so they sometimes wrap the
+    JSON in ```json fences or add prose/reasoning around it. Grabbing the span
+    from the first '{' to the last '}' recovers the object in those cases.
+    """
+    if not text:
+        return text
+    start = text.find("{")
+    end = text.rfind("}")
+    if start != -1 and end > start:
+        return text[start : end + 1]
+    return text.strip()
+
+
 async def _send_wuying_message(
     wuying_runner: Runner,
     session_service: InMemorySessionService,
@@ -141,8 +158,16 @@ async def _send_wuying_message(
                 continue
             raise RuntimeError("五營兵將未能解析意圖，請再試一次。")
         try:
-            return WuyingOutput.model_validate_json(final_text)
+            return WuyingOutput.model_validate_json(_extract_json(final_text))
         except Exception as exc:
+            # Qwen is non-deterministic — a one-off non-JSON reply should retry.
+            if attempt < 2:
+                logger.warning(
+                    "五營兵將 JSON parse failed (attempt %d), retry: %s",
+                    attempt + 1, exc,
+                )
+                await asyncio.sleep(2 ** attempt)
+                continue
             raise RuntimeError(f"五營兵將回傳格式有誤：{exc}") from exc
     raise RuntimeError("五營兵將未能解析意圖，請再試一次。")
 
@@ -218,7 +243,7 @@ async def _run_pipeline(
     if not final_text:
         raise RuntimeError("土地公未能作出裁決，請再試一次。")
     try:
-        return JudgmentResult.model_validate_json(final_text)
+        return JudgmentResult.model_validate_json(_extract_json(final_text))
     except Exception as exc:
         raise RuntimeError(f"土地公裁決格式有誤：{exc}") from exc
 
@@ -245,7 +270,7 @@ async def _process_wish(
     if not analysis_text:
         raise RuntimeError("五營兵將未能分析心願，請再試一次。")
     try:
-        analysis = WishAnalysis.model_validate_json(analysis_text)
+        analysis = WishAnalysis.model_validate_json(_extract_json(analysis_text))
     except Exception as exc:
         raise RuntimeError(f"心願分析格式有誤：{exc}") from exc
 
@@ -270,7 +295,7 @@ async def _process_wish(
     if not blessing_text:
         raise RuntimeError("土地公祝福未能送達，請再試一次。")
     try:
-        blessing = Blessing.model_validate_json(blessing_text)
+        blessing = Blessing.model_validate_json(_extract_json(blessing_text))
     except Exception as exc:
         raise RuntimeError(f"土地公祝福格式有誤：{exc}") from exc
     return wish, analysis, blessing
@@ -418,35 +443,35 @@ def create_app() -> FastAPI:
             history: list[dict] = [{"role": "user", "text": req.intent_text}]
             tb: TaskBroadcast | None = None
 
-            async with asyncio.timeout(_PIPELINE_TIMEOUT):
-                for round_n in range(4):
-                    force_ready = round_n >= 3
-                    payload = _wuying_payload(
-                        req.lat, req.lng, task_id, history, force_ready,
-                    )
+            for round_n in range(4):
+                force_ready = round_n >= 3
+                payload = _wuying_payload(
+                    req.lat, req.lng, task_id, history, force_ready,
+                )
+                async with asyncio.timeout(_PIPELINE_TIMEOUT):
                     output = await _send_wuying_message(
                         wuying_runner, session_service, payload
                     )
 
-                    if output.status == "ready" and output.task_broadcast:
-                        tb = output.task_broadcast
-                        tb.task_id = task_id
-                        tb.user_location = LatLng(lat=req.lat, lng=req.lng)
-                        break
+                if output.status == "ready" and output.task_broadcast:
+                    tb = output.task_broadcast
+                    tb.task_id = task_id
+                    tb.user_location = LatLng(lat=req.lat, lng=req.lng)
+                    break
 
-                    if output.question:
-                        history.append({"role": "assistant", "question": output.question})
-                        await ws.send_json({"a2uiPhase": "clarifying"})
-                        await ws.send_json(
-                            update_components(SURFACE_ID, clarification_components(output.question, round_n))
-                        )
-                        await ws.send_json(
-                            update_data_model(SURFACE_ID, "/clarify",
-                                             {"question": output.question, "answer": ""})
-                        )
-                        ans_data = await ws.receive_json()
-                        answer = ans_data.get("answer_text", "")
-                        history.append({"role": "user", "answer": answer})
+                if output.question:
+                    history.append({"role": "assistant", "question": output.question})
+                    await ws.send_json({"a2uiPhase": "clarifying"})
+                    await ws.send_json(
+                        update_components(SURFACE_ID, clarification_components(output.question, round_n))
+                    )
+                    await ws.send_json(
+                        update_data_model(SURFACE_ID, "/clarify",
+                                         {"question": output.question, "answer": ""})
+                    )
+                    ans_data = await ws.receive_json()
+                    answer = ans_data.get("answer_text", "")
+                    history.append({"role": "user", "answer": answer})
 
             if tb is None:
                 raise RuntimeError("五營兵將未能生成招標令，請再試一次。")
@@ -482,7 +507,7 @@ def create_app() -> FastAPI:
                             continue
                         if author and author.startswith("dijizhu_") and event.is_final_response():
                             try:
-                                proposal = BiddingProposal.model_validate_json(text)
+                                proposal = BiddingProposal.model_validate_json(_extract_json(text))
                             except Exception:
                                 continue
                             await ws.send_json(
@@ -514,7 +539,7 @@ def create_app() -> FastAPI:
 
             if verdict_text:
                 try:
-                    result = JudgmentResult.model_validate_json(verdict_text)
+                    result = JudgmentResult.model_validate_json(_extract_json(verdict_text))
                     await ws.send_json(update_components(SURFACE_ID, judgment_components()))
                     await ws.send_json(
                         update_data_model(SURFACE_ID, "/verdict", judgment_data(result))

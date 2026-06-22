@@ -19,25 +19,15 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-import os  # noqa: E402
-
 from dotenv import load_dotenv  # noqa: E402
 
 load_dotenv(_REPO_ROOT / ".env")
 
-if os.environ.get("DASHSCOPE_API_KEY"):
-    os.environ["OPENAI_API_KEY"] = os.environ["DASHSCOPE_API_KEY"]
-    os.environ.setdefault(
-        "OPENAI_API_BASE",
-        os.environ.get("DASHSCOPE_BASE_URL", "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"),
-    )
-
 from google.adk.agents import LlmAgent  # noqa: E402
-from google.adk.models.lite_llm import LiteLlm  # noqa: E402
 
 from deg.schemas import WuyingOutput  # noqa: E402
 
-_QWEN = LiteLlm(model="openai/" + os.environ.get("DASHSCOPE_MODEL", "qwen-plus"))
+_MODEL = "gemini-3.5-flash"
 
 _WUYING_INSTRUCTION = """你是五營兵將，土地公麾下的基層調查兵將。你的工作是透過自然對話，
 了解凡人的旅遊需求，再轉譯成招標單（TaskBroadcast）。
@@ -78,6 +68,9 @@ force_ready=true 時：不得追問，直接輸出招標單。
 
 ━━━━━━ 輸出格式（必須嚴格遵守） ━━━━━━
 
+⚠️ 只輸出一個 JSON 物件，第一個字元必須是 {，最後一個字元必須是 }。
+絕對不要輸出任何前言、解釋、思考過程、markdown 標記（如 ```json）或結語。
+
 追問時：
 {
   "status": "clarifying",
@@ -111,7 +104,7 @@ def create_wuying() -> LlmAgent:
     """
     return LlmAgent(
         name="wuying",
-        model=_QWEN,
+        model=_MODEL,
         description="五營兵將：透過追問確認旅遊需求，轉譯為 TaskBroadcast。",
         instruction=_WUYING_INSTRUCTION,
         output_schema=WuyingOutput,

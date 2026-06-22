@@ -12,25 +12,15 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-import os  # noqa: E402
-
 from dotenv import load_dotenv  # noqa: E402
 
 load_dotenv(_REPO_ROOT / ".env")
 
-if os.environ.get("DASHSCOPE_API_KEY"):
-    os.environ["OPENAI_API_KEY"] = os.environ["DASHSCOPE_API_KEY"]
-    os.environ.setdefault(
-        "OPENAI_API_BASE",
-        os.environ.get("DASHSCOPE_BASE_URL", "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"),
-    )
-
 from google.adk.agents import LlmAgent  # noqa: E402
-from google.adk.models.lite_llm import LiteLlm  # noqa: E402
 
 from deg.schemas import WishAnalysis  # noqa: E402
 
-_QWEN = LiteLlm(model="openai/" + os.environ.get("DASHSCOPE_MODEL", "qwen-plus"))
+_MODEL = "gemini-3.5-flash"
 
 _CATEGORIES = "交通、環境清潔、公共安全、公共設施、社區營造、商業活動、其他"
 
@@ -51,7 +41,7 @@ _WISH_INSTRUCTION = f"""你是五營兵將，土地公麾下體察民情的基�
 def create_wish_categorizer() -> LlmAgent:
     return LlmAgent(
         name="wuying_wish",
-        model=_QWEN,
+        model=_MODEL,
         description="五營兵將：將凡人許願歸納為治理分類 (WishAnalysis)。",
         instruction=_WISH_INSTRUCTION,
         output_schema=WishAnalysis,
