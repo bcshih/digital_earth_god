@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>數位土地公 - 里長中控台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        divine: { 400: '#fbbf24', 500: '#f59e0b', 900: '#78350f' }, // 科技金
+                        karma: { 500: '#e11d48', 600: '#be123c' }, // 硃砂紅
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 隱藏滾動條但保留功能 */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #fbbf24; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-300 font-sans min-h-screen p-6" x-data="agentManager()">
+
+    <header class="flex justify-between items-center border-b border-divine-900 pb-4 mb-6">
+        <div>
+            <h1 class="text-3xl font-bold text-divine-400 tracking-wider">⛩️ 數位土地公 <span class="text-slate-400 text-lg">| 里長資料中控台</span></h1>
+            <p class="text-sm text-slate-500 mt-1" x-text="'目前管理轄區：' + agentData.metadata.agent_name"></p>
+        </div>
+        <button @click="exportJSON()" class="bg-divine-500 hover:bg-divine-400 text-slate-900 font-bold py-2 px-6 rounded shadow-[0_0_15px_rgba(251,191,36,0.4)] transition-all">
+            📜 匯出 JSON 符令
+        </button>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <div class="space-y-6">
+            <section class="bg-slate-800 p-5 rounded-lg border border-slate-700 shadow-lg relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-1 h-full bg-divine-500"></div>
+                <h2 class="text-xl font-bold text-white mb-4 flex items-center"><span class="mr-2">📝</span> 陣營與性格 (Metadata)</h2>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">管理單位</label>
+                        <input x-model="agentData.metadata.managed_by" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm focus:border-divine-500 focus:ring-1 focus:ring-divine-500 outline-none text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">神仙陣營</label>
+                        <input x-model="agentData.metadata.archetype" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm focus:border-divine-500 outline-none text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">性格設定</label>
+                        <textarea x-model="agentData.metadata.personality" rows="4" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm focus:border-divine-500 outline-none text-white"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-slate-800 p-5 rounded-lg border border-slate-700 shadow-lg relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-1 h-full bg-slate-500"></div>
+                <h2 class="text-xl font-bold text-white mb-4 flex items-center"><span class="mr-2">🏛️</span> 基礎圖層 (Layer 1)</h2>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">歷史沿革</label>
+                        <textarea x-model="agentData.layer_1_objective.value.history" rows="3" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm focus:border-divine-500 outline-none text-white"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">土地分區</label>
+                        <textarea x-model="agentData.layer_1_objective.value.zoning" rows="2" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm focus:border-divine-500 outline-none text-white"></textarea>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="space-y-6">
+            <section class="bg-slate-800 p-5 rounded-lg border border-slate-700 shadow-lg h-full">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-white flex items-center"><span class="mr-2">📸</span> 轄區景點與活動 (Layer 3)</h2>
+                    <button @click="addPOI()" class="text-xs bg-slate-700 hover:bg-slate-600 text-white py-1 px-3 rounded">+ 新增景點</button>
+                </div>
+                
+                <div class="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+                    <template x-for="(poi, index) in agentData.layer_3_dynamic_pois.value" :key="poi.poi_id">
+                        <div class="bg-slate-900 p-4 rounded border border-slate-700 group hover:border-divine-500 transition-colors">
+                            <div class="flex justify-between mb-2">
+                                <input x-model="poi.name" class="bg-transparent text-divine-400 font-bold text-lg outline-none w-2/3 border-b border-transparent focus:border-divine-500" placeholder="景點名稱">
+                                <button @click="removePOI(index)" class="text-slate-500 hover:text-karma-500">✖</button>
+                            </div>
+                            <input x-model="poi.category" class="bg-slate-800 text-xs text-slate-300 px-2 py-1 rounded mb-2 w-full outline-none" placeholder="分類 (例如: 歷史古蹟)">
+                            <textarea x-model="poi.description" rows="2" class="w-full bg-transparent border border-slate-700 rounded p-2 text-xs text-slate-300 focus:border-divine-500 outline-none mb-2" placeholder="景點描述..."></textarea>
+                            <div class="flex gap-2 text-xs text-slate-400">
+                                <input x-model="poi.location.coordinates[0]" class="bg-slate-800 rounded p-1 w-1/2 outline-none" placeholder="經度 (Lng)">
+                                <input x-model="poi.location.coordinates[1]" class="bg-slate-800 rounded p-1 w-1/2 outline-none" placeholder="緯度 (Lat)">
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </section>
+        </div>
+
+        <div class="space-y-6">
+            <section class="bg-slate-800 p-5 rounded-lg border border-slate-700 shadow-lg">
+                <h2 class="text-xl font-bold text-white mb-4 flex items-center"><span class="mr-2">💌</span> 民意通報處理 (Layer 4)</h2>
+                <div class="space-y-3 max-h-[35vh] overflow-y-auto pr-2">
+                    <template x-for="wish in agentData.layer_4_citizen_opinions.value" :key="wish.issue_id">
+                        <div class="bg-slate-900 p-3 rounded border-l-4" :class="wish.status === '待處理' ? 'border-karma-500' : 'border-emerald-500'">
+                            <p class="text-sm text-white mb-2" x-text="wish.content"></p>
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-500" x-text="wish.timestamp.split('T')[0]"></span>
+                                <select x-model="wish.status" class="bg-slate-800 text-slate-300 rounded border border-slate-600 outline-none p-1">
+                                    <option value="待處理">待處理</option>
+                                    <option value="已向市府提案">已向市府提案</option>
+                                    <option value="已解決">已解決</option>
+                                </select>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </section>
+
+            <section class="bg-black p-4 rounded-lg border border-slate-800 shadow-inner h-[32vh] overflow-auto">
+                <h3 class="text-xs text-slate-500 mb-2 uppercase tracking-widest">JSON Payload 預覽</h3>
+                <pre class="text-xs text-emerald-400 font-mono whitespace-pre-wrap" x-text="JSON.stringify(agentData, null, 2)"></pre>
+            </section>
+        </div>
+
+    </div>
+
+    <script>
+        function agentManager() {
+            return {
+                // 預設載入「赤嵌里」的初始 JSON 資料
+                agentData: {
+                    "@context": "https://smartcity.tainan.gov.tw/agent-context.jsonld",
+                    "id": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Chihkan",
+                    "type": "EarthGodAgent",
+                    "metadata": {
+                        "agent_name": "赤嵌里地基主",
+                        "managed_by": "赤嵌里里長辦公室",
+                        "last_updated": new Date().toISOString(),
+                        "archetype": "文史守護陣營",
+                        "personality": "倚老賣老、講究傳統。比起商業開發，更在意老建築的保存與巷弄文化。對歷史導覽極度熱情，但對噪音與違停非常敏感。"
+                    },
+                    "spatial_boundary": {
+                        "type": "GeoProperty",
+                        "description": "涵蓋赤崁樓、武廟周邊至民族路一帶",
+                        "value": {
+                            "type": "Polygon",
+                            "coordinates": [[[120.2010, 22.9960], [120.2030, 22.9960], [120.2030, 22.9980], [120.2010, 22.9980], [120.2010, 22.9960]]]
+                        }
+                    },
+                    "layer_1_objective": {
+                        "type": "Property",
+                        "value": {
+                            "history": "台南市最早開發的區域之一，擁有赤崁樓、祀典武廟等一級古蹟，巷弄間保留大量清代與日治時期紋理。",
+                            "zoning": "高密度商業區與歷史保護區交錯，巷弄狹窄。"
+                        }
+                    },
+                    "layer_3_dynamic_pois": {
+                        "type": "Property",
+                        "value": [
+                            {
+                                "poi_id": "POI-CH-001",
+                                "name": "赤崁樓",
+                                "category": "歷史古蹟",
+                                "description": "荷治時期興建的普羅民遮城，台南最具代表性的歷史地標。",
+                                "location": { "type": "Point", "coordinates": [120.2023, 22.9974] }
+                            }
+                        ]
+                    },
+                    "layer_4_citizen_opinions": {
+                        "type": "Property",
+                        "value": [
+                            {
+                                "issue_id": "WISH-CH-001",
+                                "type": "抱怨/通報",
+                                "content": "赤崁東街假日觀光客太多，機車亂停導致住戶無法出入。",
+                                "status": "待處理",
+                                "timestamp": "2026-06-21T08:30:00Z"
+                            }
+                        ]
+                    }
+                },
+                addPOI() {
+                    this.agentData.layer_3_dynamic_pois.value.push({
+                        poi_id: "POI-NEW-" + Date.now().toString().slice(-4),
+                        name: "",
+                        category: "",
+                        description: "",
+                        location: { type: "Point", "coordinates": [120.2000, 22.9900] }
+                    });
+                },
+                removePOI(index) {
+                    this.agentData.layer_3_dynamic_pois.value.splice(index, 1);
+                },
+                exportJSON() {
+                    // 更新時間戳記
+                    this.agentData.metadata.last_updated = new Date().toISOString();
+                    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.agentData, null, 2));
+                    const downloadAnchorNode = document.createElement('a');
+                    downloadAnchorNode.setAttribute("href",     dataStr);
+                    downloadAnchorNode.setAttribute("download", "agent_" + this.agentData.metadata.agent_name + ".json");
+                    document.body.appendChild(downloadAnchorNode); // Firefox 需要
+                    downloadAnchorNode.click();
+                    downloadAnchorNode.remove();
+                }
+            }
+        }
+    </script>
+</body>
+</html>

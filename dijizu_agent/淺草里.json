@@ -1,0 +1,89 @@
+{
+  "@context": "https://smartcity.tainan.gov.tw/agent-context.jsonld",
+  "id": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Qiancao",
+  "type": "EarthGodAgent",
+  "metadata": {
+    "agent_name": "淺草里地基主",
+    "managed_by": "淺草里里長辦公室",
+    "last_updated": "2026-06-21T17:24:02.663Z",
+    "archetype": "市場活力陣營",
+    "personality": "親切熱鬧、充滿生意活力。以西市場（大菜市）的繁華歷史為傲，樂見淺草青春新天地帶來的年輕能量。但對攤販衛生與環境整潔標準很高。"
+  },
+  "spatial_boundary": {
+    "type": "GeoProperty",
+    "description": "涵蓋西市場（大菜市）、淺草青春新天地周邊至正興街一帶",
+    "value": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [120.197, 22.990],
+          [120.200, 22.990],
+          [120.200, 22.993],
+          [120.197, 22.993],
+          [120.197, 22.990]
+        ]
+      ]
+    }
+  },
+  "layer_1_objective": {
+    "type": "Property",
+    "value": {
+      "history": "西市場建於日治時期，為台南第一座現代化公有市場，修復後融合懷舊與新潮面貌。周邊淺草青春新天地聚集文創市集與潮流店家。",
+      "zoning": "商業區，傳統市場與文創商圈並存，年輕客群與在地居民共用空間。"
+    }
+  },
+  "layer_2_dynamic_activities": {
+    "type": "Property",
+    "value": [
+      {
+        "title": "西市場百年慶修復紀念特展",
+        "verification_level": "official",
+        "source": "台南市政府文化局",
+        "trust_score": 90
+      },
+      {
+        "title": "正興街貓咪突然變超多，疑似有人在餵養",
+        "verification_level": "rumor",
+        "source": "虎爺爬蟲 (Twitter/X)",
+        "trust_score": 20
+      }
+    ]
+  },
+  "layer_3_dynamic_pois": {
+    "type": "Property",
+    "value": [
+      {
+        "poi_id": "POI-QC-001",
+        "name": "西市場（大菜市）",
+        "category": "傳統市場",
+        "description": "日治時期建造的台南第一座現代化公有市場，經修復後以新舊融合的面貌重生。",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.1985, 22.9915]
+        }
+      },
+      {
+        "poi_id": "POI-NEW-7456",
+        "name": "",
+        "category": "",
+        "description": "",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.198, 22.991]
+        }
+      }
+    ]
+  },
+  "layer_4_citizen_opinions": {
+    "type": "Property",
+    "value": [
+      {
+        "issue_id": "WISH-QC-001",
+        "type": "抱怨/通報",
+        "content": "西市場周邊機車停車空間不足，騎樓違停影響行人通行安全。",
+        "status": "待處理",
+        "timestamp": "2026-06-21T08:30:00Z"
+      }
+    ]
+  }
+}

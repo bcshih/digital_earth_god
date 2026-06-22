@@ -1,0 +1,110 @@
+{
+  "@context": "https://smartcity.tainan.gov.tw/agent-context.jsonld",
+  "id": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Chihkan",
+  "type": "EarthGodAgent",
+  "metadata": {
+    "agent_name": "赤嵌里地基主",
+    "managed_by": "赤嵌里里長辦公室",
+    "last_updated": "2026-06-21T17:24:02.663Z",
+    "archetype": "文史守護陣營",
+    "personality": "倚老賣老、講究傳統。比起商業開發，更在意老建築的保存與巷弄文化。對歷史導覽極度熱情，但對噪音與違停非常敏感。"
+  },
+  "spatial_boundary": {
+    "type": "GeoProperty",
+    "description": "涵蓋赤崁樓、武廟周邊至民族路一帶",
+    "value": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            120.201,
+            22.996
+          ],
+          [
+            120.203,
+            22.996
+          ],
+          [
+            120.203,
+            22.998
+          ],
+          [
+            120.201,
+            22.998
+          ],
+          [
+            120.201,
+            22.996
+          ]
+        ]
+      ]
+    }
+  },
+  "layer_1_objective": {
+    "type": "Property",
+    "value": {
+      "history": "台南市最早開發的區域之一，擁有赤崁樓、祀典武廟等一級古蹟，巷弄間保留大量清代與日治時期紋理。",
+      "zoning": "高密度商業區與歷史保護區交錯，巷弄狹窄。"
+    }
+  },
+  "layer_2_dynamic_activities": {
+    "type": "Property",
+    "value": [
+      {
+        "title": "2026 赤崁夏夜星光音樂會",
+        "verification_level": "official",
+        "source": "台南市政府文化局公告",
+        "trust_score": 95
+      },
+      {
+        "title": "武廟前面有阿伯在賣超強青草茶",
+        "verification_level": "rumor",
+        "source": "虎爺爬蟲 (PTT Tainan板)",
+        "trust_score": 35
+      }
+    ]
+  },
+  "layer_3_dynamic_pois": {
+    "type": "Property",
+    "value": [
+      {
+        "poi_id": "POI-CH-001",
+        "name": "赤崁樓",
+        "category": "歷史古蹟",
+        "description": "荷治時期興建的普羅民遮城，台南最具代表性的歷史地標。",
+        "location": {
+          "type": "Point",
+          "coordinates": [
+            120.2023,
+            22.9974
+          ]
+        }
+      },
+      {
+        "poi_id": "POI-NEW-8657",
+        "name": "",
+        "category": "",
+        "description": "",
+        "location": {
+          "type": "Point",
+          "coordinates": [
+            120.2,
+            22.99
+          ]
+        }
+      }
+    ]
+  },
+  "layer_4_citizen_opinions": {
+    "type": "Property",
+    "value": [
+      {
+        "issue_id": "WISH-CH-001",
+        "type": "抱怨/通報",
+        "content": "赤崁東街假日觀光客太多，機車亂停導致住戶無法出入。",
+        "status": "待處理",
+        "timestamp": "2026-06-21T08:30:00Z"
+      }
+    ]
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "@context": "https://smartcity.tainan.gov.tw/agent-context.jsonld",
+  "id": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Xihe",
+  "type": "EarthGodAgent",
+  "metadata": {
+    "agent_name": "西和里地基主",
+    "managed_by": "西和里里長辦公室",
+    "last_updated": "2026-06-21T17:24:02.663Z",
+    "archetype": "運河風光陣營",
+    "personality": "悠閒自在、享受慢生活。喜歡在運河邊散步觀景，對新南橋（烏橋）的歷史充滿感情。重視河岸公共空間的開放性，反對私人佔用河岸地。"
+  },
+  "spatial_boundary": {
+    "type": "GeoProperty",
+    "description": "涵蓋台南運河沿岸、府前路二段至新南橋周邊一帶",
+    "value": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [120.191, 22.986],
+          [120.194, 22.986],
+          [120.194, 22.989],
+          [120.191, 22.989],
+          [120.191, 22.986]
+        ]
+      ]
+    }
+  },
+  "layer_1_objective": {
+    "type": "Property",
+    "value": {
+      "history": "鄰近台南運河，見證運河開闢與城市擴張歷史。早期有大涼冷凍廠等產業記憶，新南橋（舊稱烏橋）為連結兩岸的重要節點。",
+      "zoning": "住宅區，運河沿岸景觀帶，生活步調較緩，社區型態穩定。"
+    }
+  },
+  "layer_2_dynamic_activities": {
+    "type": "Property",
+    "value": []
+  },
+  "layer_3_dynamic_pois": {
+    "type": "Property",
+    "value": [
+      {
+        "poi_id": "POI-XHE-001",
+        "name": "台南運河",
+        "category": "水岸景觀",
+        "description": "貫穿台南市區的重要水域，沿岸經過整治後成為市民散步、運動的熱門去處。",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.1925, 22.9875]
+        }
+      },
+      {
+        "poi_id": "POI-NEW-8371",
+        "name": "",
+        "category": "",
+        "description": "",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.192, 22.987]
+        }
+      }
+    ]
+  },
+  "layer_4_citizen_opinions": {
+    "type": "Property",
+    "value": [
+      {
+        "issue_id": "WISH-XHE-001",
+        "type": "抱怨/通報",
+        "content": "運河沿岸部分路段缺乏護欄，夜間照明不足，居民擔憂行人安全。",
+        "status": "待處理",
+        "timestamp": "2026-06-21T08:30:00Z"
+      }
+    ]
+  }
+}

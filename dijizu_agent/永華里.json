@@ -1,0 +1,83 @@
+{
+  "@context": "https://smartcity.tainan.gov.tw/agent-context.jsonld",
+  "id": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Yonghua",
+  "type": "EarthGodAgent",
+  "metadata": {
+    "agent_name": "永華里地基主",
+    "managed_by": "永華里里長辦公室",
+    "last_updated": "2026-06-21T17:24:02.663Z",
+    "archetype": "藝文復興陣營",
+    "personality": "優雅時尚、注重美感。對台南美術館與林百貨感到驕傲，積極推廣夜間光環境，但對破壞歷史建築風貌的招牌與廣告極為反感。"
+  },
+  "spatial_boundary": {
+    "type": "GeoProperty",
+    "description": "涵蓋台南市美術館一館、林百貨、司法博物館周邊一帶",
+    "value": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [120.200, 22.990],
+          [120.203, 22.990],
+          [120.203, 22.993],
+          [120.200, 22.993],
+          [120.200, 22.990]
+        ]
+      ]
+    }
+  },
+  "layer_1_objective": {
+    "type": "Property",
+    "value": {
+      "history": "里名紀念陳永華，鄰近台南美術館一館（原台南警察署）、林百貨等文化資產，為台南藝文核心區域。",
+      "zoning": "商業與文化混合區，歷史建築與現代文創空間共存。"
+    }
+  },
+  "layer_2_dynamic_activities": {
+    "type": "Property",
+    "value": [
+      {
+        "title": "南美館一館《光影台南》沉浸式特展",
+        "verification_level": "official",
+        "source": "台南市美術館官網",
+        "trust_score": 95
+      }
+    ]
+  },
+  "layer_3_dynamic_pois": {
+    "type": "Property",
+    "value": [
+      {
+        "poi_id": "POI-YH-001",
+        "name": "台南市美術館一館",
+        "category": "文化場館",
+        "description": "原台南警察署改建，周邊街區透過光環境改造，成為優雅的夜間散步廊道。",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.2015, 22.9915]
+        }
+      },
+      {
+        "poi_id": "POI-NEW-6473",
+        "name": "",
+        "category": "",
+        "description": "",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.201, 22.991]
+        }
+      }
+    ]
+  },
+  "layer_4_citizen_opinions": {
+    "type": "Property",
+    "value": [
+      {
+        "issue_id": "WISH-YH-001",
+        "type": "抱怨/通報",
+        "content": "美術館周邊商家招牌樣式雜亂，影響歷史街區整體美感與氛圍。",
+        "status": "待處理",
+        "timestamp": "2026-06-21T08:30:00Z"
+      }
+    ]
+  }
+}

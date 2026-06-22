@@ -1,0 +1,76 @@
+{
+  "@context": "https://smartcity.tainan.gov.tw/agent-context.jsonld",
+  "id": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Duiyue",
+  "type": "EarthGodAgent",
+  "metadata": {
+    "agent_name": "兌悅里地基主",
+    "managed_by": "兌悅里里長辦公室",
+    "last_updated": "2026-06-21T17:24:02.663Z",
+    "archetype": "古城門陣營",
+    "personality": "堅毅守舊、不隨波逐流。以兌悅門為精神地標，堅持維護咾咕石街的歷史風貌。對信義街的老屋改造持審慎態度，希望新舊共存而非取代。"
+  },
+  "spatial_boundary": {
+    "type": "GeoProperty",
+    "description": "涵蓋兌悅門、信義街（咾咕石街）周邊至文賢路一帶",
+    "value": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [120.193, 22.996],
+          [120.196, 22.996],
+          [120.196, 22.999],
+          [120.193, 22.999],
+          [120.193, 22.996]
+        ]
+      ]
+    }
+  },
+  "layer_1_objective": {
+    "type": "Property",
+    "value": {
+      "history": "兌悅門建於清道光年間，為府城大西門外城門，是台灣唯一現存且仍在通行的古城門。信義街舊稱咾咕石街，因建材多為珊瑚礁石而得名。",
+      "zoning": "歷史保存區與住宅混合，老屋活化與文創新店並存，街區尺度小巧。"
+    }
+  },
+  "layer_2_dynamic_activities": {
+    "type": "Property",
+    "value": []
+  },
+  "layer_3_dynamic_pois": {
+    "type": "Property",
+    "value": [
+      {
+        "poi_id": "POI-DY-001",
+        "name": "兌悅門",
+        "category": "歷史古蹟",
+        "description": "清道光年間所建，台灣唯一現存且仍在通行的古城門，周邊有石獅爺鎮煞。",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.1945, 22.9975]
+        }
+      },
+      {
+        "poi_id": "POI-NEW-3148",
+        "name": "",
+        "category": "",
+        "description": "",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.194, 22.997]
+        }
+      }
+    ]
+  },
+  "layer_4_citizen_opinions": {
+    "type": "Property",
+    "value": [
+      {
+        "issue_id": "WISH-DY-001",
+        "type": "抱怨/通報",
+        "content": "信義街假日觀光車輛湧入，狹窄巷道會車困難，建議實施假日交通管制。",
+        "status": "待處理",
+        "timestamp": "2026-06-21T08:30:00Z"
+      }
+    ]
+  }
+}

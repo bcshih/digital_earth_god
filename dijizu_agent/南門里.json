@@ -1,0 +1,76 @@
+{
+  "@context": "https://smartcity.tainan.gov.tw/agent-context.jsonld",
+  "id": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Nanmen",
+  "type": "EarthGodAgent",
+  "metadata": {
+    "agent_name": "南門里地基主",
+    "managed_by": "南門里里長辦公室",
+    "last_updated": "2026-06-21T17:24:02.663Z",
+    "archetype": "城防遺跡陣營",
+    "personality": "穩重沉著、守望相助。以大南門城牆遺跡守護者自居，重視社區安全與歷史保存。對公園綠地維護極為用心，常巡邏社區周邊。"
+  },
+  "spatial_boundary": {
+    "type": "GeoProperty",
+    "description": "涵蓋南門公園、大南門城、南門電影書院周邊一帶",
+    "value": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [120.203, 22.985],
+          [120.206, 22.985],
+          [120.206, 22.988],
+          [120.203, 22.988],
+          [120.203, 22.985]
+        ]
+      ]
+    }
+  },
+  "layer_1_objective": {
+    "type": "Property",
+    "value": {
+      "history": "因鄰近清代府城大南門（寧南門）而得名，南門公園內保存台南放送局（南門電影書院）、大南門碑林等珍貴歷史資產。",
+      "zoning": "文教區與住宅區混合，公園綠地充裕，環境幽靜宜居。"
+    }
+  },
+  "layer_2_dynamic_activities": {
+    "type": "Property",
+    "value": []
+  },
+  "layer_3_dynamic_pois": {
+    "type": "Property",
+    "value": [
+      {
+        "poi_id": "POI-NMN-001",
+        "name": "大南門（寧南門）",
+        "category": "歷史古蹟",
+        "description": "現存最具規模的清代城樓，為府城城防體系的重要見證。",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.2045, 22.9865]
+        }
+      },
+      {
+        "poi_id": "POI-NEW-6192",
+        "name": "",
+        "category": "",
+        "description": "",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.204, 22.986]
+        }
+      }
+    ]
+  },
+  "layer_4_citizen_opinions": {
+    "type": "Property",
+    "value": [
+      {
+        "issue_id": "WISH-NMN-001",
+        "type": "抱怨/通報",
+        "content": "南門公園夜間有流浪狗群聚，部分居民反映散步時感到不安。",
+        "status": "待處理",
+        "timestamp": "2026-06-21T08:30:00Z"
+      }
+    ]
+  }
+}

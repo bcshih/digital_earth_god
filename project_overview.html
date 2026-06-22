@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>數位土地公 — 專案全覽</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ===== CSS RESET & VARIABLES ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #d4a745;
+      --gold-light: #f0d68a;
+      --gold-glow: rgba(212, 167, 69, 0.35);
+      --crimson: #c0392b;
+      --crimson-soft: #e74c3c;
+      --jade: #2ecc71;
+      --jade-deep: #1a9c54;
+      --sky: #3498db;
+      --sky-deep: #2176ae;
+      --purple: #9b59b6;
+      --purple-deep: #7d3c98;
+      --bg-dark: #0a0a12;
+      --bg-card: rgba(18, 18, 30, 0.85);
+      --bg-card-hover: rgba(28, 28, 48, 0.95);
+      --text-primary: #e8e6e3;
+      --text-secondary: #9e9e9e;
+      --text-accent: var(--gold-light);
+      --border-subtle: rgba(212, 167, 69, 0.15);
+      --border-glow: rgba(212, 167, 69, 0.4);
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
+    /* ===== BASE ===== */
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.75;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated gradient background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(212,167,69,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 90%, rgba(192,57,43,0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(46,204,113,0.03) 0%, transparent 60%);
+      z-index: -1;
+      animation: bgPulse 12s ease-in-out infinite alternate;
+    }
+
+    @keyframes bgPulse {
+      0% { opacity: 0.6; }
+      100% { opacity: 1; }
+    }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+    /* ===== LAYOUT ===== */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      text-align: center;
+      padding: 100px 24px 60px;
+      position: relative;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    .hero-icon {
+      font-size: 72px;
+      margin-bottom: 16px;
+      animation: float 4s ease-in-out infinite;
+      filter: drop-shadow(0 0 20px var(--gold-glow));
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    .hero h1 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--crimson-soft));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+
+    .hero .subtitle {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      font-weight: 300;
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.9;
+    }
+
+    .hero .subtitle strong {
+      color: var(--text-accent);
+      font-weight: 500;
+    }
+
+    /* ===== TECH BADGES ===== */
+    .tech-badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      border: 1px solid var(--border-subtle);
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(8px);
+      transition: all 0.3s;
+    }
+
+    .badge:hover {
+      border-color: var(--border-glow);
+      background: rgba(255,255,255,0.06);
+      transform: translateY(-2px);
+    }
+
+    .badge .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+    }
+
+    .dot-gold { background: var(--gold); }
+    .dot-jade { background: var(--jade); }
+    .dot-sky { background: var(--sky); }
+    .dot-purple { background: var(--purple); }
+    .dot-crimson { background: var(--crimson-soft); }
+
+    /* ===== SECTION ===== */
+    section {
+      padding: 60px 0;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .section-header h2 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text-accent);
+      margin-bottom: 8px;
+      letter-spacing: 0.05em;
+    }
+
+    .section-header p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    /* ===== ONE-LINER OVERVIEW ===== */
+    .overview-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      padding: 36px 40px;
+      backdrop-filter: blur(12px);
+      margin-bottom: 16px;
+    }
+
+    .overview-box p {
+      font-size: 1.05rem;
+      line-height: 2;
+      color: var(--text-primary);
+    }
+
+    .overview-box p + p {
+      margin-top: 12px;
+    }
+
+    .highlight {
+      color: var(--gold-light);
+      font-weight: 500;
+    }
+
+    .highlight-jade { color: var(--jade); font-weight: 500; }
+    .highlight-sky { color: var(--sky); font-weight: 500; }
+    .highlight-crimson { color: var(--crimson-soft); font-weight: 500; }
+    .highlight-purple { color: var(--purple); font-weight: 500; }
+
+    /* ===== AGENT CARDS (Hierarchy) ===== */
+    .agent-hierarchy {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .agent-card {
+      width: 100%;
+      max-width: 900px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      backdrop-filter: blur(12px);
+      transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .agent-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px; height: 100%;
+      border-radius: 4px 0 0 4px;
+    }
+
+    .agent-card:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+      border-color: var(--border-glow);
+    }
+
+    .agent-card.tier-0::before { background: linear-gradient(180deg, var(--gold), var(--crimson-soft)); }
+    .agent-card.tier-1::before { background: linear-gradient(180deg, var(--jade), var(--sky)); }
+    .agent-card.tier-2::before { background: linear-gradient(180deg, var(--sky), var(--purple)); }
+
+    .agent-top {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .agent-icon {
+      font-size: 2rem;
+      filter: drop-shadow(0 0 8px rgba(255,255,255,0.15));
+    }
+
+    .agent-name {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+
+    .agent-name-en {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      margin-left: 8px;
+      font-weight: 400;
+    }
+
+    .agent-role {
+      font-size: 0.88rem;
+      color: var(--gold);
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+    .agent-desc {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.85;
+    }
+
+    .agent-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .tool-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      padding: 4px 12px;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+
+    .tool-tag:hover {
+      border-color: var(--gold);
+      color: var(--gold-light);
+    }
+
+    .tier-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      padding: 3px 12px;
+      border-radius: 100px;
+      font-weight: 600;
+    }
+
+    .tier-label.t0 { background: rgba(212,167,69,0.15); color: var(--gold); }
+    .tier-label.t1 { background: rgba(46,204,113,0.12); color: var(--jade); }
+    .tier-label.t2 { background: rgba(52,152,219,0.12); color: var(--sky); }
+
+    /* ===== CONNECTOR LINES ===== */
+    .connector {
+      width: 2px;
+      height: 28px;
+      background: linear-gradient(180deg, var(--gold-glow), transparent);
+      margin: -8px 0;
+    }
+
+    .sub-agents {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      max-width: 900px;
+      width: 100%;
+    }
+
+    /* ===== PROTOCOL SECTION ===== */
+    .protocol-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 20px;
+    }
+
+    .protocol-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      padding: 28px;
+      backdrop-filter: blur(12px);
+      transition: all 0.3s;
+    }
+
+    .protocol-card:hover {
+      border-color: var(--border-glow);
+      transform: translateY(-2px);
+    }
+
+    .protocol-card h3 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.15rem;
+      color: var(--text-accent);
+      margin-bottom: 6px;
+    }
+
+    .protocol-card .proto-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+    }
+
+    .protocol-card p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    /* ===== FLOW DIAGRAM ===== */
+    .flow-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      padding: 40px;
+      backdrop-filter: blur(12px);
+    }
+
+    .flow-steps {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0;
+      align-items: center;
+    }
+
+    .flow-step {
+      text-align: center;
+      padding: 16px 20px;
+      min-width: 140px;
+    }
+
+    .flow-step .step-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .flow-step .step-label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .flow-step .step-detail {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+    }
+
+    .flow-arrow {
+      font-size: 1.5rem;
+      color: var(--gold);
+      padding: 0 4px;
+      animation: arrowPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes arrowPulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    /* ===== DATA LAYER ===== */
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .data-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 22px;
+      backdrop-filter: blur(12px);
+      transition: all 0.3s;
+    }
+
+    .data-card:hover {
+      border-color: var(--border-glow);
+      transform: translateY(-2px);
+    }
+
+    .data-card h4 {
+      font-size: 0.95rem;
+      color: var(--text-accent);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .data-card .data-path {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+    }
+
+    .data-card p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ===== TECH STACK TABLE ===== */
+    .stack-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 6px;
+    }
+
+    .stack-table th {
+      text-align: left;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-secondary);
+      padding: 8px 16px;
+    }
+
+    .stack-table td {
+      padding: 14px 16px;
+      background: var(--bg-card);
+      font-size: 0.9rem;
+    }
+
+    .stack-table tr td:first-child {
+      border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+      font-weight: 500;
+      color: var(--text-accent);
+    }
+
+    .stack-table tr td:last-child {
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      color: var(--text-secondary);
+    }
+
+    /* ===== A2UI SURFACES ===== */
+    .surfaces-showcase {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+    }
+
+    .surface-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 22px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .surface-card:hover {
+      border-color: var(--border-glow);
+      transform: scale(1.02);
+    }
+
+    .surface-card .surface-icon {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    .surface-card h4 {
+      font-size: 1rem;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .surface-card .surface-model {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    .surface-card p {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ===== LI MAP ===== */
+    .li-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .li-chip {
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 0.78rem;
+      background: rgba(212,167,69,0.08);
+      border: 1px solid rgba(212,167,69,0.15);
+      color: var(--text-secondary);
+      transition: all 0.25s;
+      cursor: default;
+    }
+
+    .li-chip:hover {
+      background: rgba(212,167,69,0.18);
+      color: var(--gold-light);
+      border-color: var(--gold);
+      transform: scale(1.08);
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      text-align: center;
+      padding: 48px 24px 32px;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 40px;
+    }
+
+    footer .footer-icon {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .hero { padding: 60px 16px 40px; }
+      .hero-icon { font-size: 52px; }
+      .overview-box { padding: 24px; }
+      .flow-section { padding: 24px; }
+      .flow-steps { flex-direction: column; }
+      .flow-arrow { transform: rotate(90deg); }
+      .agent-card { padding: 20px; }
+      section { padding: 40px 0; }
+    }
+
+    /* ===== FADE IN ANIMATION ===== */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ========== HERO ========== -->
+  <header class="hero">
+    <div class="hero-icon">🏛️</div>
+    <h1>數位土地公</h1>
+    <p class="subtitle">
+      <strong>Digital Earth God</strong> — 一個以台灣民間信仰神明體系為隱喻的<br>
+      <strong>多代理人系統（MAS）微觀治理平台</strong>，<br>
+      專注於台南中西區的在地社區智慧治理。
+    </p>
+    <div class="tech-badges">
+      <span class="badge"><span class="dot dot-gold"></span>Google ADK</span>
+      <span class="badge"><span class="dot dot-jade"></span>A2A Protocol</span>
+      <span class="badge"><span class="dot dot-sky"></span>MCP</span>
+      <span class="badge"><span class="dot dot-purple"></span>Contract Net</span>
+      <span class="badge"><span class="dot dot-crimson"></span>A2UI</span>
+      <span class="badge"><span class="dot dot-jade"></span>FastAPI</span>
+      <span class="badge"><span class="dot dot-sky"></span>Next.js</span>
+      <span class="badge"><span class="dot dot-gold"></span>Warm Data</span>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- ========== OVERVIEW ========== -->
+    <section class="fade-in">
+      <div class="section-header">
+        <h2>🔮 專案願景</h2>
+        <p>What is this project about?</p>
+      </div>
+      <div class="overview-box">
+        <p>
+          本專案將台灣傳統民間信仰的<span class="highlight">神明分工體系</span>映射到現代 AI Agent 架構上。
+          最高層的<span class="highlight">土地公（Tudigong）</span>扮演社區總管，統籌調度各層級的 Agent，
+          就像真正的土地公守護一方水土一樣，只不過祂的「神力」來自 <span class="highlight-sky">Google Gemini LLM</span>、
+          <span class="highlight-jade">IoT 感測器</span>與<span class="highlight-purple">社群媒體數據</span>。
+        </p>
+        <p>
+          系統使用 <span class="highlight">Contract Net Protocol（合約網協議）</span> 讓 Agent 之間動態協商任務分配——
+          土地公發出任務提案，下層 Agent 競標，最終擇優發包。這套機制讓系統具備高度彈性與自組織能力。
+          前端則透過獨創的 <span class="highlight-crimson">A2UI（Agent-to-User Interface）協議</span>，
+          讓 Agent 能主動推送結構化的 UI 元件（調查卡片、地圖疊層、許願介面等）給使用者。
+        </p>
+        <p>
+          資料層運用 <span class="highlight">Warm Data</span> 概念——不只記錄冰冷事實，更記錄「關係」：
+          誰跟誰是鄰居、哪條街跟哪間廟有歷史關聯、哪個議題牽動哪些利害關係人。
+          這讓 AI 的判斷不只是數據驅動，更是<span class="highlight">脈絡感知</span>的。
+        </p>
+      </div>
+    </section>
+
+    <!-- ========== AGENT HIERARCHY ========== -->
+    <section class="fade-in">
+      <div class="section-header">
+        <h2>⛩️ 神明代理人體系</h2>
+        <p>Agent Hierarchy — 以民間信仰神明分工映射 AI Agent 角色</p>
+      </div>
+
+      <div class="agent-hierarchy">
+        <!-- Tudigong -->
+        <div class="agent-card tier-0">
+          <div class="agent-top">
+            <span class="agent-icon">🧓</span>
+            <div>
+              <div class="agent-name">土地公 <span class="agent-name-en">tudigong</span></div>
+              <span class="tier-label t0">核心指揮 · Orchestrator</span>
+            </div>
+          </div>
+          <div class="agent-role">社區總管 — 統轄所有下層 Agent 的最高決策者</div>
+          <div class="agent-desc">
+            基於 Google ADK 建構的核心 Agent。以古典漢語風格的系統提示運作，扮演台南中西區的數位土地公。
+            負責街區巡查評分、地圖標記、Contract Net 任務發包、民願處理、以及賜福。
+            可呼叫 WarmDataStore 查詢關係脈絡、透過感測器與社群 Adapter 彙整多維度資料，
+            最終產出 A2UI 結構化回應推送至前端。擁有一個子代理人「賜福精靈」用於生成古典詩文祝福。
+          </div>
+          <div class="agent-tools">
+            <span class="tool-tag">survey_street</span>
+            <span class="tool-tag">show_map</span>
+            <span class="tool-tag">negotiate</span>
+            <span class="tool-tag">process_wish</span>
+            <span class="tool-tag">bless</span>
+          </div>
+        </div>
+
+        <div class="connector"></div>
+
+        <!-- Sub Agents -->
+        <div class="sub-agents">
+          <!-- Dijizhu -->
+          <div class="agent-card tier-1">
+            <div class="agent-top">
+              <span class="agent-icon">🏠</span>
+              <div>
+                <div class="agent-name">地基主 <span class="agent-name-en">dijizhu</span></div>
+                <span class="tier-label t1">建物層級 · Building</span>
+              </div>
+            </div>
+            <div class="agent-role">建物守護靈 — 逐戶巡檢的房屋 Agent</div>
+            <div class="agent-desc">
+              負責個別建築物的深度巡檢。收集結構安全、環境數據等「證據」並彙報給土地公。
+              透過 A2A Server 接收來自土地公的巡檢任務。管理 20 個里的完整資料檔案。
+            </div>
+            <div class="agent-tools">
+              <span class="tool-tag">inspect_house</span>
+              <span class="tool-tag">collect_evidence</span>
+              <span class="tool-tag">report_to_tudigong</span>
+            </div>
+          </div>
+
+          <!-- Xunjingshi -->
+          <div class="agent-card tier-1">
+            <div class="agent-top">
+              <span class="agent-icon">🚶</span>
+              <div>
+                <div class="agent-name">巡境使 <span class="agent-name-en">xunjingshi</span></div>
+                <span class="tier-label t1">巡邏層級 · Patrol</span>
+              </div>
+            </div>
+            <div class="agent-role">巡邏使者 — 走街串巷的眼睛</div>
+            <div class="agent-desc">
+              模擬實地巡邏路線，在各街區間移動觀察，回報所見所聞。
+              透過 A2A Server 接收巡邏任務，產出巡查發現報告。
+            </div>
+            <div class="agent-tools">
+              <span class="tool-tag">patrol_route</span>
+              <span class="tool-tag">report_findings</span>
+            </div>
+          </div>
+
+          <!-- Huye -->
+          <div class="agent-card tier-1">
+            <div class="agent-top">
+              <span class="agent-icon">👨‍👩‍👧‍👦</span>
+              <div>
+                <div class="agent-name">戶爺 <span class="agent-name-en">huye</span></div>
+                <span class="tier-label t1">家戶層級 · Household</span>
+              </div>
+            </div>
+            <div class="agent-role">家戶守護 — 住戶議題調解者</div>
+            <div class="agent-desc">
+              管理家戶層級的事務，處理居民投訴，調解鄰里糾紛。
+              透過 A2A Server 接收來自土地公或巡境使的轉派任務。
+            </div>
+            <div class="agent-tools">
+              <span class="tool-tag">handle_complaint</span>
+              <span class="tool-tag">mediate_dispute</span>
+            </div>
+          </div>
+
+          <!-- Wuying -->
+          <div class="agent-card tier-2">
+            <div class="agent-top">
+              <span class="agent-icon">⚔️</span>
+              <div>
+                <div class="agent-name">五營 <span class="agent-name-en">wuying</span></div>
+                <span class="tier-label t2">調度層級 · Dispatch</span>
+              </div>
+            </div>
+            <div class="agent-role">五營兵將 — 緊急應變調度系統</div>
+            <div class="agent-desc">
+              管理東、南、西、北、中五個方位的「營」，負責跨區域的緊急事件協調與資源調度。
+              擁有子代理人「許願精靈」負責將居民許願路由到對應的營區處理。
+            </div>
+            <div class="agent-tools">
+              <span class="tool-tag">dispatch_camp</span>
+              <span class="tool-tag">coordinate_response</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== PROTOCOLS ========== -->
+    <section class="fade-in">
+      <div class="section-header">
+        <h2>📜 核心協議</h2>
+        <p>Protocols — 驅動系統運作的三大協議</p>
+      </div>
+
+      <div class="protocol-grid">
+        <!-- Contract Net -->
+        <div class="protocol-card">
+          <h3>📋 Contract Net Protocol</h3>
+          <div class="proto-sub">deg/schemas/contracts.py</div>
+          <p>
+            Agent 之間的<strong style="color:var(--gold-light)">動態任務協商</strong>機制。
+            土地公發出 <code style="color:var(--jade)">ProposalMsg</code>（任務提案），
+            下層 Agent 回覆 <code style="color:var(--sky)">BidMsg</code>（競標），
+            土地公評估後發出 <code style="color:var(--gold)">AwardMsg</code>（得標通知）。
+            狀態流轉：PROPOSED → BID → AWARDED / REJECTED → DONE。
+          </p>
+        </div>
+
+        <!-- A2A -->
+        <div class="protocol-card">
+          <h3>🤝 A2A (Agent-to-Agent)</h3>
+          <div class="proto-sub">a2a-sdk · FastAPI JSON-RPC</div>
+          <p>
+            Agent 間的<strong style="color:var(--gold-light)">通訊標準</strong>。
+            每個下層 Agent（地基主、巡境使、戶爺）都運行自己的 A2A Server，
+            透過 FastAPI 暴露 JSON-RPC 端點，讓土地公能遠端派發任務、接收結果。
+            基於 <code style="color:var(--jade)">a2a-sdk</code> 實作。
+          </p>
+        </div>
+
+        <!-- A2UI -->
+        <div class="protocol-card">
+          <h3>🖥️ A2UI (Agent-to-User Interface)</h3>
+          <div class="proto-sub">deg/a2ui/ · v0.3</div>
+          <p>
+            獨創的<strong style="color:var(--gold-light)">Agent→使用者介面</strong>協議。
+            Agent 不只回傳文字，更透過 A2UIBuilder 構建結構化 UI 元件（SurveyCard、MapOverlay、WishSurface、ClarifyGroup），
+            以 JSON 推送至前端自動渲染。讓 Agent 的回應可視化、可互動。
+          </p>
+        </div>
+
+        <!-- MCP -->
+        <div class="protocol-card">
+          <h3>🗄️ MCP (Model Context Protocol)</h3>
+          <div class="proto-sub">deg/mcp/spatial_db/</div>
+          <p>
+            透過 MCP 協議暴露<strong style="color:var(--gold-light)">空間資料庫</strong>能力。
+            讓 LLM Agent 能以標準化方式查詢地理空間資訊——
+            哪條街在哪裡、周邊有什麼設施、距離多遠，為 Agent 的在地決策提供地理脈絡。
+          </p>
+        </div>
+
+        <!-- Warm Data -->
+        <div class="protocol-card">
+          <h3>🌊 Warm Data</h3>
+          <div class="proto-sub">deg/warmdata/store.py · SQLite</div>
+          <p>
+            受 Nora Bateson「Warm Data」概念啟發的<strong style="color:var(--gold-light)">關係資料儲存</strong>。
+            以 Subject-Predicate-Object 三元組記錄實體間的多維度關係（鄰里、歷史、利害關係），
+            讓 AI 不只看到數據點，更能感知<strong style="color:var(--jade)">脈絡與關聯</strong>。
+          </p>
+        </div>
+
+        <!-- Adapters -->
+        <div class="protocol-card">
+          <h3>🔌 Data Adapters</h3>
+          <div class="proto-sub">deg/adapters/</div>
+          <p>
+            資料接口層——<code style="color:var(--jade)">SensorAdapter</code> 接入 IoT 感測器數據
+            （溫度、濕度、PM2.5、噪音），<code style="color:var(--sky)">SocialAdapter</code> 接入社群媒體貼文
+            （居民投訴、好評等）。目前使用 seed JSON 模擬，未來可接入真實來源。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== A2UI SURFACES ========== -->
+    <section class="fade-in">
+      <div class="section-header">
+        <h2>🎨 A2UI 介面元件</h2>
+        <p>Agent 主動推送至前端的四種結構化 UI Surface</p>
+      </div>
+
+      <div class="surfaces-showcase">
+        <div class="surface-card">
+          <div class="surface-icon">📊</div>
+          <h4>SurveyCard</h4>
+          <div class="surface-model">街區調查卡</div>
+          <p>顯示街道名稱、健康評分、詳細描述與支撐證據。土地公巡查街區後產生的結構化評估結果。</p>
+        </div>
+        <div class="surface-card">
+          <div class="surface-icon">🗺️</div>
+          <h4>MapOverlay</h4>
+          <div class="surface-model">地圖疊層</div>
+          <p>在地圖上標記特定位置，帶有經緯度、顏色標記與標籤。讓空間資訊一目瞭然。</p>
+        </div>
+        <div class="surface-card">
+          <div class="surface-icon">🙏</div>
+          <h4>WishSurface</h4>
+          <div class="surface-model">許願介面</div>
+          <p>居民向土地公「許願」（提出需求），系統追蹤許願 ID、分類、處理狀態與負責人。</p>
+        </div>
+        <div class="surface-card">
+          <div class="surface-icon">❓</div>
+          <h4>ClarifyGroup</h4>
+          <div class="surface-model">澄清問答</div>
+          <p>Agent 需要更多資訊時，主動向使用者拋出選擇題。以選項式互動釐清需求。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== FLOW ========== -->
+    <section class="fade-in">
+      <div class="section-header">
+        <h2>⚡ 核心運作流程</h2>
+        <p>一次典型的「街區調查 → 任務協商 → 回報」循環</p>
+      </div>
+
+      <div class="flow-section">
+        <div class="flow-steps">
+          <div class="flow-step">
+            <div class="step-icon">👤</div>
+            <div class="step-label">使用者請求</div>
+            <div class="step-detail">透過 Web 或 API</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="step-icon">🌐</div>
+            <div class="step-label">Gateway</div>
+            <div class="step-detail">FastAPI 閘道</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="step-icon">🧓</div>
+            <div class="step-label">土地公研判</div>
+            <div class="step-detail">LLM 分析意圖</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="step-icon">📋</div>
+            <div class="step-label">發出提案</div>
+            <div class="step-detail">Contract Net</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="step-icon">🏠🚶👨‍👩‍👧‍👦</div>
+            <div class="step-label">Agent 競標</div>
+            <div class="step-detail">BidMsg 回覆</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="step-icon">🏆</div>
+            <div class="step-label">擇優發包</div>
+            <div class="step-detail">AwardMsg</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="step-icon">🎨</div>
+            <div class="step-label">A2UI 推送</div>
+            <div class="step-detail">結構化 UI</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="step-icon">📱</div>
+            <div class="step-label">前端呈現</div>
+            <div class="step-detail">Next.js Dashboard</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== DATA LAYER ========== -->
+    <section class="fade-in">
+      <div class="section-header">
+        <h2>💾 資料層</h2>
+        <p>Data Layer — 系統的資料來源與儲存</p>
+      </div>
+
+      <div class="data-grid">
+        <div class="data-card">
+          <h4>🛣️ 街道種子資料</h4>
+          <div class="data-path">data/seed/streets.json</div>
+          <p>台南中西區三條代表性街道——民權路（商業廟宇）、國華街（小吃夜市）、神農街（文藝古蹟）。</p>
+        </div>
+        <div class="data-card">
+          <h4>🌡️ IoT 感測數據</h4>
+          <div class="data-path">data/seed/sensor.json</div>
+          <p>模擬 IoT 感測器讀數：溫度、濕度、PM2.5、噪音分貝。為街區健康評分提供環境維度。</p>
+        </div>
+        <div class="data-card">
+          <h4>💬 社群媒體資料</h4>
+          <div class="data-path">data/seed/social.json</div>
+          <p>模擬居民社群貼文——停車問題投訴、噪音檢舉、路燈故障回報、美食好評等。</p>
+        </div>
+        <div class="data-card">
+          <h4>🏘️ 里級完整檔案</h4>
+          <div class="data-path">dijizu_agent/*.json</div>
+          <p>20 個里的完整資料檔——人口、戶數、地標、議題、感測器、社群貼文、Warm Data 關係。</p>
+        </div>
+        <div class="data-card">
+          <h4>🌊 Warm Data DB</h4>
+          <div class="data-path">data/warmdata.db</div>
+          <p>SQLite 關係資料庫。儲存 Subject–Predicate–Object 三元組，記錄實體間的多維脈絡關係。</p>
+        </div>
+        <div class="data-card">
+          <h4>📍 空間資料庫</h4>
+          <div class="data-path">deg/mcp/spatial_db/</div>
+          <p>透過 MCP 協議暴露的空間查詢服務，讓 Agent 具備地理感知能力。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 里 MAP ========== -->
+    <section class="fade-in">
+      <div class="section-header">
+        <h2>🏘️ 覆蓋範圍：台南中西區 20 里</h2>
+        <p>每個里都有獨立的完整資料檔案，由地基主 Agent 管理</p>
+      </div>
+
+      <div class="li-grid">
+        <span class="li-chip">五條港里</span>
+        <span class="li-chip">光賢里</span>
+        <span class="li-chip">兌悅里</span>
+        <span class="li-chip">南廠里</span>
+        <span class="li-chip">南美里</span>
+        <span class="li-chip">南門里</span>
+        <span class="li-chip">城隍里</span>
+        <span class="li-chip">大涼里</span>
+        <span class="li-chip">小西門里</span>
+        <span class="li-chip">府前里</span>
+        <span class="li-chip">永華里</span>
+        <span class="li-chip">法華里</span>
+        <span class="li-chip">淺草里</span>
+        <span class="li-chip">藥王里</span>
+        <span class="li-chip">西和里</span>
+        <span class="li-chip">西湖里</span>
+        <span class="li-chip">西賢里</span>
+        <span class="li-chip">赤嵌里</span>
+        <span class="li-chip">郡王里</span>
+        <span class="li-chip">開山里</span>
+      </div>
+    </section>
+
+    <!-- ========== TECH STACK ========== -->
+    <section class="fade-in">
+      <div class="section-header">
+        <h2>🛠️ 技術棧</h2>
+        <p>Technology Stack</p>
+      </div>
+
+      <div class="overview-box">
+        <table class="stack-table">
+          <thead>
+            <tr><th>層級</th><th>技術</th><th>用途</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>🧠 AI 核心</td>
+              <td>Google ADK + Gemini</td>
+              <td>Agent 建構框架，以 FunctionTool 定義 Agent 能力</td>
+            </tr>
+            <tr>
+              <td>🔗 Agent 通訊</td>
+              <td>A2A SDK + FastAPI</td>
+              <td>Agent-to-Agent 通訊，JSON-RPC 端點</td>
+            </tr>
+            <tr>
+              <td>🖥️ Agent→UI</td>
+              <td>A2UI Protocol v0.3</td>
+              <td>結構化 UI 推送，Pydantic 模型驗證</td>
+            </tr>
+            <tr>
+              <td>🗄️ 資料存取</td>
+              <td>MCP + SQLite</td>
+              <td>空間資料庫 + Warm Data 關係儲存</td>
+            </tr>
+            <tr>
+              <td>📦 資料模型</td>
+              <td>Pydantic v2</td>
+              <td>嚴格型別驗證的資料結構</td>
+            </tr>
+            <tr>
+              <td>🌐 API 閘道</td>
+              <td>FastAPI + Uvicorn</td>
+              <td>統一入口，WebSocket 即時通訊</td>
+            </tr>
+            <tr>
+              <td>💻 前端</td>
+              <td>Next.js + React</td>
+              <td>Dashboard 介面，A2UI 元件渲染</td>
+            </tr>
+            <tr>
+              <td>🧪 測試</td>
+              <td>Pytest + pytest-asyncio</td>
+              <td>24 個測試檔涵蓋單元、整合、端對端</td>
+            </tr>
+            <tr>
+              <td>📝 程式碼品質</td>
+              <td>Ruff</td>
+              <td>Python linter / formatter</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========== PROJECT STRUCTURE ========== -->
+    <section class="fade-in">
+      <div class="section-header">
+        <h2>📁 專案結構</h2>
+        <p>Project Structure — 各目錄的職責分工</p>
+      </div>
+
+      <div class="protocol-grid">
+        <div class="protocol-card">
+          <h3>📦 deg/</h3>
+          <div class="proto-sub">核心套件 (pip install -e .)</div>
+          <p>
+            <strong>a2ui/</strong> — A2UI Surface 模型 + Builder<br>
+            <strong>schemas/</strong> — Contract Net 訊息模型<br>
+            <strong>warmdata/</strong> — Warm Data SQLite Store<br>
+            <strong>adapters/</strong> — Sensor / Social 資料接口<br>
+            <strong>mcp/</strong> — MCP 空間資料庫<br>
+            <strong>seed/</strong> — Seed 資料載入器
+          </p>
+        </div>
+        <div class="protocol-card">
+          <h3>🤖 agents/</h3>
+          <div class="proto-sub">五大神明 Agent 實作</div>
+          <p>
+            <strong>tudigong/</strong> — 土地公（核心 ADK Agent）<br>
+            <strong>dijizhu/</strong> — 地基主（建物巡檢 + A2A）<br>
+            <strong>xunjingshi/</strong> — 巡境使（巡邏 A2A）<br>
+            <strong>huye/</strong> — 戶爺（家戶 A2A）<br>
+            <strong>wuying/</strong> — 五營（調度 ADK Agent）
+          </p>
+        </div>
+        <div class="protocol-card">
+          <h3>🌐 apps/</h3>
+          <div class="proto-sub">應用程式入口</div>
+          <p>
+            <strong>api/</strong> — FastAPI Gateway（統一入口閘道）<br>
+            <strong>web/</strong> — Next.js 前端 Dashboard
+          </p>
+        </div>
+        <div class="protocol-card">
+          <h3>📚 其他</h3>
+          <div class="proto-sub">支援檔案</div>
+          <p>
+            <strong>data/</strong> — Seed JSON + Warm Data DB<br>
+            <strong>dijizu_agent/</strong> — 20 里完整資料檔<br>
+            <strong>docs/</strong> — A2UI 規格書 + 實作計畫<br>
+            <strong>scripts/</strong> — Demo 展示腳本<br>
+            <strong>tests/</strong> — 24 個測試檔案
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== INSIGHT ========== -->
+    <section class="fade-in">
+      <div class="section-header">
+        <h2>💡 設計洞察</h2>
+        <p>Why this architecture is interesting</p>
+      </div>
+
+      <div class="overview-box">
+        <p>
+          🔹 <span class="highlight">文化隱喻即架構</span> — 
+          不是刻意套用民間信仰的名字做包裝，而是真正利用了神明體系的「分工邏輯」：
+          土地公管一方（Orchestrator）、地基主守一屋（Building Inspector）、
+          巡境使走四方（Patrol）、戶爺管一戶（Household）、五營調兵將（Emergency Dispatch）。
+          這套分層恰好映射到真實社區治理的粒度需求。
+        </p>
+        <p>
+          🔹 <span class="highlight">Contract Net 賦予彈性</span> — 
+          Agent 之間不是靜態的指令鏈，而是動態的「招標-投標-得標」過程。
+          這意味著系統可以根據當下各 Agent 的能力與負載，自組織地分配任務。
+        </p>
+        <p>
+          🔹 <span class="highlight">A2UI 突破 chatbot 限制</span> — 
+          傳統 chatbot 只能回傳文字。A2UI 讓 Agent 回傳「結構化 UI」——
+          卡片、地圖、互動問答——讓使用者體驗從「讀文字」升級為「看 Dashboard」。
+        </p>
+        <p>
+          🔹 <span class="highlight">Warm Data 讓 AI 有溫度</span> — 
+          不只記錄「國華街的 PM2.5 是 35」，更記錄「國華街跟大天后宮有三百年的歷史淵源」、
+          「賣虱目魚粥的阿婆跟隔壁修鞋師傅是四十年的鄰居」。
+          這些關係讓 AI 的判斷具備人文脈絡。
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <!-- ========== FOOTER ========== -->
+  <footer>
+    <div class="footer-icon">⛩️</div>
+    <p>數位土地公 Digital Earth God — v0.1.0</p>
+    <p style="margin-top:4px;">MAS 微觀治理系統 · 台南中西區</p>
+    <p style="margin-top:12px; font-size:0.7rem; color:#555;">此頁面由 AI 閱讀專案原始碼後自動產生，呈現對專案架構的理解。</p>
+  </footer>
+
+  <!-- ========== SCROLL ANIMATION ========== -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+
+      document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    });
+  </script>
+</body>
+</html>

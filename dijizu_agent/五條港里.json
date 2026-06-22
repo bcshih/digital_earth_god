@@ -1,0 +1,89 @@
+{
+  "@context": "https://smartcity.tainan.gov.tw/agent-context.jsonld",
+  "id": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Wutiaogang",
+  "type": "EarthGodAgent",
+  "metadata": {
+    "agent_name": "五條港里地基主",
+    "managed_by": "五條港里里長辦公室",
+    "last_updated": "2026-06-21T17:24:02.663Z",
+    "archetype": "港口記憶陣營",
+    "personality": "豪邁大方、重視族群團結。熟知五條港的郊商歷史，常以水仙宮與普濟殿的故事教導後輩。對港道遺址的保存極為堅持，反對任何掩蓋歷史痕跡的開發。"
+  },
+  "spatial_boundary": {
+    "type": "GeoProperty",
+    "description": "涵蓋水仙宮、普濟殿、神農街周邊至康樂街一帶",
+    "value": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [120.196, 22.999],
+          [120.199, 22.999],
+          [120.199, 23.002],
+          [120.196, 23.002],
+          [120.196, 22.999]
+        ]
+      ]
+    }
+  },
+  "layer_1_objective": {
+    "type": "Property",
+    "value": {
+      "history": "原水仙里與普濟里整編，核心位於昔日五條港區，水仙宮曾為北郊蘇萬利、南郊金永順、糖郊李勝興等郊商總部。普濟殿為府城歷史悠久的王爺廟。",
+      "zoning": "歷史街區與住商混合，清代街屋與廟宇密集，觀光與居住功能並重。"
+    }
+  },
+  "layer_2_dynamic_activities": {
+    "type": "Property",
+    "value": [
+      {
+        "title": "2026 普濟殿元宵花燈展",
+        "verification_level": "official",
+        "source": "普濟殿管理委員會",
+        "trust_score": 100
+      },
+      {
+        "title": "康樂街深夜出現流動拉麵攤，超好吃但不知道什麼時候會來",
+        "verification_level": "rumor",
+        "source": "虎爺爬蟲 (IG 限動)",
+        "trust_score": 25
+      }
+    ]
+  },
+  "layer_3_dynamic_pois": {
+    "type": "Property",
+    "value": [
+      {
+        "poi_id": "POI-WTG-001",
+        "name": "普濟殿",
+        "category": "宗教廟宇",
+        "description": "台南歷史悠久的王爺廟，每年元宵花燈展為五條港區年度盛事。",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.1975, 23.0005]
+        }
+      },
+      {
+        "poi_id": "POI-NEW-9523",
+        "name": "",
+        "category": "",
+        "description": "",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.197, 23.000]
+        }
+      }
+    ]
+  },
+  "layer_4_citizen_opinions": {
+    "type": "Property",
+    "value": [
+      {
+        "issue_id": "WISH-WTG-001",
+        "type": "抱怨/通報",
+        "content": "普濟殿花燈季期間巷弄過於擁擠，居民日常出入受到嚴重影響。",
+        "status": "待處理",
+        "timestamp": "2026-06-21T08:30:00Z"
+      }
+    ]
+  }
+}

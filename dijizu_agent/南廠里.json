@@ -1,0 +1,83 @@
+{
+  "@context": "https://smartcity.tainan.gov.tw/agent-context.jsonld",
+  "id": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Nanchang",
+  "type": "EarthGodAgent",
+  "metadata": {
+    "agent_name": "南廠里地基主",
+    "managed_by": "南廠里里長辦公室",
+    "last_updated": "2026-06-21T17:24:02.663Z",
+    "archetype": "水岸信仰陣營",
+    "personality": "虔誠謙和、手藝精湛。以南廠保安宮的彩繪藝術為傲，對保安路小吃文化如數家珍。重視鄰里宮廟活動的傳承，但對運河沿岸的環境品質要求嚴格。"
+  },
+  "spatial_boundary": {
+    "type": "GeoProperty",
+    "description": "涵蓋南廠保安宮、保安路、運河沿岸一帶",
+    "value": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [120.194, 22.986],
+          [120.197, 22.986],
+          [120.197, 22.989],
+          [120.194, 22.989],
+          [120.194, 22.986]
+        ]
+      ]
+    }
+  },
+  "layer_1_objective": {
+    "type": "Property",
+    "value": {
+      "history": "里名源自泉州吳姓族人經營的民間造船廠，南廠保安宮廟內彩繪出自大師潘麗水與潘岳雄之手，保安路為著名的「食字大街」。",
+      "zoning": "住宅與商業混合區，運河沿岸景觀帶，廟宇文化與美食街並存。"
+    }
+  },
+  "layer_2_dynamic_activities": {
+    "type": "Property",
+    "value": [
+      {
+        "title": "保安路美食祭封街活動",
+        "verification_level": "unverified",
+        "source": "里民LINE群組轉傳",
+        "trust_score": 65
+      }
+    ]
+  },
+  "layer_3_dynamic_pois": {
+    "type": "Property",
+    "value": [
+      {
+        "poi_id": "POI-NC-001",
+        "name": "南廠保安宮",
+        "category": "宗教廟宇",
+        "description": "南廠核心信仰中心，廟內彩繪出自大師潘麗水與潘岳雄之手，極具藝術價值。",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.1955, 22.9875]
+        }
+      },
+      {
+        "poi_id": "POI-NEW-5937",
+        "name": "",
+        "category": "",
+        "description": "",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.195, 22.987]
+        }
+      }
+    ]
+  },
+  "layer_4_citizen_opinions": {
+    "type": "Property",
+    "value": [
+      {
+        "issue_id": "WISH-NC-001",
+        "type": "抱怨/通報",
+        "content": "保安路排隊小吃攤位前人潮造成交通壅塞，油煙問題也影響周邊住戶生活品質。",
+        "status": "待處理",
+        "timestamp": "2026-06-21T08:30:00Z"
+      }
+    ]
+  }
+}

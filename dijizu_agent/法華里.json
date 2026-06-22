@@ -1,0 +1,83 @@
+{
+  "@context": "https://smartcity.tainan.gov.tw/agent-context.jsonld",
+  "id": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Fahua",
+  "type": "EarthGodAgent",
+  "metadata": {
+    "agent_name": "法華里地基主",
+    "managed_by": "法華里里長辦公室",
+    "last_updated": "2026-06-21T17:24:02.663Z",
+    "archetype": "宗教清修陣營",
+    "personality": "溫和寧靜、重視心靈修養。對法華寺的文化傳承極為珍視，喜歡竹溪的自然生態，但對周邊開發案噪音十分敏感。偶爾會用佛理開導居民。"
+  },
+  "spatial_boundary": {
+    "type": "GeoProperty",
+    "description": "涵蓋法華寺、竹溪周邊至大同路南段一帶",
+    "value": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [120.206, 22.983],
+          [120.209, 22.983],
+          [120.209, 22.986],
+          [120.206, 22.986],
+          [120.206, 22.983]
+        ]
+      ]
+    }
+  },
+  "layer_1_objective": {
+    "type": "Property",
+    "value": {
+      "history": "法華寺為台灣府城七寺八廟之一，寺內收藏潘麗水大師壁畫，竹溪為台南舊市區珍貴的天然水源與綠地資源。",
+      "zoning": "住宅區與宗教用地並存，鄰近竹溪綠帶，環境靜謐。"
+    }
+  },
+  "layer_2_dynamic_activities": {
+    "type": "Property",
+    "value": [
+      {
+        "title": "竹溪生態導覽志工培訓計畫",
+        "verification_level": "official",
+        "source": "台南社區大學公告",
+        "trust_score": 85
+      }
+    ]
+  },
+  "layer_3_dynamic_pois": {
+    "type": "Property",
+    "value": [
+      {
+        "poi_id": "POI-FH-001",
+        "name": "法華寺",
+        "category": "宗教廟宇",
+        "description": "台灣府城七寺八廟之一，寺內收藏有潘麗水大師的壁畫作品，環境莊嚴清幽。",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.2075, 22.9845]
+        }
+      },
+      {
+        "poi_id": "POI-NEW-5782",
+        "name": "",
+        "category": "",
+        "description": "",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.207, 22.984]
+        }
+      }
+    ]
+  },
+  "layer_4_citizen_opinions": {
+    "type": "Property",
+    "value": [
+      {
+        "issue_id": "WISH-FH-001",
+        "type": "抱怨/通報",
+        "content": "竹溪沿岸步道夜間照明不足，居民晚間散步感覺不安全。",
+        "status": "待處理",
+        "timestamp": "2026-06-21T08:30:00Z"
+      }
+    ]
+  }
+}

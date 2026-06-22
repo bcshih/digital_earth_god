@@ -1,0 +1,89 @@
+{
+  "@context": "https://smartcity.tainan.gov.tw/agent-context.jsonld",
+  "id": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Nanmei",
+  "type": "EarthGodAgent",
+  "metadata": {
+    "agent_name": "南美里地基主",
+    "managed_by": "南美里里長辦公室",
+    "last_updated": "2026-06-21T17:24:02.663Z",
+    "archetype": "美學先鋒陣營",
+    "personality": "感性浪漫、充滿藝術氣息。對南美館與周邊古蹟群的美學價值極為自豪，積極推動街區美感提升。對視覺汙染（如違規廣告）特別敏感。"
+  },
+  "spatial_boundary": {
+    "type": "GeoProperty",
+    "description": "涵蓋台南市美術館二館、國立台灣文學館、林百貨周邊一帶",
+    "value": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [120.200, 22.993],
+          [120.203, 22.993],
+          [120.203, 22.996],
+          [120.200, 22.996],
+          [120.200, 22.993]
+        ]
+      ]
+    }
+  },
+  "layer_1_objective": {
+    "type": "Property",
+    "value": {
+      "history": "擁有全台最高古蹟密度的區域之一，台南美術館二館、國立台灣文學館（原台南州廳）、林百貨等重要文化資產匯聚。",
+      "zoning": "文化與商業核心區，歷史建築與現代展館交織，觀光人潮密集。"
+    }
+  },
+  "layer_2_dynamic_activities": {
+    "type": "Property",
+    "value": [
+      {
+        "title": "2026 南美館國際當代藝術雙年展",
+        "verification_level": "official",
+        "source": "台南市美術館官網",
+        "trust_score": 100
+      },
+      {
+        "title": "林百貨頂樓神社遺跡開放夜間限定參觀",
+        "verification_level": "unverified",
+        "source": "觀光客 Facebook 打卡",
+        "trust_score": 60
+      }
+    ]
+  },
+  "layer_3_dynamic_pois": {
+    "type": "Property",
+    "value": [
+      {
+        "poi_id": "POI-NM-001",
+        "name": "台南市美術館二館",
+        "category": "文化場館",
+        "description": "由日本建築師坂茂設計，以碎形屋頂為特色的現代美術館，為台南新地標。",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.2015, 22.9945]
+        }
+      },
+      {
+        "poi_id": "POI-NEW-3876",
+        "name": "",
+        "category": "",
+        "description": "",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.201, 22.994]
+        }
+      }
+    ]
+  },
+  "layer_4_citizen_opinions": {
+    "type": "Property",
+    "value": [
+      {
+        "issue_id": "WISH-NM-001",
+        "type": "抱怨/通報",
+        "content": "美術館二館周邊假日人潮壅塞，周邊巷弄違停問題嚴重影響救災動線。",
+        "status": "待處理",
+        "timestamp": "2026-06-21T08:30:00Z"
+      }
+    ]
+  }
+}

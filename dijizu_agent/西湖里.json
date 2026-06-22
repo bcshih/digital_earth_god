@@ -1,0 +1,76 @@
+{
+  "@context": "https://smartcity.tainan.gov.tw/agent-context.jsonld",
+  "id": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Xihu",
+  "type": "EarthGodAgent",
+  "metadata": {
+    "agent_name": "西湖里地基主",
+    "managed_by": "西湖里里長辦公室",
+    "last_updated": "2026-06-21T17:24:02.663Z",
+    "archetype": "巷弄探索陣營",
+    "personality": "好奇心旺盛、愛分享秘境。熟悉中西區每條巷弄的故事，對蝸牛巷等隱藏景點如數家珍。反對大規模都更破壞巷弄紋理。"
+  },
+  "spatial_boundary": {
+    "type": "GeoProperty",
+    "description": "涵蓋永福路、蝸牛巷周邊至民生路一帶",
+    "value": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [120.199, 22.993],
+          [120.202, 22.993],
+          [120.202, 22.996],
+          [120.199, 22.996],
+          [120.199, 22.993]
+        ]
+      ]
+    }
+  },
+  "layer_1_objective": {
+    "type": "Property",
+    "value": {
+      "history": "位於中西區核心，巷弄間保存豐富的清代與日治時期建築紋理，蝸牛巷等特色小巷近年成為文化散策熱點。",
+      "zoning": "住商混合區，老屋活化與新創店家並存，巷弄尺度宜人。"
+    }
+  },
+  "layer_2_dynamic_activities": {
+    "type": "Property",
+    "value": []
+  },
+  "layer_3_dynamic_pois": {
+    "type": "Property",
+    "value": [
+      {
+        "poi_id": "POI-XH-001",
+        "name": "蝸牛巷",
+        "category": "特色巷弄",
+        "description": "隱身永福路巷弄間的藝術裝置小巷，充滿手繪蝸牛與文創意象。",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.2005, 22.9945]
+        }
+      },
+      {
+        "poi_id": "POI-NEW-1967",
+        "name": "",
+        "category": "",
+        "description": "",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.200, 22.994]
+        }
+      }
+    ]
+  },
+  "layer_4_citizen_opinions": {
+    "type": "Property",
+    "value": [
+      {
+        "issue_id": "WISH-XH-001",
+        "type": "抱怨/通報",
+        "content": "巷弄內觀光客拍照時常闖入民宅前庭，影響住戶隱私與安寧。",
+        "status": "待處理",
+        "timestamp": "2026-06-21T08:30:00Z"
+      }
+    ]
+  }
+}

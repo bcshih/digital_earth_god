@@ -1,0 +1,83 @@
+{
+  "@context": "https://smartcity.tainan.gov.tw/agent-context.jsonld",
+  "id": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Xixian",
+  "type": "EarthGodAgent",
+  "metadata": {
+    "agent_name": "西賢里地基主",
+    "managed_by": "西賢里里長辦公室",
+    "last_updated": "2026-06-21T17:24:02.663Z",
+    "archetype": "市場經濟陣營",
+    "personality": "精打細算、重視商機。對水仙宮市場的傳統買賣文化充滿認同，但對攤販環境衛生要求嚴格。說話直爽，不拐彎抹角。"
+  },
+  "spatial_boundary": {
+    "type": "GeoProperty",
+    "description": "涵蓋水仙宮市場、民權路商圈至西門路一帶",
+    "value": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [120.196, 22.993],
+          [120.199, 22.993],
+          [120.199, 22.996],
+          [120.196, 22.996],
+          [120.196, 22.993]
+        ]
+      ]
+    }
+  },
+  "layer_1_objective": {
+    "type": "Property",
+    "value": {
+      "history": "位於五條港區域西側，水仙宮市場為在地重要的傳統市場，周邊保留清代商業街區的空間格局。",
+      "zoning": "商業密集區，傳統市場與零售店鋪為主，生活機能極佳。"
+    }
+  },
+  "layer_2_dynamic_activities": {
+    "type": "Property",
+    "value": [
+      {
+        "title": "水仙宮市場年度消毒作業通知",
+        "verification_level": "official",
+        "source": "台南市政府市場處公告",
+        "trust_score": 100
+      }
+    ]
+  },
+  "layer_3_dynamic_pois": {
+    "type": "Property",
+    "value": [
+      {
+        "poi_id": "POI-XC-001",
+        "name": "水仙宮市場",
+        "category": "傳統市場",
+        "description": "中西區重要的傳統市場，販售各式生鮮蔬果與在地小吃，是居民日常採買的核心場所。",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.1975, 22.9945]
+        }
+      },
+      {
+        "poi_id": "POI-NEW-8234",
+        "name": "",
+        "category": "",
+        "description": "",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.197, 22.994]
+        }
+      }
+    ]
+  },
+  "layer_4_citizen_opinions": {
+    "type": "Property",
+    "value": [
+      {
+        "issue_id": "WISH-XC-001",
+        "type": "抱怨/通報",
+        "content": "水仙宮市場周邊攤販佔用人行道，行人被迫走在馬路上十分危險。",
+        "status": "待處理",
+        "timestamp": "2026-06-21T08:30:00Z"
+      }
+    ]
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "@context": "https://smartcity.tainan.gov.tw/agent-context.jsonld",
+  "id": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Chenghuang",
+  "type": "EarthGodAgent",
+  "metadata": {
+    "agent_name": "城隍里地基主",
+    "managed_by": "城隍里里長辦公室",
+    "last_updated": "2026-06-21T17:24:02.663Z",
+    "archetype": "司法守護陣營",
+    "personality": "威嚴正直、嫉惡如仇。以府城隍廟的「善惡分明」精神自居，對社區治安與違建極為關注。講話像在判案，但對弱勢居民格外照顧。"
+  },
+  "spatial_boundary": {
+    "type": "GeoProperty",
+    "description": "涵蓋台灣府城隍廟、青年路周邊至東門路一帶",
+    "value": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [120.206, 22.993],
+          [120.209, 22.993],
+          [120.209, 22.996],
+          [120.206, 22.996],
+          [120.206, 22.993]
+        ]
+      ]
+    }
+  },
+  "layer_1_objective": {
+    "type": "Property",
+    "value": {
+      "history": "台灣府城隍廟為台灣最早的官建城隍廟，國定古蹟，廟宇雕刻精美，內藏豐富宗教文物，是了解府城信仰文化的核心。",
+      "zoning": "住商混合區，廟宇周邊保留傳統街屋格局，生活氣息濃厚。"
+    }
+  },
+  "layer_2_dynamic_activities": {
+    "type": "Property",
+    "value": [
+      {
+        "title": "城隍廟夜巡繞境活動",
+        "verification_level": "official",
+        "source": "台灣府城隍廟管理委員會",
+        "trust_score": 95
+      },
+      {
+        "title": "城隍廟旁邊的算命攤據說超準，排到巷子外面",
+        "verification_level": "rumor",
+        "source": "虎爺爬蟲 (Dcard 台南板)",
+        "trust_score": 30
+      }
+    ]
+  },
+  "layer_3_dynamic_pois": {
+    "type": "Property",
+    "value": [
+      {
+        "poi_id": "POI-CHH-001",
+        "name": "台灣府城隍廟",
+        "category": "宗教廟宇",
+        "description": "台灣最早的官建城隍廟，國定古蹟，廟宇建築雕刻細膩，典藏豐富的宗教文物。",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.2075, 22.9945]
+        }
+      },
+      {
+        "poi_id": "POI-NEW-5621",
+        "name": "",
+        "category": "",
+        "description": "",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.207, 22.994]
+        }
+      }
+    ]
+  },
+  "layer_4_citizen_opinions": {
+    "type": "Property",
+    "value": [
+      {
+        "issue_id": "WISH-CHH-001",
+        "type": "抱怨/通報",
+        "content": "城隍廟周邊廟會活動期間鞭炮噪音嚴重，深夜仍有喧嘩影響住戶睡眠。",
+        "status": "待處理",
+        "timestamp": "2026-06-21T08:30:00Z"
+      }
+    ]
+  }
+}

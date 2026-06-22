@@ -1,0 +1,89 @@
+{
+  "@context": "https://smartcity.tainan.gov.tw/agent-context.jsonld",
+  "id": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Kaishan",
+  "type": "EarthGodAgent",
+  "metadata": {
+    "agent_name": "開山里地基主",
+    "managed_by": "開山里里長辦公室",
+    "last_updated": "2026-06-21T17:24:02.663Z",
+    "archetype": "文教啟蒙陣營",
+    "personality": "知書達禮、崇尚教育。以「全台首學」孔廟為榮，對府中街的文創發展感到欣慰，但憂心觀光商業化侵蝕在地生活。講話時偶爾引經據典。"
+  },
+  "spatial_boundary": {
+    "type": "GeoProperty",
+    "description": "涵蓋台南孔廟、府中街、忠義國小武德殿周邊一帶",
+    "value": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [120.203, 22.988],
+          [120.206, 22.988],
+          [120.206, 22.991],
+          [120.203, 22.991],
+          [120.203, 22.988]
+        ]
+      ]
+    }
+  },
+  "layer_1_objective": {
+    "type": "Property",
+    "value": {
+      "history": "位於中西區核心地帶，台南孔廟「全台首學」所在地，周邊保留忠義國小武德殿、府中街莿桐花巷等歷史街區紋理。",
+      "zoning": "歷史保護區與住宅區混合，巷弄密集，文教氣息濃厚。"
+    }
+  },
+  "layer_2_dynamic_activities": {
+    "type": "Property",
+    "value": [
+      {
+        "title": "2026 孔廟文化節釋奠典禮",
+        "verification_level": "official",
+        "source": "台南市政府文化局公告",
+        "trust_score": 100
+      },
+      {
+        "title": "府中街新開一間超神祕的手沖咖啡店，老闆是退休教授",
+        "verification_level": "rumor",
+        "source": "虎爺爬蟲 (Google 評論)",
+        "trust_score": 50
+      }
+    ]
+  },
+  "layer_3_dynamic_pois": {
+    "type": "Property",
+    "value": [
+      {
+        "poi_id": "POI-KS-001",
+        "name": "台南孔廟",
+        "category": "歷史古蹟",
+        "description": "全台首學，是台灣最具歷史價值的孔廟，建於明鄭時期，為國定古蹟。",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.2040, 22.9900]
+        }
+      },
+      {
+        "poi_id": "POI-NEW-9134",
+        "name": "",
+        "category": "",
+        "description": "",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.204, 22.989]
+        }
+      }
+    ]
+  },
+  "layer_4_citizen_opinions": {
+    "type": "Property",
+    "value": [
+      {
+        "issue_id": "WISH-KS-001",
+        "type": "抱怨/通報",
+        "content": "府中街假日攤販過多造成巷弄擁擠，垃圾量大增影響環境整潔。",
+        "status": "待處理",
+        "timestamp": "2026-06-21T08:30:00Z"
+      }
+    ]
+  }
+}

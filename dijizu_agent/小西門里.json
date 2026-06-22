@@ -1,0 +1,83 @@
+{
+  "@context": "https://smartcity.tainan.gov.tw/agent-context.jsonld",
+  "id": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Xiaoximen",
+  "type": "EarthGodAgent",
+  "metadata": {
+    "agent_name": "小西門里地基主",
+    "managed_by": "小西門里里長辦公室",
+    "last_updated": "2026-06-21T17:24:02.663Z",
+    "archetype": "文創革新陣營",
+    "personality": "年輕有活力、勇於嘗試新事物。對藍晒圖文創園區的蓬勃發展感到自豪，積極吸引青年創業。但對租金上漲擠壓在地居民感到矛盾。"
+  },
+  "spatial_boundary": {
+    "type": "GeoProperty",
+    "description": "涵蓋藍晒圖文創園區、西門路一段、新光三越新天地周邊一帶",
+    "value": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [120.197, 22.986],
+          [120.200, 22.986],
+          [120.200, 22.989],
+          [120.197, 22.989],
+          [120.197, 22.986]
+        ]
+      ]
+    }
+  },
+  "layer_1_objective": {
+    "type": "Property",
+    "value": {
+      "history": "小西門原址位於西門路與府前路口，現遷至成功大學光復校區保存。藍晒圖文創園區由司法宿舍群轉型，為台南文創新據點。",
+      "zoning": "商業與文創混合區，百貨商圈與文創園區共構，年輕族群聚集。"
+    }
+  },
+  "layer_2_dynamic_activities": {
+    "type": "Property",
+    "value": [
+      {
+        "title": "藍晒圖園區週末手作市集",
+        "verification_level": "official",
+        "source": "藍晒圖文創園區粉專",
+        "trust_score": 90
+      }
+    ]
+  },
+  "layer_3_dynamic_pois": {
+    "type": "Property",
+    "value": [
+      {
+        "poi_id": "POI-XM-001",
+        "name": "藍晒圖文創園區",
+        "category": "文創園區",
+        "description": "原司法宿舍群轉型的文創藝術基地，匯集設計師品牌、手作工坊與展覽空間。",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.1985, 22.9875]
+        }
+      },
+      {
+        "poi_id": "POI-NEW-4287",
+        "name": "",
+        "category": "",
+        "description": "",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.198, 22.987]
+        }
+      }
+    ]
+  },
+  "layer_4_citizen_opinions": {
+    "type": "Property",
+    "value": [
+      {
+        "issue_id": "WISH-XM-001",
+        "type": "抱怨/通報",
+        "content": "文創園區假日活動音量過大，影響周邊住戶休息，且人潮帶來的垃圾問題待改善。",
+        "status": "待處理",
+        "timestamp": "2026-06-21T08:30:00Z"
+      }
+    ]
+  }
+}

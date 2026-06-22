@@ -1,0 +1,89 @@
+{
+  "@context": "https://smartcity.tainan.gov.tw/agent-context.jsonld",
+  "id": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Junwang",
+  "type": "EarthGodAgent",
+  "metadata": {
+    "agent_name": "郡王里地基主",
+    "managed_by": "郡王里里長辦公室",
+    "last_updated": "2026-06-21T17:24:02.663Z",
+    "archetype": "英雄崇拜陣營",
+    "personality": "正氣凜然、愛國心強。視延平郡王祠為精神象徵，對歷史教育充滿熱忱，但對周邊停車亂象感到困擾。常以鄭成功開台精神鼓勵居民。"
+  },
+  "spatial_boundary": {
+    "type": "GeoProperty",
+    "description": "涵蓋延平郡王祠、臺南市立博物館周邊至開山路一帶",
+    "value": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [120.205, 22.989],
+          [120.208, 22.989],
+          [120.208, 22.992],
+          [120.205, 22.992],
+          [120.205, 22.989]
+        ]
+      ]
+    }
+  },
+  "layer_1_objective": {
+    "type": "Property",
+    "value": {
+      "history": "以紀念鄭成功而得名，擁有延平郡王祠（福州式祠堂建築）與臺南市立博物館，為府城重要的歷史紀念與文化教育區。",
+      "zoning": "文教住宅混合區，鄰近公園綠地，環境清幽。"
+    }
+  },
+  "layer_2_dynamic_activities": {
+    "type": "Property",
+    "value": [
+      {
+        "title": "延平郡王祠鄭成功祭典暨開台紀念活動",
+        "verification_level": "official",
+        "source": "台南市政府民政局公告",
+        "trust_score": 100
+      },
+      {
+        "title": "郡王祠後方驚見超美繡球花秘境",
+        "verification_level": "rumor",
+        "source": "虎爺爬蟲 (IG Tag #台南秘境)",
+        "trust_score": 40
+      }
+    ]
+  },
+  "layer_3_dynamic_pois": {
+    "type": "Property",
+    "value": [
+      {
+        "poi_id": "POI-JW-001",
+        "name": "延平郡王祠",
+        "category": "歷史古蹟",
+        "description": "全台最早的福州式建築祠堂，供奉開台聖王鄭成功，園區結合中式庭園與日式神社遺構。",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.2065, 22.9905]
+        }
+      },
+      {
+        "poi_id": "POI-NEW-3241",
+        "name": "",
+        "category": "",
+        "description": "",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.206, 22.990]
+        }
+      }
+    ]
+  },
+  "layer_4_citizen_opinions": {
+    "type": "Property",
+    "value": [
+      {
+        "issue_id": "WISH-JW-001",
+        "type": "抱怨/通報",
+        "content": "郡王祠周邊假日遊覽車違停嚴重，影響居民出入與行車安全。",
+        "status": "待處理",
+        "timestamp": "2026-06-21T08:30:00Z"
+      }
+    ]
+  }
+}

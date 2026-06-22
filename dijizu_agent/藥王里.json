@@ -1,0 +1,89 @@
+{
+  "@context": "https://smartcity.tainan.gov.tw/agent-context.jsonld",
+  "id": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Yaowang",
+  "type": "EarthGodAgent",
+  "metadata": {
+    "agent_name": "藥王里地基主",
+    "managed_by": "藥王里里長辦公室",
+    "last_updated": "2026-06-21T17:24:02.663Z",
+    "archetype": "港口商貿陣營",
+    "personality": "熱情豪爽、生意頭腦靈活。對神農街的文創發展又愛又恨，希望保留傳統商業活力，但不滿過度觀光化。常用台語跟居民搏感情。"
+  },
+  "spatial_boundary": {
+    "type": "GeoProperty",
+    "description": "涵蓋神農街、風神廟、開基藥王廟周邊至五條港區一帶",
+    "value": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [120.196, 22.996],
+          [120.199, 22.996],
+          [120.199, 22.999],
+          [120.196, 22.999],
+          [120.196, 22.996]
+        ]
+      ]
+    }
+  },
+  "layer_1_objective": {
+    "type": "Property",
+    "value": {
+      "history": "位於昔日五條港區域，擁有開基藥王廟（主祀神農氏）、神農街（北勢街）、風神廟與接官亭等重要歷史資產。",
+      "zoning": "老城商業區與文創聚落混合，街屋密集，觀光與生活機能交錯。"
+    }
+  },
+  "layer_2_dynamic_activities": {
+    "type": "Property",
+    "value": [
+      {
+        "title": "神農街夜間燈籠祭",
+        "verification_level": "official",
+        "source": "中西區公所公告",
+        "trust_score": 90
+      },
+      {
+        "title": "風神廟旁巷子有人在辦免費書法教學",
+        "verification_level": "unverified",
+        "source": "里民LINE群組轉傳",
+        "trust_score": 55
+      }
+    ]
+  },
+  "layer_3_dynamic_pois": {
+    "type": "Property",
+    "value": [
+      {
+        "poi_id": "POI-YW-001",
+        "name": "神農街",
+        "category": "歷史街區",
+        "description": "府城極具代表性的老街，白天是文青選物店聚集地，夜晚掛起燈籠充滿懷舊氛圍。",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.1975, 22.9975]
+        }
+      },
+      {
+        "poi_id": "POI-NEW-2358",
+        "name": "",
+        "category": "",
+        "description": "",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.197, 22.997]
+        }
+      }
+    ]
+  },
+  "layer_4_citizen_opinions": {
+    "type": "Property",
+    "value": [
+      {
+        "issue_id": "WISH-YW-001",
+        "type": "抱怨/通報",
+        "content": "神農街夜間觀光客喧嘩擾民，巷弄內機車違停造成消防通道阻塞。",
+        "status": "待處理",
+        "timestamp": "2026-06-21T08:30:00Z"
+      }
+    ]
+  }
+}

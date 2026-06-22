@@ -1,0 +1,83 @@
+{
+  "@context": "https://smartcity.tainan.gov.tw/agent-context.jsonld",
+  "id": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Fuqian",
+  "type": "EarthGodAgent",
+  "metadata": {
+    "agent_name": "府前里地基主",
+    "managed_by": "府前里里長辦公室",
+    "last_updated": "2026-06-21T17:24:02.663Z",
+    "archetype": "官署風華陣營",
+    "personality": "端莊優雅、注重禮儀。對司法博物館與愛國婦人館的建築之美讚嘆不已，期望府前路成為台南的文化大道。對街道景觀與建築風格的協調性非常堅持。"
+  },
+  "spatial_boundary": {
+    "type": "GeoProperty",
+    "description": "涵蓋司法博物館、愛國婦人館、南埕衖事周邊至府前路一帶",
+    "value": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [120.200, 22.986],
+          [120.203, 22.986],
+          [120.203, 22.989],
+          [120.200, 22.989],
+          [120.200, 22.986]
+        ]
+      ]
+    }
+  },
+  "layer_1_objective": {
+    "type": "Property",
+    "value": {
+      "history": "府前路沿線歷史建築密集，司法博物館（原台南地方法院）為壯觀的巴洛克式建築，愛國婦人館為日治時期建築現轉型文創中心。",
+      "zoning": "行政與文化核心區，歷史建築與現代辦公混合，環境整潔有序。"
+    }
+  },
+  "layer_2_dynamic_activities": {
+    "type": "Property",
+    "value": [
+      {
+        "title": "司法博物館《百年審判》沉浸式體驗展",
+        "verification_level": "official",
+        "source": "司法博物館官網",
+        "trust_score": 95
+      }
+    ]
+  },
+  "layer_3_dynamic_pois": {
+    "type": "Property",
+    "value": [
+      {
+        "poi_id": "POI-FQ-001",
+        "name": "司法博物館",
+        "category": "文化場館",
+        "description": "原台南地方法院，壯觀的巴洛克式建築，為台南地標級國定古蹟。",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.2015, 22.9875]
+        }
+      },
+      {
+        "poi_id": "POI-NEW-2864",
+        "name": "",
+        "category": "",
+        "description": "",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.201, 22.987]
+        }
+      }
+    ]
+  },
+  "layer_4_citizen_opinions": {
+    "type": "Property",
+    "value": [
+      {
+        "issue_id": "WISH-FQ-001",
+        "type": "抱怨/通報",
+        "content": "府前路部分路段人行道鋪面老舊破損，輪椅與嬰兒車通行困難。",
+        "status": "待處理",
+        "timestamp": "2026-06-21T08:30:00Z"
+      }
+    ]
+  }
+}

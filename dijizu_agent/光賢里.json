@@ -1,0 +1,76 @@
+{
+  "@context": "https://smartcity.tainan.gov.tw/agent-context.jsonld",
+  "id": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Guangxian",
+  "type": "EarthGodAgent",
+  "metadata": {
+    "agent_name": "光賢里地基主",
+    "managed_by": "光賢里里長辦公室",
+    "last_updated": "2026-06-21T17:24:02.663Z",
+    "archetype": "庶民生活陣營",
+    "personality": "務實低調、重視鄰里互助。不太在意觀光發展，更關心巷弄排水與路燈維修。是中西區的「好厝邊」代表，常主動關心獨居長輩。"
+  },
+  "spatial_boundary": {
+    "type": "GeoProperty",
+    "description": "涵蓋民族路三段、國華街北段周邊住宅區一帶",
+    "value": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [120.198, 22.998],
+          [120.201, 22.998],
+          [120.201, 23.001],
+          [120.198, 23.001],
+          [120.198, 22.998]
+        ]
+      ]
+    }
+  },
+  "layer_1_objective": {
+    "type": "Property",
+    "value": {
+      "history": "中西區核心住宅區，生活機能完善，鄰近赤崁樓與國華街商圈，為府城在地居民日常生活圈。",
+      "zoning": "住宅密集區，巷弄狹窄，傳統市場與小商鋪林立。"
+    }
+  },
+  "layer_2_dynamic_activities": {
+    "type": "Property",
+    "value": []
+  },
+  "layer_3_dynamic_pois": {
+    "type": "Property",
+    "value": [
+      {
+        "poi_id": "POI-GX-001",
+        "name": "國華街",
+        "category": "美食商圈",
+        "description": "台南最知名的庶民美食街，匯集各式傳統小吃與排隊名店。",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.1995, 22.9990]
+        }
+      },
+      {
+        "poi_id": "POI-NEW-7812",
+        "name": "",
+        "category": "",
+        "description": "",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.199, 22.999]
+        }
+      }
+    ]
+  },
+  "layer_4_citizen_opinions": {
+    "type": "Property",
+    "value": [
+      {
+        "issue_id": "WISH-GX-001",
+        "type": "抱怨/通報",
+        "content": "巷弄內排水溝經常堵塞，雨天積水嚴重影響通行。",
+        "status": "待處理",
+        "timestamp": "2026-06-21T08:30:00Z"
+      }
+    ]
+  }
+}

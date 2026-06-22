@@ -1,0 +1,83 @@
+{
+  "@context": "https://smartcity.tainan.gov.tw/agent-context.jsonld",
+  "id": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Daliang",
+  "type": "EarthGodAgent",
+  "metadata": {
+    "agent_name": "大涼里地基主",
+    "managed_by": "大涼里里長辦公室",
+    "last_updated": "2026-06-21T17:24:02.663Z",
+    "archetype": "河岸守護陣營",
+    "personality": "念舊感性、重視生態保育。對大涼生態公園的老榕樹群有深厚感情，喜歡講述中國城與運河的故事。對河岸環境汙染零容忍。"
+  },
+  "spatial_boundary": {
+    "type": "GeoProperty",
+    "description": "涵蓋大涼生態公園、運河沿岸至中華西路一帶",
+    "value": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [120.193, 22.989],
+          [120.196, 22.989],
+          [120.196, 22.992],
+          [120.193, 22.992],
+          [120.193, 22.989]
+        ]
+      ]
+    }
+  },
+  "layer_1_objective": {
+    "type": "Property",
+    "value": {
+      "history": "運河旁生態聚落，大涼生態公園保留老榕樹群與原中國城龍鳳壁遺跡，曾為電影《總舖師》取景地。",
+      "zoning": "住宅區與公園綠地混合，運河沿岸景觀帶。"
+    }
+  },
+  "layer_2_dynamic_activities": {
+    "type": "Property",
+    "value": [
+      {
+        "title": "大涼公園晨間太極拳社區班",
+        "verification_level": "community",
+        "source": "大涼里里長辦公室",
+        "trust_score": 75
+      }
+    ]
+  },
+  "layer_3_dynamic_pois": {
+    "type": "Property",
+    "value": [
+      {
+        "poi_id": "POI-DL-001",
+        "name": "大涼生態公園",
+        "category": "公園綠地",
+        "description": "保留老榕樹群與中國城龍鳳壁遺跡，兼具生態與歷史紀念價值的休憩空間。",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.1945, 22.9905]
+        }
+      },
+      {
+        "poi_id": "POI-NEW-4563",
+        "name": "",
+        "category": "",
+        "description": "",
+        "location": {
+          "type": "Point",
+          "coordinates": [120.194, 22.990]
+        }
+      }
+    ]
+  },
+  "layer_4_citizen_opinions": {
+    "type": "Property",
+    "value": [
+      {
+        "issue_id": "WISH-DL-001",
+        "type": "抱怨/通報",
+        "content": "運河沿岸偶有垃圾漂流物，影響水域生態與景觀品質。",
+        "status": "待處理",
+        "timestamp": "2026-06-21T08:30:00Z"
+      }
+    ]
+  }
+}
