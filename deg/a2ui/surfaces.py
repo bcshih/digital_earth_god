@@ -2,6 +2,18 @@
 
 All components use the basic catalog so any A2UI renderer can draw them. Data lives
 in the data model (bound by path); components carry presentation intent only.
+
+Durable contract — the emission is designed so every `updateComponents` message is a
+self-contained, valid flat-adjacency-list fragment (no cross-message child refs):
+
+1. `intent_input_components()` — the 五營兵將 prompt surface (its own root).
+2. `negotiation_components()` — the STABLE skeleton emitted once after intent:
+   broadcast card + a `List` (`bids-row`) bound to `/bids` via a `bid-card` TEMPLATE
+   + a `verdict-card` placeholder. Root never changes after this.
+   - Each 地基主 bid arrives as a pure data-model append: update `/bids/<i>` — no
+     component message, so no cross-fragment id references ever occur.
+3. `judgment_components()` — redefines ONLY the `verdict-card` subtree in place; root
+   still references it, so broadcast + bids remain visible beneath the verdict.
 """
 
 from __future__ import annotations
@@ -11,6 +23,13 @@ from typing import Any
 from deg.schemas import BiddingProposal, JudgmentResult, Poi, TaskBroadcast
 
 SURFACE_ID = "explore"
+
+# agent_id → human street label (BiddingProposal carries only agent_id).
+_STREET_LABELS = {
+    "street_shennong_node": "神農街",
+    "street_haian_node": "海安路",
+    "street_zhengxing_node": "正興街",
+}
 
 
 def _poi_dict(p: Poi) -> dict[str, Any]:
@@ -24,7 +43,7 @@ def _poi_dict(p: Poi) -> dict[str, Any]:
     }
 
 
-# -- Intent input surface (五營兵將 dialogue) --
+# ── Intent input surface (五營兵將 dialogue) ──────────────────────────────────
 
 def intent_input_components() -> list[dict[str, Any]]:
     return [
@@ -48,7 +67,7 @@ def intent_input_components() -> list[dict[str, Any]]:
     ]
 
 
-# -- Task broadcast (招標令) --
+# ── Task broadcast data (招標令) ──────────────────────────────────────────────
 
 def broadcast_data(tb: TaskBroadcast) -> dict[str, Any]:
     return {
@@ -60,26 +79,51 @@ def broadcast_data(tb: TaskBroadcast) -> dict[str, Any]:
     }
 
 
-def broadcast_components() -> list[dict[str, Any]]:
-    """The negotiation surface root + broadcast card + empty bids row."""
+# ── Negotiation skeleton (broadcast + bids List template + verdict placeholder) ─
+
+def negotiation_components() -> list[dict[str, Any]]:
+    """The stable surface skeleton, emitted once after the TaskBroadcast is ready.
+
+    `bids-row` is a `List` whose children are a TEMPLATE (`bid-card`) bound to the
+    `/bids` array — adding a bid is a data-model append, not a component change.
+    `verdict-card` starts as a placeholder; `judgment_components()` fills it later.
+    Inside the template, binding paths are RELATIVE to the array item
+    (e.g. `{"path": "street"}` → `/bids/<i>/street`).
+    """
     return [
         {"id": "root", "component": "Column",
-         "children": ["broadcast-card", "bids-row"]},
+         "children": ["broadcast-card", "bids-row", "verdict-card"]},
+        # — broadcast (招標令) —
         {"id": "broadcast-card", "component": "Card", "child": "broadcast-body"},
         {"id": "broadcast-body", "component": "Column",
          "children": ["broadcast-title", "broadcast-intent"]},
-        {"id": "broadcast-title", "component": "Text", "text": "土地公發出招標令", "variant": "h2"},
+        {"id": "broadcast-title", "component": "Text",
+         "text": "土地公發出招標令", "variant": "h2"},
         {"id": "broadcast-intent", "component": "Text", "text": {"path": "/broadcast/intent"}},
-        {"id": "bids-row", "component": "Row", "children": []},
+        # — bids (地基主投標) as a data-bound List + card template —
+        {"id": "bids-row", "component": "List",
+         "children": {"path": "/bids", "componentId": "bid-card"}},
+        {"id": "bid-card", "component": "Card", "child": "bid-card-body"},
+        {"id": "bid-card-body", "component": "Column",
+         "children": ["bid-card-street", "bid-card-score", "bid-card-reason"]},
+        {"id": "bid-card-street", "component": "Text",
+         "text": {"path": "street"}, "variant": "h2"},
+        {"id": "bid-card-score", "component": "Text", "text": {"path": "fitness_score"}},
+        {"id": "bid-card-reason", "component": "Text", "text": {"path": "reasoning"}},
+        # — verdict placeholder (filled in place by judgment_components) —
+        {"id": "verdict-card", "component": "Card", "child": "verdict-wait"},
+        {"id": "verdict-wait", "component": "Text",
+         "text": "等待土地公擲筊裁決…", "variant": "caption"},
     ]
 
 
-# -- Bid card (地基主投標) --
+# ── Bid data (one entry appended to the /bids array) ──────────────────────────
 
 def bid_data(proposal: BiddingProposal) -> dict[str, Any]:
     ev = proposal.evidence
     return {
         "agent_id": proposal.agent_id,
+        "street": _STREET_LABELS.get(proposal.agent_id, proposal.agent_id),
         "fitness_score": proposal.fitness_score,
         "reasoning": proposal.reasoning,
         "tags": proposal.tags,
@@ -89,32 +133,7 @@ def bid_data(proposal: BiddingProposal) -> dict[str, Any]:
     }
 
 
-def bid_card_components(proposal: BiddingProposal, index: int) -> list[dict[str, Any]]:
-    """Components for ONE bid card. Ids are namespaced by agent_id so cards coexist.
-
-    NOTE: the caller must also resend `bids-row` with this card's root id appended
-    to its children, and call update_data_model('/bids/<agent_id>', bid_data(...)).
-    """
-    aid = proposal.agent_id
-    card = f"bid-{aid}"
-    body = f"bid-body-{aid}"
-    score = f"bid-score-{aid}"
-    reason = f"bid-reason-{aid}"
-    path = f"/bids/{aid}"
-    return [
-        {"id": card, "component": "Card", "child": body},
-        {"id": body, "component": "Column", "children": [score, reason]},
-        {"id": score, "component": "Text",
-         "text": {"path": f"{path}/fitness_score"}, "variant": "h2"},
-        {"id": reason, "component": "Text", "text": {"path": f"{path}/reasoning"}},
-    ]
-
-
-def bid_card_root_id(proposal: BiddingProposal) -> str:
-    return f"bid-{proposal.agent_id}"
-
-
-# -- Verdict / recommendation (土地公裁決) --
+# ── Verdict / recommendation (土地公裁決) ─────────────────────────────────────
 
 def judgment_data(result: JudgmentResult) -> dict[str, Any]:
     return {
@@ -127,16 +146,14 @@ def judgment_data(result: JudgmentResult) -> dict[str, Any]:
     }
 
 
-def judgment_components(result: JudgmentResult) -> list[dict[str, Any]]:
-    """Self-contained verdict surface (root → verdict card).
+def judgment_components() -> list[dict[str, Any]]:
+    """Redefine the `verdict-card` subtree in place.
 
-    This is emitted as a standalone updateComponents replacing the surface root with
-    the verdict. Earlier broadcast/bid components remain in the renderer's component
-    set; this list only needs to be internally consistent (flat-adjacency contract).
+    Root (from `negotiation_components`) still lists `verdict-card`, so the broadcast
+    card and bid List stay visible beneath the verdict. This fragment is self-contained:
+    `verdict-card` is the single unreferenced root and every child resolves internally.
     """
     return [
-        {"id": "root", "component": "Column",
-         "children": ["verdict-card"]},
         {"id": "verdict-card", "component": "Card", "child": "verdict-body"},
         {"id": "verdict-body", "component": "Column",
          "children": ["verdict-title", "verdict-street", "verdict-text"]},

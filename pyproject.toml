@@ -34,9 +34,3 @@ markers = [
 
 [tool.ruff]
 line-length = 100
-
-[tool.ruff.lint.per-file-ignores]
-# SURFACE_ID is imported as part of the durable A2UI surface-module contract test
-# (it asserts the public surface identifier is exported), even though the value
-# itself is not exercised by an assertion.
-"tests/test_a2ui_surfaces.py" = ["F401"]
