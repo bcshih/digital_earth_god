@@ -83,20 +83,19 @@ def create_pipeline() -> SequentialAgent:
     """Create the full 土地公 Contract Net pipeline.
 
     Returns a SequentialAgent:
-        1. SequentialAgent — runs all 3 地基主 one at a time
+        1. ParallelAgent — runs all 3 地基主 concurrently
         2. LlmAgent (tudigong judge) — reads 3 BiddingProposals → JudgmentResult
 
-    NOTE: the bidding round is SEQUENTIAL, not parallel. Firing the 3 地基主
-    (+ judge) concurrently bursts the Gemini key and reliably trips 503 rate
-    limiting (measured: a 4-way burst degrades from 1/4 to 4/4 failures over
-    consecutive rounds). Running them in sequence keeps us under the limit; the
-    frontend ritual animation already hides the extra latency.
+    The bidding round is PARALLEL — faster, and it restores the "並行投標"
+    Contract Net design (bid cards surface together in the ritual). Parallel
+    bursts can trip 503 rate limiting on a low-RPM key, but the gateway's
+    patient retry (5 attempts, backoff to 30s) absorbs transient throttling.
     """
     dijizhu_shennong = create_dijizhu("shennong", "神農街", "street_shennong_node")
     dijizhu_haian = create_dijizhu("haian", "海安路", "street_haian_node")
     dijizhu_zhengxing = create_dijizhu("zhengxing", "正興街", "street_zhengxing_node")
 
-    bidding_round = SequentialAgent(
+    bidding_round = ParallelAgent(
         name="bidding_round",
         sub_agents=[dijizhu_shennong, dijizhu_haian, dijizhu_zhengxing],
     )
@@ -111,7 +110,7 @@ def create_pipeline() -> SequentialAgent:
 
     return SequentialAgent(
         name="tudigong_pipeline",
-        description="土地公 Contract Net 編排：循序投標 → LLM-as-Judge → 裁決推薦。",
+        description="土地公 Contract Net 編排：並行投標 → LLM-as-Judge → 裁決推薦。",
         sub_agents=[bidding_round, tudigong_judge],
     )
 
