@@ -18,17 +18,16 @@ from dotenv import load_dotenv  # noqa: E402
 
 load_dotenv(_REPO_ROOT / ".env")
 
+if os.environ.get("DASHSCOPE_API_KEY"):
+    os.environ["OPENAI_API_KEY"] = os.environ["DASHSCOPE_API_KEY"]
+    os.environ.setdefault("OPENAI_API_BASE", "https://dashscope.aliyuncs.com/compatible-mode/v1")
+
 from google.adk.agents import LlmAgent  # noqa: E402
 from google.adk.models.lite_llm import LiteLlm  # noqa: E402
 
 from deg.schemas import Blessing  # noqa: E402
 
-_DASHSCOPE_BASE = "https://dashscope.aliyuncs.com/compatible-mode/v1"
-_QWEN = LiteLlm(
-    model="openai/" + os.environ.get("DASHSCOPE_MODEL", "qwen-plus"),
-    api_base=_DASHSCOPE_BASE,
-    api_key=os.environ.get("DASHSCOPE_API_KEY", ""),
-)
+_QWEN = LiteLlm(model="openai/" + os.environ.get("DASHSCOPE_MODEL", "qwen-plus"))
 
 _BLESSING_INSTRUCTION = """你是土地公，台南中西區慈悲宏觀的守護神。
 一位凡人剛剛上香許願，向你訴說對社區的期望。請以神明的口吻回應。

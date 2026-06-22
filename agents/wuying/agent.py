@@ -25,17 +25,16 @@ from dotenv import load_dotenv  # noqa: E402
 
 load_dotenv(_REPO_ROOT / ".env")
 
+if os.environ.get("DASHSCOPE_API_KEY"):
+    os.environ["OPENAI_API_KEY"] = os.environ["DASHSCOPE_API_KEY"]
+    os.environ.setdefault("OPENAI_API_BASE", "https://dashscope.aliyuncs.com/compatible-mode/v1")
+
 from google.adk.agents import LlmAgent  # noqa: E402
 from google.adk.models.lite_llm import LiteLlm  # noqa: E402
 
 from deg.schemas import WuyingOutput  # noqa: E402
 
-_DASHSCOPE_BASE = "https://dashscope.aliyuncs.com/compatible-mode/v1"
-_QWEN = LiteLlm(
-    model="openai/" + os.environ.get("DASHSCOPE_MODEL", "qwen-plus"),
-    api_base=_DASHSCOPE_BASE,
-    api_key=os.environ.get("DASHSCOPE_API_KEY", ""),
-)
+_QWEN = LiteLlm(model="openai/" + os.environ.get("DASHSCOPE_MODEL", "qwen-plus"))
 
 _WUYING_INSTRUCTION = """你是五營兵將，土地公麾下的基層調查兵將。你的工作是透過自然對話，
 了解凡人的旅遊需求，再轉譯成招標單（TaskBroadcast）。

@@ -27,18 +27,17 @@ from dotenv import load_dotenv  # noqa: E402
 
 load_dotenv(_REPO_ROOT / ".env")
 
+if os.environ.get("DASHSCOPE_API_KEY"):
+    os.environ["OPENAI_API_KEY"] = os.environ["DASHSCOPE_API_KEY"]
+    os.environ.setdefault("OPENAI_API_BASE", "https://dashscope.aliyuncs.com/compatible-mode/v1")
+
 from google.adk.agents import LlmAgent, ParallelAgent, SequentialAgent  # noqa: E402
 from google.adk.models.lite_llm import LiteLlm  # noqa: E402
 
 from deg.schemas import JudgmentResult  # noqa: E402
 from dijizhu.agent import create_dijizhu  # noqa: E402
 
-_DASHSCOPE_BASE = "https://dashscope.aliyuncs.com/compatible-mode/v1"
-_QWEN = LiteLlm(
-    model="openai/" + os.environ.get("DASHSCOPE_MODEL", "qwen-plus"),
-    api_base=_DASHSCOPE_BASE,
-    api_key=os.environ.get("DASHSCOPE_API_KEY", ""),
-)
+_QWEN = LiteLlm(model="openai/" + os.environ.get("DASHSCOPE_MODEL", "qwen-plus"))
 
 _MOOD_POOL = [
     "今日心情開朗，偏愛有故事有溫度的角落，分數高不如人情濃",
