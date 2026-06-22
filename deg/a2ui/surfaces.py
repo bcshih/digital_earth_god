@@ -50,9 +50,9 @@ def intent_input_components() -> list[dict[str, Any]]:
         {"id": "root", "component": "Column",
          "children": ["intent-title", "intent-sub", "intent-field", "intent-submit"]},
         {"id": "intent-title", "component": "Text",
-         "text": "向土地公稟報你的心願", "variant": "h1"},
+         "text": "向土地公問路", "variant": "h1"},
         {"id": "intent-sub", "component": "Text",
-         "text": "五營兵將會將你的凡人語言轉成招標令", "variant": "caption"},
+         "text": "說出你的心意，五營兵將為你傳達，土地公親自裁奪", "variant": "caption"},
         {"id": "intent-field", "component": "TextField",
          "label": "你想找什麼？（例如：安靜的老宅咖啡）",
          "value": {"path": "/intent/text"}, "textFieldType": "text"},
@@ -98,7 +98,7 @@ def negotiation_components() -> list[dict[str, Any]]:
         {"id": "broadcast-body", "component": "Column",
          "children": ["broadcast-title", "broadcast-intent"]},
         {"id": "broadcast-title", "component": "Text",
-         "text": "土地公發出招標令", "variant": "h2"},
+         "text": "土地公已發出招標令，地基主們各顯神通", "variant": "h2"},
         {"id": "broadcast-intent", "component": "Text", "text": {"path": "/broadcast/intent"}},
         # — bids (地基主投標) as a data-bound List + card template —
         {"id": "bids-row", "component": "List",
@@ -113,7 +113,7 @@ def negotiation_components() -> list[dict[str, Any]]:
         # — verdict placeholder (filled in place by judgment_components) —
         {"id": "verdict-card", "component": "Card", "child": "verdict-wait"},
         {"id": "verdict-wait", "component": "Text",
-         "text": "等待土地公擲筊裁決…", "variant": "caption"},
+         "text": "靜待土地公擲筊定奪…", "variant": "caption"},
     ]
 
 
@@ -157,7 +157,7 @@ def judgment_components() -> list[dict[str, Any]]:
         {"id": "verdict-card", "component": "Card", "child": "verdict-body"},
         {"id": "verdict-body", "component": "Column",
          "children": ["verdict-title", "verdict-street", "verdict-text"]},
-        {"id": "verdict-title", "component": "Text", "text": "土地公的裁決", "variant": "h1"},
+        {"id": "verdict-title", "component": "Text", "text": "土地公親降裁決", "variant": "h1"},
         {"id": "verdict-street", "component": "Text",
          "text": {"path": "/verdict/winner_street"}, "variant": "h2"},
         {"id": "verdict-text", "component": "Text", "text": {"path": "/verdict/recommendation"}},
@@ -173,7 +173,7 @@ def wish_input_components() -> list[dict[str, Any]]:
          "children": ["wish-title", "wish-sub", "wish-field", "wish-submit"]},
         {"id": "wish-title", "component": "Text", "text": "向土地公上香許願", "variant": "h1"},
         {"id": "wish-sub", "component": "Text",
-         "text": "說出你對這座城市的心願，土地公會聽見", "variant": "caption"},
+         "text": "說出你對這座城市的心願，土地公親收，一願一心記", "variant": "caption"},
         {"id": "wish-field", "component": "TextField",
          "label": "你的心願（例如：希望海安路多裝路燈）",
          "value": {"path": "/wish/text"}, "textFieldType": "text"},
@@ -195,7 +195,7 @@ def blessing_components() -> list[dict[str, Any]]:
         {"id": "blessing-card", "component": "Card", "child": "blessing-body"},
         {"id": "blessing-body", "component": "Column",
          "children": ["blessing-title", "blessing-ack", "blessing-text", "blessing-cat"]},
-        {"id": "blessing-title", "component": "Text", "text": "土地公的祝福", "variant": "h1"},
+        {"id": "blessing-title", "component": "Text", "text": "土地公收到了，有話說", "variant": "h1"},
         {"id": "blessing-ack", "component": "Text", "text": {"path": "/blessing/acknowledgment"}},
         {"id": "blessing-text", "component": "Text", "text": {"path": "/blessing/blessing"},
          "variant": "h2"},

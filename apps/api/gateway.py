@@ -17,12 +17,16 @@ Run:
 
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 import sys
 from pathlib import Path
 from typing import Any, Awaitable, Callable
 from uuid import uuid4
+
+_PIPELINE_TIMEOUT = 120.0  # seconds per full Contract Net round-trip
+_WISH_TIMEOUT = 60.0
 
 # Repo root + agents/ on sys.path so wuying.agent / tudigong.agent import cleanly.
 _REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -50,7 +54,7 @@ from deg.schemas import (  # noqa: E402
     Wish,
     WishAnalysis,
 )
-from tudigong.agent import create_pipeline  # noqa: E402
+from tudigong.agent import create_pipeline, get_random_mood  # noqa: E402
 from tudigong.blessing_agent import create_blessing_agent  # noqa: E402
 from wuying.agent import create_wuying  # noqa: E402
 from wuying.wish_agent import create_wish_categorizer  # noqa: E402
@@ -116,7 +120,12 @@ async def _run_wuying(
             final_text = event.content.parts[0].text
             break
 
-    tb = TaskBroadcast.model_validate_json(final_text)
+    if not final_text:
+        raise RuntimeError("五營兵將未能解析意圖，請再試一次。")
+    try:
+        tb = TaskBroadcast.model_validate_json(final_text)
+    except Exception as exc:
+        raise RuntimeError(f"五營兵將回傳格式有誤：{exc}") from exc
     # Trust the LLM for intent/constraints; guarantee the exact data fields.
     tb.task_id = task_id
     tb.user_location = LatLng(lat=lat, lng=lng)
@@ -129,13 +138,18 @@ async def _run_pipeline(
     task: TaskBroadcast,
     on_event: EventSink | None,
 ) -> JudgmentResult:
-    """Run the 土地公 pipeline, streaming intermediate agent events; return the judgment."""
+    """Run the 土地公 pipeline, streaming intermediate agent events; return the judgment.
+
+    A random divine mood is appended to the message to give 土地公 per-request personality.
+    """
     session_id = uuid4().hex
     await session_service.create_session(
         app_name="deg", user_id="gateway", session_id=session_id
     )
+    mood = get_random_mood()
+    msg_text = task.model_dump_json() + f"\n\n【今日神明心情】{mood}"
     msg = genai_types.Content(
-        role="user", parts=[genai_types.Part(text=task.model_dump_json())]
+        role="user", parts=[genai_types.Part(text=msg_text)]
     )
 
     final_text = ""
@@ -152,7 +166,12 @@ async def _run_pipeline(
             if event.is_final_response() and text:
                 final_text = text  # judge runs last → last final response is the verdict
 
-    return JudgmentResult.model_validate_json(final_text)
+    if not final_text:
+        raise RuntimeError("土地公未能作出裁決，請再試一次。")
+    try:
+        return JudgmentResult.model_validate_json(final_text)
+    except Exception as exc:
+        raise RuntimeError(f"土地公裁決格式有誤：{exc}") from exc
 
 
 async def _process_wish(
@@ -174,7 +193,12 @@ async def _process_wish(
         if event.is_final_response() and event.content and event.content.parts:
             analysis_text = event.content.parts[0].text
             break
-    analysis = WishAnalysis.model_validate_json(analysis_text)
+    if not analysis_text:
+        raise RuntimeError("五營兵將未能分析心願，請再試一次。")
+    try:
+        analysis = WishAnalysis.model_validate_json(analysis_text)
+    except Exception as exc:
+        raise RuntimeError(f"心願分析格式有誤：{exc}") from exc
 
     wish = Wish(
         wish_id=uuid4().hex, raw_text=wish_text, category=analysis.category,
@@ -194,7 +218,12 @@ async def _process_wish(
         if event.is_final_response() and event.content and event.content.parts:
             blessing_text = event.content.parts[0].text
             break
-    blessing = Blessing.model_validate_json(blessing_text)
+    if not blessing_text:
+        raise RuntimeError("土地公祝福未能送達，請再試一次。")
+    try:
+        blessing = Blessing.model_validate_json(blessing_text)
+    except Exception as exc:
+        raise RuntimeError(f"土地公祝福格式有誤：{exc}") from exc
     return wish, analysis, blessing
 
 
@@ -257,30 +286,36 @@ def create_app() -> FastAPI:
                     "message": "五營兵將正在解析凡人意圖…",
                 }
             )
-            tb = await _run_wuying(
-                wuying_runner,
-                session_service,
-                req.intent_text,
-                req.lat,
-                req.lng,
-                task_id,
-            )
-            await sink({"type": "task_broadcast", "data": tb.model_dump()})
+            async with asyncio.timeout(_PIPELINE_TIMEOUT):
+                tb = await _run_wuying(
+                    wuying_runner,
+                    session_service,
+                    req.intent_text,
+                    req.lat,
+                    req.lng,
+                    task_id,
+                )
+                await sink({"type": "task_broadcast", "data": tb.model_dump()})
 
-            await sink(
-                {
-                    "type": "phase",
-                    "phase": "bidding",
-                    "message": "土地公發出招標，地基主們開始投標…",
-                }
-            )
-            result = await _run_pipeline(
-                pipeline_runner, session_service, tb, on_event=sink
-            )
+                await sink(
+                    {
+                        "type": "phase",
+                        "phase": "bidding",
+                        "message": "土地公發出招標，地基主們開始投標…",
+                    }
+                )
+                result = await _run_pipeline(
+                    pipeline_runner, session_service, tb, on_event=sink
+                )
             await sink({"type": "judgment", "data": result.model_dump()})
             await sink({"type": "done"})
         except WebSocketDisconnect:
             return
+        except TimeoutError:
+            try:
+                await ws.send_json({"type": "error", "message": "神明降神逾時，請稍後再試。"})
+            except Exception:
+                pass
         except Exception as exc:  # surface errors to the client, then close
             try:
                 await ws.send_json({"type": "error", "message": str(exc)})
@@ -319,52 +354,65 @@ def create_app() -> FastAPI:
             req = IntentRequest.model_validate(req_data)
 
             task_id = uuid4().hex
-            tb = await _run_wuying(
-                wuying_runner, session_service, req.intent_text, req.lat, req.lng, task_id
-            )
-            await ws.send_json(update_components(SURFACE_ID, negotiation_components()))
-            await ws.send_json(update_data_model(SURFACE_ID, "/broadcast", broadcast_data(tb)))
-            await ws.send_json(update_data_model(SURFACE_ID, "/bids", []))
+            async with asyncio.timeout(_PIPELINE_TIMEOUT):
+                tb = await _run_wuying(
+                    wuying_runner, session_service, req.intent_text, req.lat, req.lng, task_id
+                )
+                await ws.send_json(update_components(SURFACE_ID, negotiation_components()))
+                await ws.send_json(update_data_model(SURFACE_ID, "/broadcast", broadcast_data(tb)))
+                await ws.send_json(update_data_model(SURFACE_ID, "/bids", []))
 
-            # Run the pipeline; append a bid per 地基主, capture the judge verdict.
-            session_id = uuid4().hex
-            await session_service.create_session(
-                app_name="deg", user_id="gateway", session_id=session_id
-            )
-            msg = genai_types.Content(
-                role="user", parts=[genai_types.Part(text=tb.model_dump_json())]
-            )
-            bid_index = 0
-            verdict_text = ""
-            async for event in pipeline_runner.run_async(
-                user_id="gateway", session_id=session_id, new_message=msg
-            ):
-                author = getattr(event, "author", None)
-                if not (event.content and event.content.parts):
-                    continue
-                text = event.content.parts[0].text or ""
-                if not text:
-                    continue
-                if author and author.startswith("dijizhu_") and event.is_final_response():
-                    try:
-                        proposal = BiddingProposal.model_validate_json(text)
-                    except Exception:
+                # Run the pipeline; append a bid per 地基主, capture the judge verdict.
+                session_id = uuid4().hex
+                await session_service.create_session(
+                    app_name="deg", user_id="gateway", session_id=session_id
+                )
+                mood = get_random_mood()
+                msg_text = tb.model_dump_json() + f"\n\n【今日神明心情】{mood}"
+                msg = genai_types.Content(
+                    role="user", parts=[genai_types.Part(text=msg_text)]
+                )
+                bid_index = 0
+                verdict_text = ""
+                async for event in pipeline_runner.run_async(
+                    user_id="gateway", session_id=session_id, new_message=msg
+                ):
+                    author = getattr(event, "author", None)
+                    if not (event.content and event.content.parts):
                         continue
-                    await ws.send_json(
-                        update_data_model(SURFACE_ID, f"/bids/{bid_index}", bid_data(proposal))
-                    )
-                    bid_index += 1
-                elif author == "tudigong_judge" and event.is_final_response():
-                    verdict_text = text
+                    text = event.content.parts[0].text or ""
+                    if not text:
+                        continue
+                    if author and author.startswith("dijizhu_") and event.is_final_response():
+                        try:
+                            proposal = BiddingProposal.model_validate_json(text)
+                        except Exception:
+                            continue
+                        await ws.send_json(
+                            update_data_model(SURFACE_ID, f"/bids/{bid_index}", bid_data(proposal))
+                        )
+                        bid_index += 1
+                    elif author == "tudigong_judge" and event.is_final_response():
+                        verdict_text = text
 
             if verdict_text:
-                result = JudgmentResult.model_validate_json(verdict_text)
-                await ws.send_json(update_components(SURFACE_ID, judgment_components()))
-                await ws.send_json(update_data_model(SURFACE_ID, "/verdict", judgment_data(result)))
+                try:
+                    result = JudgmentResult.model_validate_json(verdict_text)
+                    await ws.send_json(update_components(SURFACE_ID, judgment_components()))
+                    await ws.send_json(
+                        update_data_model(SURFACE_ID, "/verdict", judgment_data(result))
+                    )
+                except Exception:
+                    pass  # best-effort — don't crash the WS if verdict parse fails
 
             await ws.send_json({"a2uiDone": True})
         except WebSocketDisconnect:
             return
+        except TimeoutError:
+            try:
+                await ws.send_json({"a2uiError": "神明降神逾時，請稍後再試。"})
+            except Exception:
+                pass
         except Exception as exc:
             try:
                 await ws.send_json({"a2uiError": str(exc)})
@@ -406,10 +454,11 @@ def create_app() -> FastAPI:
 
             req_data = await ws.receive_json()
             req = WishRequest.model_validate(req_data)
-            wish, analysis, blessing = await _process_wish(
-                wish_runner, blessing_runner, warm_store, session_service,
-                req.wish_text, req.lat, req.lng, req.photo_ref,
-            )
+            async with asyncio.timeout(_WISH_TIMEOUT):
+                wish, analysis, blessing = await _process_wish(
+                    wish_runner, blessing_runner, warm_store, session_service,
+                    req.wish_text, req.lat, req.lng, req.photo_ref,
+                )
             await ws.send_json(update_components(WISH_SURFACE_ID, blessing_components()))
             await ws.send_json(update_data_model(WISH_SURFACE_ID, "/blessing", {
                 "acknowledgment": blessing.acknowledgment,
@@ -419,6 +468,11 @@ def create_app() -> FastAPI:
             await ws.send_json({"a2uiDone": True})
         except WebSocketDisconnect:
             return
+        except TimeoutError:
+            try:
+                await ws.send_json({"a2uiError": "土地公正在忙碌，請稍後再試。"})
+            except Exception:
+                pass
         except Exception as exc:
             try:
                 await ws.send_json({"a2uiError": str(exc)})
