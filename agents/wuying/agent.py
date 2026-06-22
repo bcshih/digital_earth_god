@@ -99,7 +99,7 @@ def create_wuying() -> LlmAgent:
     """
     return LlmAgent(
         name="wuying",
-        model="gemini-2.0-flash",
+        model="gemini-2.5-flash-lite",
         description="五營兵將：透過追問確認旅遊需求，轉譯為 TaskBroadcast。",
         instruction=_WUYING_INSTRUCTION,
         output_schema=WuyingOutput,

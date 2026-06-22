@@ -74,7 +74,7 @@ def create_dijizhu(
 
     return LlmAgent(
         name=f"dijizhu_{street_id}",
-        model="gemini-2.0-flash",
+        model="gemini-2.5-flash-lite",
         description=f"台南{street_name}的地基主，專責該街廓的空間情報投標。",
         instruction=f"""你是「{street_name}」的地基主 (agent_id: {agent_id})，守護這條街道的神明管理員。
 

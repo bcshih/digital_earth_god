@@ -95,7 +95,7 @@ def create_pipeline() -> SequentialAgent:
 
     tudigong_judge = LlmAgent(
         name="tudigong_judge",
-        model="gemini-2.0-flash",
+        model="gemini-2.5-flash-lite",
         description="土地公：Contract Net 裁決者，從三份投標書中選出最佳推薦。",
         instruction=_JUDGE_INSTRUCTION,
         output_schema=JudgmentResult,
@@ -155,7 +155,7 @@ def create_pipeline_remote(
 
     tudigong_judge = LlmAgent(
         name="tudigong_judge",
-        model="gemini-2.0-flash",
+        model="gemini-2.5-flash-lite",
         description="土地公：Contract Net 裁決者，從三份投標書中選出最佳推薦。",
         instruction=_JUDGE_INSTRUCTION,
         output_schema=JudgmentResult,
