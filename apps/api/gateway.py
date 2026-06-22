@@ -100,9 +100,19 @@ class WishRequest(BaseModel):
 
 
 def _is_retryable(exc: Exception) -> bool:
-    """Return True for transient Gemini errors worth retrying (503, overload)."""
+    """Return True for transient Gemini errors worth retrying (503, overload).
+
+    Recurses into ExceptionGroup (raised by ParallelAgent's asyncio TaskGroup
+    when a 地基主 fails) so a wrapped 503 is still recognised — its own str()
+    is just "unhandled errors in a taskgroup" and would otherwise be missed.
+    """
     msg = str(exc)
-    return "503" in msg or "UNAVAILABLE" in msg or "overload" in msg.lower()
+    if "503" in msg or "UNAVAILABLE" in msg or "overload" in msg.lower():
+        return True
+    sub_exceptions = getattr(exc, "exceptions", None)
+    if sub_exceptions:
+        return any(_is_retryable(e) for e in sub_exceptions)
+    return False
 
 
 def _extract_json(text: str) -> str:
@@ -533,7 +543,11 @@ def create_app() -> FastAPI:
                         )
                         await asyncio.sleep(wait)
                         continue
-                    pipeline_error = str(pipeline_exc)
+                    pipeline_error = (
+                        "神明降神時香火過旺（模型暫時繁忙），請稍後再試一次。"
+                        if _is_retryable(pipeline_exc)
+                        else str(pipeline_exc)
+                    )
                     logger.error("Pipeline error:\n%s", traceback.format_exc())
                     break
 
