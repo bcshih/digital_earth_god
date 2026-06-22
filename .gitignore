@@ -20,3 +20,7 @@ out/
 # OS
 .DS_Store
 Thumbs.db
+
+# Warm-data store
+data/warmdata.db
+*.db

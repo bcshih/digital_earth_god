@@ -70,6 +70,22 @@ class Wish(BaseModel):
     status: str = "received"
 
 
+class WishAnalysis(BaseModel):
+    """五營兵將's LLM classification of a raw wish."""
+
+    category: str           # 交通 / 環境清潔 / 公共安全 / 公共設施 / 社區營造 / 商業活動 / 其他
+    tags: list[str] = Field(default_factory=list)
+    summary: str            # one-line normalized restatement
+    sentiment: str = "中性"  # 正面 / 中性 / 負面 / 急迫
+
+
+class Blessing(BaseModel):
+    """土地公's blessing response to a citizen wish."""
+
+    acknowledgment: str     # warm restatement showing the wish was heard
+    blessing: str           # 神明口吻 的祝福（繁體中文）
+
+
 class JudgmentResult(BaseModel):
     """土地公 LLM-as-Judge final output for a Contract Net round."""
 
