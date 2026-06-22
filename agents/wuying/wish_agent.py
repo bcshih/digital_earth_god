@@ -17,7 +17,6 @@ from dotenv import load_dotenv  # noqa: E402
 load_dotenv(_REPO_ROOT / ".env")
 
 from google.adk.agents import LlmAgent  # noqa: E402
-from google.adk.models.lite_llm import LiteLlm  # noqa: E402
 
 from deg.schemas import WishAnalysis  # noqa: E402
 
@@ -40,7 +39,7 @@ _WISH_INSTRUCTION = f"""你是五營兵將，土地公麾下體察民情的基�
 def create_wish_categorizer() -> LlmAgent:
     return LlmAgent(
         name="wuying_wish",
-        model=LiteLlm(model="ollama_chat/gemma4:e4b"),
+        model="gemini-flash-latest",
         description="五營兵將：將凡人許願歸納為治理分類 (WishAnalysis)。",
         instruction=_WISH_INSTRUCTION,
         output_schema=WishAnalysis,

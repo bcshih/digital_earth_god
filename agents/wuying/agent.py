@@ -24,7 +24,6 @@ from dotenv import load_dotenv  # noqa: E402
 load_dotenv(_REPO_ROOT / ".env")
 
 from google.adk.agents import LlmAgent  # noqa: E402
-from google.adk.models.lite_llm import LiteLlm  # noqa: E402
 
 from deg.schemas import WuyingOutput  # noqa: E402
 
@@ -100,7 +99,7 @@ def create_wuying() -> LlmAgent:
     """
     return LlmAgent(
         name="wuying",
-        model=LiteLlm(model="ollama_chat/gemma4:e4b"),
+        model="gemini-flash-latest",
         description="五營兵將：透過追問確認旅遊需求，轉譯為 TaskBroadcast。",
         instruction=_WUYING_INSTRUCTION,
         output_schema=WuyingOutput,

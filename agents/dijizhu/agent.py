@@ -23,7 +23,6 @@ from dotenv import load_dotenv  # noqa: E402
 load_dotenv(_REPO_ROOT / ".env")  # load GOOGLE_API_KEY + GOOGLE_GENAI_USE_VERTEXAI
 
 from google.adk.agents import LlmAgent  # noqa: E402
-from google.adk.models.lite_llm import LiteLlm  # noqa: E402
 from google.adk.tools.mcp_tool.mcp_toolset import McpToolset, StdioServerParameters  # noqa: E402
 
 from deg.schemas import BiddingProposal  # noqa: E402
@@ -75,7 +74,7 @@ def create_dijizhu(
 
     return LlmAgent(
         name=f"dijizhu_{street_id}",
-        model=LiteLlm(model="ollama_chat/gemma4:e4b"),
+        model="gemini-flash-latest",
         description=f"台南{street_name}的地基主，專責該街廓的空間情報投標。",
         instruction=f"""你是「{street_name}」的地基主 (agent_id: {agent_id})，守護這條街道的神明管理員。
 
