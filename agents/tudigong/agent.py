@@ -26,6 +26,7 @@ from dotenv import load_dotenv  # noqa: E402
 load_dotenv(_REPO_ROOT / ".env")
 
 from google.adk.agents import LlmAgent, ParallelAgent, SequentialAgent  # noqa: E402
+from google.adk.models.lite_llm import LiteLlm  # noqa: E402
 
 from deg.schemas import JudgmentResult  # noqa: E402
 from dijizhu.agent import create_dijizhu  # noqa: E402
@@ -95,7 +96,7 @@ def create_pipeline() -> SequentialAgent:
 
     tudigong_judge = LlmAgent(
         name="tudigong_judge",
-        model="gemini-flash-latest",
+        model=LiteLlm(model="ollama_chat/gemma4:e4b"),
         description="土地公：Contract Net 裁決者，從三份投標書中選出最佳推薦。",
         instruction=_JUDGE_INSTRUCTION,
         output_schema=JudgmentResult,
@@ -155,7 +156,7 @@ def create_pipeline_remote(
 
     tudigong_judge = LlmAgent(
         name="tudigong_judge",
-        model="gemini-flash-latest",
+        model=LiteLlm(model="ollama_chat/gemma4:e4b"),
         description="土地公：Contract Net 裁決者，從三份投標書中選出最佳推薦。",
         instruction=_JUDGE_INSTRUCTION,
         output_schema=JudgmentResult,
