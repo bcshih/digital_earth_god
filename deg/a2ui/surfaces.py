@@ -162,3 +162,43 @@ def judgment_components() -> list[dict[str, Any]]:
          "text": {"path": "/verdict/winner_street"}, "variant": "h2"},
         {"id": "verdict-text", "component": "Text", "text": {"path": "/verdict/recommendation"}},
     ]
+
+
+WISH_SURFACE_ID = "wish"
+
+
+def wish_input_components() -> list[dict[str, Any]]:
+    return [
+        {"id": "root", "component": "Column",
+         "children": ["wish-title", "wish-sub", "wish-field", "wish-submit"]},
+        {"id": "wish-title", "component": "Text", "text": "向土地公上香許願", "variant": "h1"},
+        {"id": "wish-sub", "component": "Text",
+         "text": "說出你對這座城市的心願，土地公會聽見", "variant": "caption"},
+        {"id": "wish-field", "component": "TextField",
+         "label": "你的心願（例如：希望海安路多裝路燈）",
+         "value": {"path": "/wish/text"}, "textFieldType": "text"},
+        {"id": "wish-submit-label", "component": "Text", "text": "上香許願"},
+        {"id": "wish-submit", "component": "Button", "child": "wish-submit-label",
+         "variant": "primary",
+         "checks": [{"condition": {"call": "required",
+                                   "args": {"value": {"path": "/wish/text"}}},
+                     "message": "請先說出你的心願"}],
+         "action": {"event": {"name": "submit_wish",
+                              "context": {"text": {"path": "/wish/text"}}}}},
+    ]
+
+
+def blessing_components() -> list[dict[str, Any]]:
+    return [
+        {"id": "root", "component": "Column",
+         "children": ["blessing-card"]},
+        {"id": "blessing-card", "component": "Card", "child": "blessing-body"},
+        {"id": "blessing-body", "component": "Column",
+         "children": ["blessing-title", "blessing-ack", "blessing-text", "blessing-cat"]},
+        {"id": "blessing-title", "component": "Text", "text": "土地公的祝福", "variant": "h1"},
+        {"id": "blessing-ack", "component": "Text", "text": {"path": "/blessing/acknowledgment"}},
+        {"id": "blessing-text", "component": "Text", "text": {"path": "/blessing/blessing"},
+         "variant": "h2"},
+        {"id": "blessing-cat", "component": "Text", "text": {"path": "/blessing/category"},
+         "variant": "caption"},
+    ]
