@@ -1,4 +1,4 @@
-"""五營兵將 wish categorizer — raw 許願 text → WishAnalysis (no tools).
+﻿"""鈭??萄? wish categorizer ??raw 閮梢? text ??WishAnalysis (no tools).
 
 Input message (JSON): {"raw_text": "...", "lat": ..., "lng": ...}
 """
@@ -20,27 +20,19 @@ from google.adk.agents import LlmAgent  # noqa: E402
 
 from deg.schemas import WishAnalysis  # noqa: E402
 
-_CATEGORIES = "交通、環境清潔、公共安全、公共設施、社區營造、商業活動、其他"
+_CATEGORIES = "鈭日憓?瞏?勗??具?梯身?賬冗???璆剜暑?隞?
 
-_WISH_INSTRUCTION = f"""你是五營兵將，土地公麾下體察民情的基層兵將。
-收到凡人的「許願」（對社區的期望、抱怨或建議）後，將它歸納為治理情報。
-
-【輸入】JSON：raw_text（願望原文）、lat、lng（座標）。
-
-【分析步驟】
-1. category：從以下選一個最貼切的分類：{_CATEGORIES}。
-2. tags：抽取 2~4 個關鍵字標籤。
-3. summary：用一句繁體中文中性地重述這個願望。
-4. sentiment：判斷情緒，從 正面 / 中性 / 負面 / 急迫 擇一。
-
-【回傳】完整的 WishAnalysis JSON：category、tags、summary、sentiment。"""
+_WISH_INSTRUCTION = f"""雿鈭??萄?嚗??啣暻曆?擃?瘞??撅文撠??嗅?∩犖?迂憿?撠冗?????冽?撱箄降嚗?嚗?摰飛蝝瘝餌????
+?撓?乓SON嚗aw_text嚗??????at?ng嚗漣璅???
+???郊撽?1. category嚗?隞乩??訾???鞎澆???憿?{_CATEGORIES}??2. tags嚗??2~4 ???萄?璅惜??3. summary嚗銝?亦?擃葉?葉?批?膩????4. sentiment嚗?瑟?蝺?敺?甇? / 銝剜?/ 鞎 / ?亥翰 ????
+???喋??渡? WishAnalysis JSON嚗ategory?ags?ummary?entiment??""
 
 
 def create_wish_categorizer() -> LlmAgent:
     return LlmAgent(
         name="wuying_wish",
-        model="gemini-flash-latest",
-        description="五營兵將：將凡人許願歸納為治理分類 (WishAnalysis)。",
+        model="gemini-2.0-flash",
+        description="鈭??萄?嚗??∩犖閮梢?甇貊??箸祥??憿?(WishAnalysis)??,
         instruction=_WISH_INSTRUCTION,
         output_schema=WishAnalysis,
     )

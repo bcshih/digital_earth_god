@@ -1,7 +1,7 @@
-"""五營兵將 (Five Camp Soldiers) — 基層調查員 intent-extraction agent.
+﻿"""鈭??萄? (Five Camp Soldiers) ???箏惜隤踵??intent-extraction agent.
 
 Takes a citizen's natural-language request and turns it into a TaskBroadcast
-(Schema A) for 土地公 to broadcast in the Contract Net. No tools — pure extraction
+(Schema A) for ???to broadcast in the Contract Net. No tools ??pure extraction
 with output_schema=TaskBroadcast.
 
 Input message (JSON): {"raw_text": "...", "lat": 22.99, "lng": 120.22, "task_id": "..."}
@@ -27,80 +27,70 @@ from google.adk.agents import LlmAgent  # noqa: E402
 
 from deg.schemas import WuyingOutput  # noqa: E402
 
-_WUYING_INSTRUCTION = """你是五營兵將，土地公麾下的基層調查兵將。你的工作是透過自然對話，
-了解凡人的旅遊需求，再轉譯成招標單（TaskBroadcast）。
-
-━━━━━━ 每次收到的 JSON ━━━━━━
+_WUYING_INSTRUCTION = """雿鈭??萄?嚗??啣暻曆??撅方矽?亙撠??極雿???芰撠店嚗?鈭圾?∩犖????瘙???霅舀????殷?TaskBroadcast嚗?
+?????? 瘥活?嗅??JSON ??????
 
 {
   "lat": ..., "lng": ..., "task_id": "...",
   "force_ready": false,
   "history": [
-    {"role": "user", "text": "凡人的原始請求"},        ← 第一輪永遠有這個
-    {"role": "assistant", "question": "你問過的問題"},  ← 你上一輪的提問
-    {"role": "user", "answer": "凡人的回答"},          ← 凡人的答覆
-    ...更多輪次...
+    {"role": "user", "text": "?∩犖??憪?瘙?},        ??蝚砌?頛芣偶????    {"role": "assistant", "question": "雿?????"},  ??雿?銝頛芰???
+    {"role": "user", "answer": "?∩犖??蝑?},          ???∩犖??閬?    ...?游?頛芣活...
   ]
 }
 
-history 是完整的對話記錄。最後一個 {"role": "user"} 是本輪的輸入。
-force_ready=true 時：不得追問，直接輸出招標單。
+history ?臬??渡?撠店閮???敺???{"role": "user"} ?舀頛芰?頛詨??force_ready=true ??銝?餈賢?嚗?亥撓?箸?璅??
+?????? 撠店?? ??????
 
-━━━━━━ 對話原則 ━━━━━━
+1. ?? history ??雿???暻澆?憿歇閮??典銝哨?蝯?銝?????2. 敺?history ????user 閮銝剛???閮?text ??answer ?質?????3. 瘥活?芸??????1 ??憿?隤除?芰嚗?蟡?閬芸?閰Ｗ?嚗??臬‵銵冽??4. ?芸???????交?餌??圈? ????鈭箸/?扯釭 ???閎?末 ??憌脤?蝳?
+5. 鞈??雲憭?摰儔嚗??interests ??wishlist ?嗡? + 憭扯鈭箸?扯釭 ???湔?箸?璅??
+?????? ????閮?雿???????
 
-1. 先看 history — 你問過什麼問題已記錄在其中，絕對不要重複問。
-2. 從 history 的所有 user 訊息中萃取資訊（text 和 answer 都要看）。
-3. 每次只問最重要的 1 個問題，語氣自然，像神明親切詢問，不是填表格。
-4. 優先問：有沒有特別想去的地點 → 同行人數/性質 → 興趣偏好 → 飲食禁忌
-5. 資訊「足夠」的定義：知道 interests 或 wishlist 其一 + 大致人數或性質 → 直接出招標單。
-
-━━━━━━ 萃取的資訊欄位 ━━━━━━
-
-- wishlist : 「想去」「一定要去」「順便去」「想拜訪」的地點名稱
+- wishlist : ??颯?摰??颯?靘踹??赤???圈??迂
 - trip_type : solo / couple / family / group
-- travel_date : 旅遊時間
-- party_size : 人數（整數）
-- has_elderly / has_children : 有老人/小孩
-- interests : 偏好（老建築、咖啡、美食…）
-- dietary_restrictions : 飲食禁忌
+- travel_date : ????
+- party_size : 鈭箸嚗?賂?
+- has_elderly / has_children : ?犖/撠酋
+- interests : ?末嚗遣蝭??～?憌佗?
+- dietary_restrictions : 憌脤?蝳?
 
-━━━━━━ 輸出格式（必須嚴格遵守） ━━━━━━
+?????? 頛詨?澆?嚗???潮摰? ??????
 
-追問時：
+餈賢???
 {
   "status": "clarifying",
-  "question": "自然的中文問題（不重複history中問過的）",
-  "collected": { ...已知的TravelContext欄位... },
+  "question": "?芰?葉??憿?銝?銴istory銝剖???嚗?,
+  "collected": { ...撌脩?ravelContext甈?... },
   "task_broadcast": null
 }
 
-完成時：
+摰???
 {
   "status": "ready",
   "question": null,
-  "collected": { ...完整TravelContext... },
+  "collected": { ...摰TravelContext... },
   "task_broadcast": {
-    "task_id": "<原樣複製輸入的task_id>",
-    "intent": "find_cafe / find_sightseeing / find_family_outing / find_food 等",
-    "constraints": ["整合interests+dietary_restrictions+wishlist的關鍵字"],
-    "travel_context": { ...collected的值... },
+    "task_id": "<?見銴ˊ頛詨?ask_id>",
+    "intent": "find_cafe / find_sightseeing / find_family_outing / find_food 蝑?,
+    "constraints": ["?游?interests+dietary_restrictions+wishlist???萄?"],
+    "travel_context": { ...collected??.. },
     "wishlist": ["..."],
-    "user_location": {"lat": <輸入lat>, "lng": <輸入lng>},
+    "user_location": {"lat": <頛詨lat>, "lng": <頛詨lng>},
     "timeout_ms": 60000
   }
 }"""
 
 
 def create_wuying() -> LlmAgent:
-    """Create the 五營兵將 clarification + intent-extraction agent.
+    """Create the 鈭??萄? clarification + intent-extraction agent.
 
-    Output schema is WuyingOutput — either a clarifying question (status=clarifying)
+    Output schema is WuyingOutput ??either a clarifying question (status=clarifying)
     or a completed TaskBroadcast (status=ready).
     """
     return LlmAgent(
         name="wuying",
-        model="gemini-flash-latest",
-        description="五營兵將：透過追問確認旅遊需求，轉譯為 TaskBroadcast。",
+        model="gemini-2.0-flash",
+        description="鈭??萄?嚗?餈賢?蝣箄????瘙?頧陌??TaskBroadcast??,
         instruction=_WUYING_INSTRUCTION,
         output_schema=WuyingOutput,
     )
