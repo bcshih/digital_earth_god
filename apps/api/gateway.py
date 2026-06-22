@@ -19,11 +19,15 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 import os
 import sys
+import traceback
 from pathlib import Path
 from typing import Any, Awaitable, Callable
 from uuid import uuid4
+
+logger = logging.getLogger(__name__)
 
 _PIPELINE_TIMEOUT = 120.0  # seconds per full Contract Net round-trip
 _WISH_TIMEOUT = 60.0
@@ -447,26 +451,31 @@ def create_app() -> FastAPI:
             )
             bid_index = 0
             verdict_text = ""
-            async for event in pipeline_runner.run_async(
-                user_id="gateway", session_id=session_id, new_message=msg
-            ):
-                author = getattr(event, "author", None)
-                if not (event.content and event.content.parts):
-                    continue
-                text = event.content.parts[0].text or ""
-                if not text:
-                    continue
-                if author and author.startswith("dijizhu_") and event.is_final_response():
-                    try:
-                        proposal = BiddingProposal.model_validate_json(text)
-                    except Exception:
+            pipeline_error: str | None = None
+            try:
+                async for event in pipeline_runner.run_async(
+                    user_id="gateway", session_id=session_id, new_message=msg
+                ):
+                    author = getattr(event, "author", None)
+                    if not (event.content and event.content.parts):
                         continue
-                    await ws.send_json(
-                        update_data_model(SURFACE_ID, f"/bids/{bid_index}", bid_data(proposal))
-                    )
-                    bid_index += 1
-                elif author == "tudigong_judge" and event.is_final_response():
-                    verdict_text = text
+                    text = event.content.parts[0].text or ""
+                    if not text:
+                        continue
+                    if author and author.startswith("dijizhu_") and event.is_final_response():
+                        try:
+                            proposal = BiddingProposal.model_validate_json(text)
+                        except Exception:
+                            continue
+                        await ws.send_json(
+                            update_data_model(SURFACE_ID, f"/bids/{bid_index}", bid_data(proposal))
+                        )
+                        bid_index += 1
+                    elif author == "tudigong_judge" and event.is_final_response():
+                        verdict_text = text
+            except Exception as pipeline_exc:
+                pipeline_error = str(pipeline_exc)
+                logger.error("Pipeline error:\n%s", traceback.format_exc())
 
             if verdict_text:
                 try:
@@ -478,7 +487,11 @@ def create_app() -> FastAPI:
                 except Exception:
                     pass  # best-effort — don't crash the WS if verdict parse fails
 
-            await ws.send_json({"a2uiDone": True})
+            if pipeline_error and not verdict_text:
+                # Pipeline failed with no usable output — surface the error
+                await ws.send_json({"a2uiError": pipeline_error})
+            else:
+                await ws.send_json({"a2uiDone": True})
         except WebSocketDisconnect:
             return
         except TimeoutError:
@@ -487,6 +500,7 @@ def create_app() -> FastAPI:
             except Exception:
                 pass
         except Exception as exc:
+            logger.error("WS handler error:\n%s", traceback.format_exc())
             try:
                 await ws.send_json({"a2uiError": str(exc)})
             except Exception:
