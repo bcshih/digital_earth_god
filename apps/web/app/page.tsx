@@ -10,6 +10,7 @@ import { IncenseBackground } from "@/components/theater/IncenseBackground";
 import { SealStamp } from "@/components/theater/SealStamp";
 import { Jiaobei } from "@/components/theater/Jiaobei";
 import { ResultMap, MapPoi } from "@/components/ResultMap";
+import { TempleNav } from "@/components/TempleNav";
 
 const WS_URL =
   process.env.NEXT_PUBLIC_GATEWAY_WS ?? "ws://127.0.0.1:8080/ws/explore/a2ui";
@@ -178,6 +179,8 @@ export default function Home() {
   return (
     <IncenseBackground>
       <main className="sanctum">
+        <TempleNav active="explore" />
+
         <div className="sanctum__brand">
           <span className="sanctum__seal">土</span>
           <span className="sanctum__kicker">EXPLORE · 五營兵將招標 (live)</span>

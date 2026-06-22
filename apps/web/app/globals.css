@@ -1007,12 +1007,318 @@ body::before {
   color: var(--seal);
 }
 
+/* ============================================================
+   M7 Task 4 — Temple nav, blessing bloom, governance dashboard
+   ============================================================ */
+
+.sanctum--wide {
+  max-width: 64rem;
+}
+
+/* ---- Temple nav plaque ---- */
+.temple-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.6rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid rgba(232, 176, 75, 0.18);
+}
+.temple-nav__plaque {
+  font-family: var(--font-noto-serif-tc), serif;
+  font-weight: 900;
+  font-size: 0.95rem;
+  letter-spacing: 0.4em;
+  color: var(--gold);
+  padding: 0.35rem 0.9rem;
+  border: 1px solid rgba(232, 176, 75, 0.4);
+  border-radius: 6px;
+  background: radial-gradient(circle at 50% 30%, rgba(200, 68, 46, 0.18), transparent);
+  text-shadow: 0 0 14px rgba(245, 215, 142, 0.35);
+}
+.temple-nav__halls {
+  display: flex;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+.temple-nav__hall {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.95rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  text-decoration: none;
+  color: var(--smoke);
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.temple-nav__hall:hover {
+  color: var(--gold-glow);
+  border-color: rgba(232, 176, 75, 0.35);
+}
+.temple-nav__hall[data-active="true"] {
+  color: var(--gold);
+  border-color: rgba(232, 176, 75, 0.55);
+  background: rgba(232, 176, 75, 0.08);
+  box-shadow: inset 0 0 14px rgba(232, 176, 75, 0.12);
+}
+.temple-nav__glyph {
+  font-family: var(--font-noto-serif-tc), serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.temple-nav__label {
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+}
+
+/* ---- Blessing bloom (calm verdict reveal) ---- */
+.blessing-bloom {
+  position: relative;
+}
+.blessing-bloom .a2-card {
+  animation: none; /* the bloom drives the entrance */
+}
+.blessing-bloom__glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 120%;
+  height: 120%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(48px);
+  background: radial-gradient(
+    circle,
+    rgba(245, 215, 142, 0.55),
+    rgba(232, 176, 75, 0.18) 45%,
+    transparent 70%
+  );
+  mix-blend-mode: screen;
+}
+.blessing-bloom__glow--static {
+  opacity: 0.5;
+}
+.blessing-bloom__halo {
+  position: absolute;
+  left: 50%;
+  bottom: -30%;
+  width: 70%;
+  height: 70%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(54px);
+  background: radial-gradient(circle, rgba(200, 68, 46, 0.16), transparent 68%);
+  mix-blend-mode: screen;
+}
+.blessing-bloom > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- API-unreachable banner ---- */
+.api-banner {
+  margin: 1.4rem 0 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.8rem 1.1rem;
+  border: 1px solid rgba(200, 68, 46, 0.4);
+  border-radius: 8px;
+  background: rgba(200, 68, 46, 0.08);
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  color: var(--ash);
+}
+.api-banner__dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--seal);
+  box-shadow: 0 0 10px var(--seal);
+}
+
+/* ---- 城市風向球 (category breakdown) ---- */
+.windvane {
+  margin: 2rem 0 1rem;
+  display: grid;
+  grid-template-columns: minmax(11rem, 0.7fr) 1.6fr;
+  gap: clamp(1.2rem, 4vw, 2.4rem);
+  align-items: center;
+  padding: 1.8rem;
+  border: 1px solid rgba(232, 176, 75, 0.28);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(232, 176, 75, 0.05), transparent 40%),
+    var(--sanctum);
+  box-shadow: inset 0 0 28px rgba(232, 176, 75, 0.06), 0 14px 40px rgba(0, 0, 0, 0.5);
+}
+@media (max-width: 640px) {
+  .windvane {
+    grid-template-columns: 1fr;
+  }
+}
+.windvane__headline {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+}
+.windvane__total {
+  font-family: var(--font-noto-serif-tc), serif;
+  font-weight: 900;
+  font-size: clamp(3rem, 9vw, 4.6rem);
+  line-height: 1;
+  color: var(--gold);
+  text-shadow: 0 0 26px rgba(245, 215, 142, 0.4);
+}
+.windvane__total-label {
+  font-family: var(--font-noto-serif-tc), serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  letter-spacing: 0.18em;
+  color: var(--gold-glow);
+}
+.windvane__bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.windvane-bar__head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.35rem;
+}
+.windvane-bar__chip {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  box-shadow: 0 0 8px currentColor;
+}
+.windvane-bar__cat {
+  font-family: var(--font-noto-sans-tc), sans-serif;
+  font-size: 0.92rem;
+  color: var(--ash);
+}
+.windvane-bar__n {
+  margin-left: auto;
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.86rem;
+  color: var(--gold);
+}
+.windvane-bar__track {
+  height: 0.55rem;
+  border-radius: 999px;
+  background: rgba(11, 14, 20, 0.7);
+  border: 1px solid rgba(107, 113, 128, 0.25);
+  overflow: hidden;
+}
+.windvane-bar__fill {
+  height: 100%;
+  border-radius: 999px;
+  box-shadow: 0 0 12px rgba(232, 176, 75, 0.4);
+  animation: windvane-grow 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes windvane-grow {
+  from { width: 0 !important; opacity: 0.4; }
+}
+
+/* ---- Dashboard sections ---- */
+.dashboard-section {
+  margin-top: 2.6rem;
+}
+.dashboard-section__title {
+  font-family: var(--font-noto-serif-tc), serif;
+  font-weight: 700;
+  font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+  letter-spacing: 0.1em;
+  color: var(--gold-glow);
+  margin: 0 0 0.4rem;
+}
+.dashboard-section__sub {
+  font-family: var(--font-noto-sans-tc), sans-serif;
+  font-size: 0.86rem;
+  line-height: 1.7;
+  color: var(--smoke);
+  margin: 0 0 1rem;
+}
+
+/* ---- Recent wishes ---- */
+.recent-wishes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.recent-wish {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.85rem 1.1rem;
+  border: 1px solid rgba(107, 113, 128, 0.22);
+  border-radius: 9px;
+  background: rgba(18, 22, 31, 0.55);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.recent-wish:hover {
+  border-color: rgba(232, 176, 75, 0.35);
+  background: rgba(18, 22, 31, 0.8);
+}
+.recent-wish__chip {
+  flex: none;
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid;
+  border-radius: 999px;
+  background: rgba(11, 14, 20, 0.6);
+}
+.recent-wish__text {
+  flex: 1;
+  margin: 0;
+  font-family: var(--font-noto-sans-tc), sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--ash);
+}
+.recent-wish__time {
+  flex: none;
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: var(--smoke);
+}
+.recent-wish--empty {
+  justify-content: center;
+  color: var(--smoke);
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .incense__wisp,
   .incense__halo,
   .poi-pin__ring,
   .live-status__dot,
-  .demo-replay__pulse {
+  .demo-replay__pulse,
+  .windvane-bar__fill {
     animation: none !important;
   }
 }
