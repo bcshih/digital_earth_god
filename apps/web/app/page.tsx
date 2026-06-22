@@ -125,12 +125,13 @@ export default function Home() {
       if (!intentText.trim()) return;
       const { lat, lng } = await getLatLng();
       ws.send(JSON.stringify({ intent_text: intentText, lat, lng }));
-      // conn transitions to "clarifying" or "submitted" via a2uiPhase server signal
+      setConn("submitted"); // immediate feedback; server a2uiPhase may override to "clarifying"
     } else if (name === "submit_clarify") {
       const fromCtx = typeof context.answer === "string" ? context.answer : null;
       const fromModel = getAtPointer(stateRef.current.dataModel, "/clarify/answer");
       const answerText = (fromCtx ?? (typeof fromModel === "string" ? fromModel : "")) || "";
       ws.send(JSON.stringify({ answer_text: answerText }));
+      setConn("submitted"); // immediate feedback; server a2uiPhase may override to "clarifying"
     }
   }, []);
 

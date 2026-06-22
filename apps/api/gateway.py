@@ -97,22 +97,26 @@ class WishRequest(BaseModel):
 
 async def _send_wuying_message(
     wuying_runner: Runner,
-    session_id: str,
+    session_service: InMemorySessionService,
     payload: str,
 ) -> WuyingOutput:
-    """Send one message in an EXISTING wuying session and return WuyingOutput.
+    """Run 五營兵將 in a FRESH session with explicit conversation history in payload.
 
-    The session must already be created by the caller.  Reusing the same session
-    across clarification rounds gives the LLM its own conversation history so it
-    never asks repeated questions.
+    A new session per round avoids ADK multi-turn + output_schema instability.
+    The full chat history is embedded in the payload JSON so the LLM has all
+    context and never repeats a question.
     """
+    session_id = uuid4().hex
+    await session_service.create_session(
+        app_name="deg", user_id="gateway", session_id=session_id
+    )
     msg = genai_types.Content(role="user", parts=[genai_types.Part(text=payload)])
     final_text = ""
     async for event in wuying_runner.run_async(
         user_id="gateway", session_id=session_id, new_message=msg
     ):
         if event.is_final_response() and event.content and event.content.parts:
-            final_text = event.content.parts[0].text
+            final_text = event.content.parts[0].text or ""
             break
     if not final_text:
         raise RuntimeError("五營兵將未能解析意圖，請再試一次。")
@@ -120,6 +124,17 @@ async def _send_wuying_message(
         return WuyingOutput.model_validate_json(final_text)
     except Exception as exc:
         raise RuntimeError(f"五營兵將回傳格式有誤：{exc}") from exc
+
+
+def _wuying_payload(
+    lat: float, lng: float, task_id: str,
+    history: list[dict], force_ready: bool,
+) -> str:
+    return json.dumps(
+        {"lat": lat, "lng": lng, "task_id": task_id,
+         "force_ready": force_ready, "history": history},
+        ensure_ascii=False,
+    )
 
 
 async def _run_wuying(
@@ -131,16 +146,12 @@ async def _run_wuying(
     task_id: str,
 ) -> TaskBroadcast:
     """Single-shot 五營兵將 (force_ready=True). Used by POST /intent (non-interactive)."""
-    session_id = uuid4().hex
-    await session_service.create_session(
-        app_name="deg", user_id="gateway", session_id=session_id
+    payload = _wuying_payload(
+        lat, lng, task_id,
+        history=[{"role": "user", "text": intent_text}],
+        force_ready=True,
     )
-    payload = json.dumps(
-        {"raw_text": intent_text, "lat": lat, "lng": lng,
-         "task_id": task_id, "force_ready": True},
-        ensure_ascii=False,
-    )
-    output = await _send_wuying_message(wuying_runner, session_id, payload)
+    output = await _send_wuying_message(wuying_runner, session_service, payload)
     if output.task_broadcast:
         tb = output.task_broadcast
         tb.task_id = task_id
@@ -380,31 +391,21 @@ def create_app() -> FastAPI:
 
             task_id = uuid4().hex
             # ── 五營兵將 clarification loop (max 3 questions) ──────────────────
-            # One persistent session so the LLM has its own conversation history
-            # and never asks the same question twice.
-            wuying_sid = uuid4().hex
-            await session_service.create_session(
-                app_name="deg", user_id="gateway", session_id=wuying_sid
-            )
-            answer: str = ""
+            # Each round uses a FRESH ADK session but receives the full chat
+            # history in the payload — this avoids multi-turn + output_schema
+            # instability while still giving the LLM full context.
+            history: list[dict] = [{"role": "user", "text": req.intent_text}]
             tb: TaskBroadcast | None = None
 
             async with asyncio.timeout(_PIPELINE_TIMEOUT):
                 for round_n in range(4):
                     force_ready = round_n >= 3
-                    if round_n == 0:
-                        payload = json.dumps(
-                            {"raw_text": req.intent_text, "lat": req.lat,
-                             "lng": req.lng, "task_id": task_id,
-                             "force_ready": force_ready},
-                            ensure_ascii=False,
-                        )
-                    else:
-                        payload = json.dumps(
-                            {"answer": answer, "force_ready": force_ready},
-                            ensure_ascii=False,
-                        )
-                    output = await _send_wuying_message(wuying_runner, wuying_sid, payload)
+                    payload = _wuying_payload(
+                        req.lat, req.lng, task_id, history, force_ready,
+                    )
+                    output = await _send_wuying_message(
+                        wuying_runner, session_service, payload
+                    )
 
                     if output.status == "ready" and output.task_broadcast:
                         tb = output.task_broadcast
@@ -413,6 +414,7 @@ def create_app() -> FastAPI:
                         break
 
                     if output.question:
+                        history.append({"role": "assistant", "question": output.question})
                         await ws.send_json({"a2uiPhase": "clarifying"})
                         await ws.send_json(
                             update_components(SURFACE_ID, clarification_components(output.question, round_n))
@@ -423,6 +425,7 @@ def create_app() -> FastAPI:
                         )
                         ans_data = await ws.receive_json()
                         answer = ans_data.get("answer_text", "")
+                        history.append({"role": "user", "answer": answer})
 
             if tb is None:
                 raise RuntimeError("五營兵將未能生成招標令，請再試一次。")
