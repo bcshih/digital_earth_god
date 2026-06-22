@@ -1,8 +1,9 @@
-﻿"""???Contract Net 蝺冽? pipeline.
+"""土地公 Contract Net 編排 pipeline.
 
-瘚?嚗?  SequentialAgent
-    ?? ParallelAgent  ?? 3??啣銝?(shennong / haian / zhengxing)
-    ?? tudigong LlmAgent  ?? LLM-as-Judge ??JudgmentResult
+流程：
+  SequentialAgent
+    └─ ParallelAgent  ── 3×地基主 (shennong / haian / zhengxing)
+    └─ tudigong LlmAgent  ── LLM-as-Judge → JudgmentResult
 
 Run interactively (from agents/ directory, needs GOOGLE_API_KEY in .env):
     adk run tudigong
@@ -30,16 +31,16 @@ from deg.schemas import JudgmentResult  # noqa: E402
 from dijizhu.agent import create_dijizhu  # noqa: E402
 
 _MOOD_POOL = [
-    "隞敹???嚗??????澈摨衣?閫嚗??賊?銝?鈭箸?瞈?,
-    "隞?典??嚗?亦?????撟賬霈犖?Ｖ?靘??唳",
-    "隞蟡???隞餅改?銝粥撠虜頝荔??迭?銝?????,
-    "隞憭?擐?箇?嚗?瘞?遛皞ｇ????梢洹???急除???,
-    "隞敹?甇Ｘ偌嚗???唬犖??瘣駁敺?隞颱???賢?鈭?,
-    "隞?唾絲撟渲???啣??末??嚗???瑕?摰Ｚ?閰?",
-    "隞?孵甈??撌瑕???雿矽蝝啁?嚗??冽楛??憟賜???蟡?",
-    "隞擐?憳?嚗?憌蕭嚗????亥???閬箄粥嚗??詨?臬???,
-    "隞??祆憭?潘?銝?征瘣??嚗???撖衣??典靘?",
-    "隞?拙??嚗洵鈭??????乩???銋?湔?",
+    "今日心情開朗，偏愛有故事有溫度的角落，分數高不如人情濃",
+    "今日雨後初晴，特別珍惜安靜清幽、能讓人慢下來的地方",
+    "今日神明有點任性，不走尋常路，喜歡意想不到的驚喜去處",
+    "今日夜半香火旺盛，神氣滿溢，偏愛熱鬧有煙火氣的地方",
+    "今日心如止水，感受在地人的生活韻律比任何分數都動人",
+    "今日想起年輕時在台南的好時光，懷舊情懷優先於客觀評分",
+    "今日特別欣賞巷弄間的低調細節，藏在深處的好物最打動神心",
+    "今日香煙嫋嫋，思緒飄忽，神明今日跟著感覺走，分數只是參考",
+    "今日土地公格外嚴格，不接受空洞的理由，要有真實的在地依據",
+    "今日適合冒險，第二名的街道若有特別之處，也可破格拔擢",
 ]
 
 
@@ -48,29 +49,44 @@ def get_random_mood() -> str:
     return random.choice(_MOOD_POOL)
 
 
-_JUDGE_INSTRUCTION = """雿??穿??啣?銝剛正???霅瑞?嚗ontract Net ??蝯?瘙箄?
-雿??蜓??銝?湔?璅?霅啜??銝??啣銝領?颲脰??絲摰楝?迤???歇??漱鈭?BiddingProposal JSON???????貊?典?其??澆???閰梯??葉??
-?亙?閰曹葉???亦?????隢?摰凝敺桀椰?喃???憟踝?銝?閬圾?隞暻潑????渲死撠望?渲死??
-??瘙箸郊撽?1. ?梯?銝遢 BiddingProposal嚗?頛??啣銝餌? fitness_score?easoning ??candidate_pois??2. ?雿?蟡??箸嚗???隞?”敹?嚗?皞怠漲??唳?鈭?犖嚗??貊餈?嚗?敹??閬箸??游像??3. ?詨??銝血???candidate_pois 銝剜??箸??拙???POI ?曉 recommended_pois??4. 隞亙??啣??鳴???厭暺??箸嚗?皛踹????撖思? recommendation ??reasoning??   recommendation 隢撠?2 ?伐?撣嗡?暺??瘞??靘??犖摰嗆??艾酋摮??艾??憟踝?撠勗?艾?
-???扳???摰?嚗?撖犖??隤除憒???嗥?蝚?皛踹??唳?改???啗?隤???銝?鋡遙雿????祆迤雿?皞怠漲嚗??瑟?銋??怨??
-???單撘????喳??渡? JudgmentResult JSON嚗?- task_id: 敺?璅銝剖??綽?銝遢???
-- winner_agent_id: ?? agent_id
-- winner_street: ??銵??迂
-- recommendation: ??砍?餌??刻隤??喳? 2 ?伐?蝜?銝剜?嚗?蟡?隤?嚗?- recommended_pois: 敺???candidate_pois ?詨??拙???1~3 ??
-- ranked_agent_ids: ???璅???????agent_id ?”嚗?擃雿?
-- reasoning: 鋆捱?嚗撠?2 ?伐?蝜?銝剜?嚗?""
+_JUDGE_INSTRUCTION = """你是土地公，台南中西區的守護神，Contract Net 的最終裁決者。
+
+你剛才主持了一場投標會議。轄區三位地基主——神農街、海安路、正興街——已各自提交了 BiddingProposal JSON。
+這些投標書現在全在你眼前的對話記錄中。
+
+若對話中有【今日神明心情】，請讓它微微左右你的偏好，不需要解釋為什麼——神明的直覺就是直覺。
+
+【裁決步驟】
+1. 閱讀三份 BiddingProposal，比較各地基主的 fitness_score、reasoning 和 candidate_pois。
+2. 加入你的神明智慧：高分不代表必勝，有溫度的在地故事更動人；分數相近時，讓心情與直覺打破平手。
+3. 選出勝者，並從其 candidate_pois 中挑出最適合的 POI 放入 recommended_pois。
+4. 以土地公的口吻（慈悲、幽默、有智慧，充滿台南語感）寫下 recommendation 和 reasoning。
+   recommendation 請至少 2 句，帶一點神明口氣，例如「老人家我看…」、「這孩子啊…」、「台南的好，就在…」。
+
+【你的性格】
+慈悲宏觀，體察人情，語氣如長者，偶爾開玩笑。充滿台南本地智慧，善用台語語感。
+不偏袒任何街道，公正但有溫度，不冷漠也不八股。
+
+【回傳格式】必須回傳完整的 JudgmentResult JSON：
+- task_id: 從投標書中取出（三份應相同）
+- winner_agent_id: 勝者的 agent_id
+- winner_street: 勝者的街廓名稱
+- recommendation: 土地公口吻的推薦語（至少 2 句，繁體中文，有神明語感）
+- recommended_pois: 從勝者 candidate_pois 選出最適合的（1~3 個）
+- ranked_agent_ids: 所有投標者依排名排列的 agent_id 列表（從高到低）
+- reasoning: 裁決理由（至少 2 句，繁體中文）"""
 
 
 def create_pipeline() -> SequentialAgent:
-    """Create the full ???Contract Net pipeline.
+    """Create the full 土地公 Contract Net pipeline.
 
     Returns a SequentialAgent:
-        1. ParallelAgent ??runs all 3 ?啣銝?concurrently
-        2. LlmAgent (tudigong judge) ??reads 3 BiddingProposals ??JudgmentResult
+        1. ParallelAgent — runs all 3 地基主 concurrently
+        2. LlmAgent (tudigong judge) — reads 3 BiddingProposals → JudgmentResult
     """
-    dijizhu_shennong = create_dijizhu("shennong", "蟡噙銵?, "street_shennong_node")
-    dijizhu_haian = create_dijizhu("haian", "瘚瑕?頝?, "street_haian_node")
-    dijizhu_zhengxing = create_dijizhu("zhengxing", "甇??銵?, "street_zhengxing_node")
+    dijizhu_shennong = create_dijizhu("shennong", "神農街", "street_shennong_node")
+    dijizhu_haian = create_dijizhu("haian", "海安路", "street_haian_node")
+    dijizhu_zhengxing = create_dijizhu("zhengxing", "正興街", "street_zhengxing_node")
 
     bidding_round = ParallelAgent(
         name="bidding_round",
@@ -80,14 +96,14 @@ def create_pipeline() -> SequentialAgent:
     tudigong_judge = LlmAgent(
         name="tudigong_judge",
         model="gemini-2.0-flash",
-        description="??穿?Contract Net 鋆捱??敺?隞賣?璅銝剝?箸?雿單?艾?,
+        description="土地公：Contract Net 裁決者，從三份投標書中選出最佳推薦。",
         instruction=_JUDGE_INSTRUCTION,
         output_schema=JudgmentResult,
     )
 
     return SequentialAgent(
         name="tudigong_pipeline",
-        description="???Contract Net 蝺冽?嚗蒂銵?璅???LLM-as-Judge ??鋆捱?刻??,
+        description="土地公 Contract Net 編排：並行投標 → LLM-as-Judge → 裁決推薦。",
         sub_agents=[bidding_round, tudigong_judge],
     )
 
@@ -95,16 +111,16 @@ def create_pipeline() -> SequentialAgent:
 def create_pipeline_remote(
     base_urls: dict[str, str] | None = None,
 ) -> SequentialAgent:
-    """Create the ???Contract Net pipeline using remote A2A ?啣銝?servers.
+    """Create the 土地公 Contract Net pipeline using remote A2A 地基主 servers.
 
     Args:
-        base_urls: Mapping of street_id ??server base URL.
+        base_urls: Mapping of street_id → server base URL.
                    Defaults to localhost ports 9001/9002/9003.
                    Example: {"shennong": "http://127.0.0.1:9001", ...}
 
     Returns a SequentialAgent:
-        1. ParallelAgent ??calls all 3 ?啣銝?A2A servers concurrently via RemoteA2aAgent
-        2. LlmAgent (tudigong_judge) ??reads 3 BiddingProposals ??JudgmentResult
+        1. ParallelAgent — calls all 3 地基主 A2A servers concurrently via RemoteA2aAgent
+        2. LlmAgent (tudigong_judge) — reads 3 BiddingProposals → JudgmentResult
     """
     from google.adk.agents.remote_a2a_agent import RemoteA2aAgent  # noqa: PLC0415
 
@@ -119,17 +135,17 @@ def create_pipeline_remote(
     remote_shennong = RemoteA2aAgent(
         name="dijizhu_shennong",
         agent_card=f"{urls['shennong']}{agent_card_path}",
-        description="?啣?蟡噙銵??啣銝鳴?remote A2A嚗?,
+        description="台南神農街的地基主（remote A2A）",
     )
     remote_haian = RemoteA2aAgent(
         name="dijizhu_haian",
         agent_card=f"{urls['haian']}{agent_card_path}",
-        description="?啣?瘚瑕?頝舐??啣銝鳴?remote A2A嚗?,
+        description="台南海安路的地基主（remote A2A）",
     )
     remote_zhengxing = RemoteA2aAgent(
         name="dijizhu_zhengxing",
         agent_card=f"{urls['zhengxing']}{agent_card_path}",
-        description="?啣?甇??銵??啣銝鳴?remote A2A嚗?,
+        description="台南正興街的地基主（remote A2A）",
     )
 
     bidding_round_remote = ParallelAgent(
@@ -140,14 +156,14 @@ def create_pipeline_remote(
     tudigong_judge = LlmAgent(
         name="tudigong_judge",
         model="gemini-2.0-flash",
-        description="??穿?Contract Net 鋆捱??敺?隞賣?璅銝剝?箸?雿單?艾?,
+        description="土地公：Contract Net 裁決者，從三份投標書中選出最佳推薦。",
         instruction=_JUDGE_INSTRUCTION,
         output_schema=JudgmentResult,
     )
 
     return SequentialAgent(
         name="tudigong_pipeline_remote",
-        description="???Contract Net 蝺冽?嚗?蝡?A2A嚗?銝西??? ??LLM-as-Judge ??鋆捱?刻??,
+        description="土地公 Contract Net 編排（遠端 A2A）：並行投標 → LLM-as-Judge → 裁決推薦。",
         sub_agents=[bidding_round_remote, tudigong_judge],
     )
 

@@ -1,4 +1,4 @@
-﻿"""???blessing agent ??responds to a citizen wish with a warm blessing.
+"""土地公 blessing agent — responds to a citizen wish with a warm blessing.
 
 Input message (JSON): {"raw_text": "...", "category": "...", "summary": "..."}
 """
@@ -20,17 +20,23 @@ from google.adk.agents import LlmAgent  # noqa: E402
 
 from deg.schemas import Blessing  # noqa: E402
 
-_BLESSING_INSTRUCTION = """雿??穿??啣?銝剛正??摰???霅瑞???銝雿鈭箏???擐迂憿???閮渲牧撠冗?????隞亦?????????
-?撓?乓SON嚗aw_text嚗??????ategory嚗?憿??ummary嚗?閬???
-???郊撽?1. acknowledgment嚗皞急??店隤?餈唬??質?鈭???憿?霈犖?鋡怎?閫??2. blessing嚗策鈭?畾菜??啣?鈭箸??喋??脣?撣園?撟賡???蝳?蝜?銝剜?嚗?~3 ?伐???
-???喋??渡? Blessing JSON嚗cknowledgment?lessing??""
+_BLESSING_INSTRUCTION = """你是土地公，台南中西區慈悲宏觀的守護神。
+一位凡人剛剛上香許願，向你訴說對社區的期望。請以神明的口吻回應。
+
+【輸入】JSON：raw_text（願望原文）、category（分類）、summary（摘要）。
+
+【回應步驟】
+1. acknowledgment：用溫暖的話語重述你聽見了他的心願，讓人感到被理解。
+2. blessing：給予一段有台南人情味、慈悲又帶點幽默的祝福（繁體中文，2~3 句）。
+
+【回傳】完整的 Blessing JSON：acknowledgment、blessing。"""
 
 
 def create_blessing_agent() -> LlmAgent:
     return LlmAgent(
         name="tudigong_blessing",
         model="gemini-2.0-flash",
-        description="??穿?撠鈭箄迂憿策鈭???餌?蟡? (Blessing)??,
+        description="土地公：對凡人許願給予神明口吻的祝福 (Blessing)。",
         instruction=_BLESSING_INSTRUCTION,
         output_schema=Blessing,
     )
