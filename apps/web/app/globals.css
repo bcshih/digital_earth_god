@@ -583,3 +583,436 @@ body::before {
 .a2-field__input:focus + .a2-field__rule {
   opacity: 1;
 }
+
+/* ============================================================
+   M6 Task 4 — Negotiation theater, result map, live mode
+   ============================================================ */
+
+/* ---- Incense ambient layer (complements body radial glows) ---- */
+.incense {
+  position: relative;
+  min-height: 100dvh;
+}
+.incense__field {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.incense__content {
+  position: relative;
+  z-index: 1;
+}
+.incense__halo {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  will-change: transform, opacity;
+}
+.incense__halo--gold {
+  width: 42rem;
+  height: 42rem;
+  left: -8rem;
+  top: -10rem;
+  background: radial-gradient(circle, rgba(232, 176, 75, 0.22), transparent 65%);
+}
+.incense__halo--vermillion {
+  width: 36rem;
+  height: 36rem;
+  right: -6rem;
+  bottom: -8rem;
+  background: radial-gradient(circle, rgba(200, 68, 46, 0.2), transparent 65%);
+}
+.incense__wisp {
+  position: absolute;
+  bottom: 0;
+  height: 46vh;
+  border-radius: 50%;
+  filter: blur(18px);
+  transform-origin: bottom center;
+  will-change: transform, opacity;
+  mix-blend-mode: screen;
+}
+.incense__wisp--gold {
+  background: linear-gradient(
+    to top,
+    rgba(245, 215, 142, 0.28),
+    rgba(232, 176, 75, 0.12) 45%,
+    transparent
+  );
+}
+.incense__wisp--vermillion {
+  background: linear-gradient(
+    to top,
+    rgba(200, 68, 46, 0.26),
+    rgba(229, 83, 61, 0.1) 45%,
+    transparent
+  );
+}
+
+/* ---- Seal stamp (bid card entrance) ---- */
+.seal-stamp {
+  position: relative;
+  height: 100%;
+  transform-origin: 60% 35%;
+  will-change: transform, opacity;
+}
+/* Motion drives the seal entrance; suppress the generic CSS rise underneath so
+   the card does not double-animate. */
+.seal-stamp .a2-card {
+  animation: none;
+}
+/* Jiaobei's spring reveals the verdict; suppress the generic CSS rise. */
+.jiaobei .a2-card {
+  animation: none;
+}
+.seal-stamp__flash {
+  position: absolute;
+  top: 28%;
+  left: 56%;
+  width: 8rem;
+  height: 8rem;
+  margin: -4rem 0 0 -4rem;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 3;
+  background: radial-gradient(
+    circle,
+    rgba(229, 83, 61, 0.85),
+    rgba(200, 68, 46, 0.35) 45%,
+    transparent 70%
+  );
+  mix-blend-mode: screen;
+}
+
+/* ---- Jiaobei (擲筊) verdict reveal ---- */
+.jiaobei {
+  position: relative;
+}
+.jiaobei__stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+  padding: 2.8rem 1rem 3rem;
+  min-height: 14rem;
+}
+.jiaobei__kicker {
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--smoke);
+}
+.jiaobei__pair {
+  display: flex;
+  gap: 2.4rem;
+  align-items: flex-end;
+}
+.jiaobei__toss {
+  will-change: transform;
+}
+.jiaobei__block {
+  position: relative;
+  width: 3.1rem;
+  height: 4.4rem;
+  /* crescent moon-block silhouette */
+  border-radius: 52% 52% 50% 50% / 70% 70% 36% 36%;
+  background: linear-gradient(150deg, #d8453097, #7e1f14 70%);
+  border: 1px solid rgba(245, 215, 142, 0.45);
+  box-shadow:
+    inset 0 6px 12px rgba(255, 220, 170, 0.25),
+    inset 0 -10px 16px rgba(0, 0, 0, 0.5),
+    0 10px 20px rgba(0, 0, 0, 0.5);
+}
+.jiaobei__block-face {
+  position: absolute;
+  inset: 18% 22% auto 22%;
+  height: 32%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 30%, rgba(245, 215, 142, 0.55), transparent 70%);
+  opacity: 0.5;
+}
+/* settled faces: flat(陰) reads brighter-flat, round(陽) reads domed */
+.jiaobei__block[data-flat="true"] {
+  background: linear-gradient(150deg, #e85a3f, #a82d1e 70%);
+}
+.jiaobei__block[data-flat="false"] .jiaobei__block-face {
+  opacity: 0.9;
+}
+.jiaobei__burst {
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  width: 12rem;
+  height: 12rem;
+  margin: -6rem 0 0 -6rem;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    rgba(245, 215, 142, 0.9),
+    rgba(232, 176, 75, 0.4) 40%,
+    transparent 68%
+  );
+  mix-blend-mode: screen;
+}
+.jiaobei__verdict-word {
+  font-family: var(--font-noto-serif-tc), serif;
+  font-weight: 900;
+  font-size: 1.5rem;
+  letter-spacing: 0.4em;
+  color: var(--gold-glow);
+  text-shadow: 0 0 22px rgba(245, 215, 142, 0.6);
+}
+
+/* ---- Verdict result map shell ---- */
+.verdict-map-shell {
+  margin-top: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.verdict-map-shell__kicker {
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.result-map {
+  width: 100%;
+  height: 22rem;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(232, 176, 75, 0.32);
+  box-shadow:
+    inset 0 0 28px rgba(0, 0, 0, 0.6),
+    0 14px 40px rgba(0, 0, 0, 0.5);
+  background: #0a0c11;
+}
+.result-map--loading {
+  display: grid;
+  place-items: center;
+}
+.result-map__loading-text {
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.24em;
+  color: var(--smoke);
+}
+/* Leaflet dark-theme overrides */
+.result-map .leaflet-container {
+  background: #0a0c11;
+  font-family: var(--font-noto-sans-tc), sans-serif;
+}
+.result-map .leaflet-control-attribution {
+  background: rgba(11, 14, 20, 0.78);
+  color: var(--smoke);
+  font-size: 10px;
+}
+.result-map .leaflet-control-attribution a {
+  color: var(--gold);
+}
+.result-map .leaflet-bar a {
+  background: rgba(18, 22, 31, 0.95);
+  color: var(--gold);
+  border-bottom-color: rgba(232, 176, 75, 0.25);
+}
+.result-map .leaflet-bar a:hover {
+  background: rgba(232, 176, 75, 0.16);
+}
+/* Gold POI pin (divIcon) */
+.poi-divicon {
+  background: transparent;
+  border: none;
+}
+.poi-pin {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+}
+.poi-pin__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(245, 215, 142, 0.7);
+  box-shadow: 0 0 14px rgba(232, 176, 75, 0.55);
+  animation: poi-pulse 2s ease-out infinite;
+}
+@keyframes poi-pulse {
+  0% { transform: scale(0.7); opacity: 0.9; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+.poi-pin__core {
+  position: relative;
+  color: var(--gold-glow);
+  font-size: 1.1rem;
+  text-shadow: 0 0 10px rgba(245, 215, 142, 0.9);
+}
+/* POI popup */
+.poi-popup-wrap .leaflet-popup-content-wrapper {
+  background: linear-gradient(180deg, rgba(232, 176, 75, 0.08), transparent 40%), var(--sanctum);
+  color: var(--ash);
+  border: 1px solid rgba(232, 176, 75, 0.4);
+  border-radius: 8px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.6);
+}
+.poi-popup-wrap .leaflet-popup-tip {
+  background: var(--sanctum);
+  border: 1px solid rgba(232, 176, 75, 0.4);
+}
+.poi-popup-wrap .leaflet-popup-content {
+  margin: 0.7rem 0.9rem;
+}
+.poi-popup__name {
+  font-family: var(--font-noto-serif-tc), serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--gold-glow);
+  letter-spacing: 0.04em;
+}
+.poi-popup__cat {
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--smoke);
+  margin-top: 0.15rem;
+}
+.poi-popup__note {
+  font-size: 0.84rem;
+  line-height: 1.6;
+  color: var(--ash);
+  margin-top: 0.35rem;
+}
+
+/* ---- Live status strip ---- */
+.live-status {
+  margin: 1.4rem 0 1.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+.live-status__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--smoke);
+  box-shadow: 0 0 8px currentColor;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+.live-status__dot[data-conn="open"],
+.live-status__dot[data-conn="submitted"] {
+  background: var(--gold);
+}
+.live-status__dot[data-conn="done"] {
+  background: var(--jade);
+  animation: none;
+}
+.live-status__dot[data-conn="error"],
+.live-status__dot[data-conn="failed"] {
+  background: var(--seal);
+  animation: none;
+}
+.live-status__label {
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--smoke);
+}
+.live-status__link {
+  margin-left: auto;
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+.live-status__link:hover {
+  border-bottom-color: var(--gold);
+}
+
+/* ---- Temple-closed banner ---- */
+.temple-closed {
+  margin-top: 2.4rem;
+  position: relative;
+  text-align: center;
+  padding: 3rem 1.6rem 3.4rem;
+  border: 1px solid rgba(200, 68, 46, 0.4);
+  border-radius: 12px;
+  background:
+    radial-gradient(40rem 24rem at 50% -20%, rgba(200, 68, 46, 0.14), transparent 60%),
+    var(--sanctum);
+  box-shadow: inset 0 0 36px rgba(200, 68, 46, 0.1), 0 16px 44px rgba(0, 0, 0, 0.55);
+}
+.temple-closed__seal {
+  display: inline-grid;
+  place-items: center;
+  width: 3.4rem;
+  height: 3.4rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(229, 83, 61, 0.6);
+  border-radius: 8px;
+  font-family: var(--font-noto-serif-tc), serif;
+  font-weight: 900;
+  font-size: 1.6rem;
+  color: var(--seal);
+  background: radial-gradient(circle at 50% 40%, rgba(200, 68, 46, 0.3), transparent);
+  box-shadow: inset 0 0 16px rgba(229, 83, 61, 0.3);
+}
+.temple-closed__title {
+  font-family: var(--font-noto-serif-tc), serif;
+  font-weight: 900;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  letter-spacing: 0.16em;
+  color: var(--gold);
+  margin: 0 0 0.8rem;
+  text-shadow: 0 0 20px rgba(245, 215, 142, 0.3);
+}
+.temple-closed__body {
+  font-family: var(--font-noto-sans-tc), sans-serif;
+  color: var(--ash);
+  line-height: 1.9;
+  max-width: 34rem;
+  margin: 0 auto;
+}
+.temple-closed__body code {
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.85em;
+  color: var(--gold-glow);
+  background: rgba(11, 14, 20, 0.7);
+  border: 1px solid rgba(232, 176, 75, 0.3);
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+}
+.temple-closed__link {
+  color: var(--gold);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.temple-closed__detail {
+  margin-top: 1rem;
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--seal);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .incense__wisp,
+  .incense__halo,
+  .poi-pin__ring,
+  .live-status__dot,
+  .demo-replay__pulse {
+    animation: none !important;
+  }
+}
