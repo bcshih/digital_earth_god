@@ -26,6 +26,7 @@ export default function AskPage() {
   const [state, setState] = useState<SurfaceState>(emptySurface);
   const [conn, setConn] = useState<Conn>("connecting");
   const [errorDetail, setErrorDetail] = useState<string | null>(null);
+  const [chatOpen, setChatOpen] = useState(false);
 
   const wsRef = useRef<WebSocket | null>(null);
   const stateRef = useRef<SurfaceState>(state);
@@ -34,6 +35,12 @@ export default function AskPage() {
   useEffect(() => {
     stateRef.current = state;
   }, [state]);
+
+  useEffect(() => {
+    if (conn === "routing" || conn === "answering") {
+      setChatOpen(true);
+    }
+  }, [conn]);
 
   useEffect(() => {
     let ws: WebSocket;
@@ -125,11 +132,27 @@ export default function AskPage() {
         return <ChatBubble key={`scout@${scope}`}>{element}</ChatBubble>;
       }
       if (id === "scouts-row") {
-        return <div key={`scout-room@${scope}`} className="chat-room">{element}</div>;
+        return (
+          <>
+            {chatOpen && (
+              <div className="chat-backdrop" onClick={() => setChatOpen(false)} />
+            )}
+            <button
+              className="chat-toggle"
+              onClick={() => setChatOpen((v) => !v)}
+              aria-label={chatOpen ? "關閉對話" : "查看里神對話"}
+            >
+              {chatOpen ? "✕" : "💬"}
+            </button>
+            <div key={`scout-room@${scope}`} className={`chat-room${chatOpen ? " chat-room--open" : ""}`}>
+              {element}
+            </div>
+          </>
+        );
       }
       return null;
     },
-    [],
+    [chatOpen],
   );
 
   const offline = conn === "failed";
