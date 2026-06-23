@@ -11,6 +11,7 @@ import { SealStamp } from "@/components/theater/SealStamp";
 import { Jiaobei } from "@/components/theater/Jiaobei";
 import { ResultMap, MapItineraryStop } from "@/components/ResultMap";
 import { TempleNav } from "@/components/TempleNav";
+import { ChatBubble } from "@/components/ChatBubble";
 
 const WS_URL =
   process.env.NEXT_PUBLIC_GATEWAY_WS ?? "ws://127.0.0.1:8080/ws/explore/a2ui";
@@ -217,6 +218,12 @@ export default function Home() {
             {element}
           </SealStamp>
         );
+      }
+      if (id === "scout-card") {
+        return <ChatBubble key={`scout@${scope}`}>{element}</ChatBubble>;
+      }
+      if (id === "scouts-row") {
+        return <div key={`scout-room@${scope}`} className="chat-room">{element}</div>;
       }
       // The verdict: gate behind 擲筊, then append the Leaflet result map.
       if (id === "verdict-card" && verdictReady) {
