@@ -138,8 +138,8 @@ function WishLive() {
 
   useEffect(() => {
     if (locationReady.current) return;
+    locationReady.current = true;
     getLatLng().then(({ lat, lng }) => {
-      locationReady.current = true;
       setPickerLat(lat);
       setPickerLng(lng);
       pickerLatRef.current = lat;
