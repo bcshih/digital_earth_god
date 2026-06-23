@@ -3,6 +3,8 @@
 from deg.schemas.contracts import (
     BiddingProposal,
     Blessing,
+    CommunityAnswer,
+    CommunityQueryResult,
     DebateMessage,
     Evidence,
     ItineraryStop,
@@ -32,4 +34,6 @@ __all__ = [
     "ItineraryStop",
     "JudgmentResult",
     "WuyingOutput",
+    "CommunityAnswer",
+    "CommunityQueryResult",
 ]

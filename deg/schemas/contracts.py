@@ -144,3 +144,20 @@ class WuyingOutput(BaseModel):
     question: str | None = None                                   # clarification question (when status=clarifying)
     collected: TravelContext = Field(default_factory=TravelContext)  # updated after each round
     task_broadcast: TaskBroadcast | None = None                   # populated when status=ready
+
+
+class CommunityAnswer(BaseModel):
+    """One 地基主's answer to a community question."""
+
+    agent_id: str
+    street_name: str
+    answer_text: str
+    sources: list[str] = Field(default_factory=list)
+
+
+class CommunityQueryResult(BaseModel):
+    """土地公's consolidated answer to a community query."""
+
+    question: str
+    answers: list[CommunityAnswer] = Field(default_factory=list)
+    tudigong_summary: str
