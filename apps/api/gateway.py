@@ -81,6 +81,7 @@ from tudigong.blessing_agent import create_blessing_agent  # noqa: E402
 from wuying.agent import create_wuying  # noqa: E402
 from wuying.wish_agent import create_wish_categorizer  # noqa: E402
 
+from deg.seed.geo import nearest_li  # noqa: E402
 from deg.a2ui import create_surface, update_components, update_data_model  # noqa: E402
 from deg.a2ui.surfaces import (  # noqa: E402
     SURFACE_ID,
@@ -478,6 +479,22 @@ async def _run_pipeline(
         raise RuntimeError(f"土地公裁決格式有誤：{exc}") from exc
 
 
+def _nearby_li_payload(lat: float, lng: float, n: int = 3) -> list[dict]:
+    """Return serialisable nearby-li context for the wish categoriser."""
+    results = nearest_li(lat=lat, lng=lng, n=n)
+    out = []
+    for li, dist_m in results:
+        activities_raw = li.layer_2_dynamic_activities
+        opinions_raw = li.layer_4_citizen_opinions
+        out.append({
+            "street_name": li.metadata.agent_name,
+            "distance_m": round(dist_m),
+            "activities": activities_raw.get("value", []) if isinstance(activities_raw, dict) else [],
+            "opinions": opinions_raw.get("value", {}) if isinstance(opinions_raw, dict) else {},
+        })
+    return out
+
+
 async def _process_wish(
     wish_runner: Runner,
     blessing_runner: Runner,
@@ -490,7 +507,11 @@ async def _process_wish(
 ) -> tuple[Wish, WishAnalysis, Blessing]:
     sid = uuid4().hex
     await session_service.create_session(app_name="deg", user_id="gateway", session_id=sid)
-    payload = json.dumps({"raw_text": wish_text, "lat": lat, "lng": lng}, ensure_ascii=False)
+    nearby = _nearby_li_payload(lat, lng)
+    payload = json.dumps(
+        {"raw_text": wish_text, "lat": lat, "lng": lng, "nearby_li": nearby},
+        ensure_ascii=False,
+    )
     msg = genai_types.Content(role="user", parts=[genai_types.Part(text=payload)])
     analysis_text = ""
     async for event in wish_runner.run_async(user_id="gateway", session_id=sid, new_message=msg):
