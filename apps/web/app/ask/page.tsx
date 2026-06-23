@@ -1,12 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Renderer, EventContext } from "@/lib/a2ui/Renderer";
+import { Renderer, EventContext, Decorator } from "@/lib/a2ui/Renderer";
 import { applyMessage, emptySurface } from "@/lib/a2ui/store";
 import { getAtPointer, setAtPointer } from "@/lib/a2ui/pointer";
 import { SurfaceState, A2uiMessage } from "@/lib/a2ui/types";
 import { IncenseBackground } from "@/components/theater/IncenseBackground";
 import { TempleNav } from "@/components/TempleNav";
+import { ChatBubble } from "@/components/ChatBubble";
 
 const WS_URL =
   process.env.NEXT_PUBLIC_GATEWAY_WS_COMMUNITY ??
@@ -118,6 +119,19 @@ export default function AskPage() {
     }));
   }, []);
 
+  const decorate = useCallback<Decorator>(
+    ({ id, scope, element }) => {
+      if (id === "scout-card") {
+        return <ChatBubble key={`scout@${scope}`}>{element}</ChatBubble>;
+      }
+      if (id === "scouts-row") {
+        return <div key={`scout-room@${scope}`} className="chat-room">{element}</div>;
+      }
+      return null;
+    },
+    [],
+  );
+
   const offline = conn === "failed";
 
   return (
@@ -171,6 +185,7 @@ export default function AskPage() {
             state={state}
             onEvent={onEvent}
             onDataModelChange={onDataModelChange}
+            decorate={decorate}
           />
         )}
 
