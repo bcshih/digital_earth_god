@@ -1,5 +1,7 @@
 # 數位土地公 Digital Earth God
 
+[繁體中文](README.zh-TW.md) | English
+
 > **以神明為喻的多智能體系統，守護台南中西區的文化探索與社區治理。**
 >
 > A Multi-Agent System (MAS) that reimagines Tainan City's cultural heritage exploration through the metaphor of Taiwanese folk religion — where a **土地公 (Earth God)** orchestrates **20 地基主 (Street Guardians)** to bid, debate, and negotiate the best travel itineraries and community insights for you.
@@ -19,6 +21,7 @@
 
 - **Contract Net Protocol** — Decentralized task allocation: broadcast → scout → bid → debate → judge
 - **A2UI (Agent-to-UI)** — Server pushes component trees + data patches over WebSocket; the frontend renders them with a generic renderer + domain-specific decorators (seal stamps, jiaobei divination, incense backgrounds)
+- **5 Agent Types** — 土地公 (orchestrator), 20× 地基主 (street guardians), 虎爺 (Tiger God), 巡境使 (Patrol Officer), 五營兵將 (Five Camps)
 - **20 Autonomous Street Agents** — Each guardian has pre-loaded spatial data (POIs, history, social posts) for one neighborhood in Tainan's West Central District
 - **Divine Personality** — Random "mood of the day" phrases inject personality into the Earth God's judgments
 - **Theatrical UI** — Vermillion seal-stamp animations, jiaobei (擲筊) divination reveals, incense smoke backgrounds, and chat-room-style scout reports
@@ -90,49 +93,59 @@
 ```
 digital-earth-god/
 ├── agents/
-│   ├── tudigong/           # 土地公 (Earth God) — orchestrator & judge
-│   │   └── agent.py        #   Contract Net pipeline, mood pool, judge prompts
-│   └── dijizhu/            # 地基主 (Street Guardian) — per-street agents
-│       ├── agent.py         #   Scout, bidding, debate, community, council agents
-│       └── a2a_server.py    #   A2A HTTP server for each street
+│   ├── tudigong/            # 土地公 (Earth God) — orchestrator, judge, council chair, blessing
+│   │   ├── agent.py         #   Contract Net pipeline, mood pool, community/council judge
+│   │   └── blessing_agent.py#   Wish blessing agent
+│   ├── dijizhu/             # 地基主 (Street Guardians) — 20 per-street agents
+│   │   ├── agent.py         #   Scout, bidding, debate, community, council speaker agents
+│   │   ├── a2a_server.py    #   A2A HTTP server (per street)
+│   │   └── swarm_server.py  #   Launch all 20 A2A servers in parallel
+│   ├── huye/                # 虎爺 (Tiger God) — mock evidence adapter, A2A server
+│   ├── wuying/              # 五營兵將 (Five Camps) — intent + wish categorizer agents
+│   └── xunjingshi/          # 巡境使 (Patrol Officer) — mock evidence adapter, A2A server
 │
 ├── apps/
 │   ├── api/
-│   │   └── gateway.py       # FastAPI gateway — WS endpoints, pipeline orchestration
+│   │   └── gateway.py       # FastAPI gateway — 4 WS endpoints, pipeline orchestration
 │   └── web/                 # Next.js 16 frontend
 │       ├── app/
-│       │   ├── page.tsx      #   Explore (向土地公問路)
-│       │   ├── ask/page.tsx  #   Community Ask (問土地公)
-│       │   ├── council/page.tsx  # Council (里長大會)
-│       │   └── wish/page.tsx #   Wish (許願)
+│       │   ├── page.tsx           #   Explore (向土地公問路)
+│       │   ├── ask/page.tsx       #   Community Ask (問土地公)
+│       │   ├── council/page.tsx   #   Council (里長大會)
+│       │   ├── wish/page.tsx      #   Wish (許願)
+│       │   └── dashboard/page.tsx #   Dashboard (城市風向球)
 │       ├── components/
-│       │   ├── theater/      #   SealStamp, Jiaobei, IncenseBackground
-│       │   ├── NegotiationBoard.tsx  # Compact bid/debate viewer with pagination
-│       │   ├── ChatBubble.tsx        # Scout chat-room bubbles
-│       │   └── ResultMap.tsx         # Leaflet itinerary map
-│       └── lib/a2ui/         # Generic A2UI renderer
+│       │   ├── theater/           #   SealStamp, Jiaobei, IncenseBackground
+│       │   ├── NegotiationBoard.tsx   # Compact bid/debate viewer with pagination
+│       │   ├── ChatBubble.tsx         # Scout chat-room bubbles
+│       │   ├── CouncilMap.tsx         # Reactive 里 boundary map (Leaflet, SSR-safe wrapper)
+│       │   └── ResultMap.tsx          # Leaflet itinerary map
+│       └── lib/a2ui/          # Generic A2UI renderer
 │           └── Renderer.tsx
 │
-├── deg/                      # Core library (pip install -e .)
-│   ├── schemas.py            #   Pydantic models (TaskBroadcast, BiddingProposal, etc.)
+├── deg/                       # Core library (pip install -e .)
+│   ├── schemas/
+│   │   └── contracts.py       #   Pydantic models (TaskBroadcast → CouncilVerdict)
 │   ├── a2ui/
-│   │   ├── __init__.py       #   A2UI protocol (state, patches)
-│   │   └── surfaces.py       #   Component tree builders per flow
-│   └── seed/
-│       ├── loader.py          #   Load agent data from JSON (5-layer NGSI-LD model)
-│       └── tainan_agents.json #   Seed data for 20 neighborhoods
+│   │   ├── __init__.py        #   A2UI protocol (state, patches, builder)
+│   │   └── surfaces.py        #   Component tree builders per flow (explore/ask/council/wish)
+│   ├── adapters/              #   Sensor + social data adapters (虎爺/巡境使 evidence)
+│   ├── warmdata/              #   SQLite wish store (deg/warmdata/store.py)
+│   ├── mcp/spatial_db/        #   MCP spatial database for POI queries
+│   └── seed/loader.py         #   Load 5-layer NGSI-LD agent data from JSON
 │
-├── data/
-│   └── li_boundaries.geojson  # GeoJSON boundaries for Tainan districts
+├── dijizu_agent/              # 20 li JSON data files (5-layer NGSI-LD per neighborhood)
+│   ├── 五條港里.json           # … (20 files total)
+│   └── …
 │
-├── scripts/
-│   └── start_swarm.py         # Launch all 地基主 A2A servers in parallel
+├── data/seed/
+│   ├── streets.json           # Street / POI seed data
+│   ├── sensor.json            # Sensor readings seed data
+│   └── social.json            # Social / citizen opinion seed data
 │
-├── tests/
-│   ├── test_gateway.py        # Gateway endpoint tests
-│   └── test_schemas.py        # Schema validation tests
-│
+├── tests/                     # 80+ unit tests (integration tests skip without API key)
 ├── docs/                      # Design documents & feature plans
+├── scripts/demo.py            # CLI demo script
 ├── start.ps1                  # One-click startup script (Windows)
 ├── pyproject.toml             # Python project config
 └── .env.example               # Environment variable template
@@ -188,7 +201,7 @@ This will start the Swarm Server, FastAPI Gateway, and Next.js frontend, then op
 
 ```bash
 # Terminal 1 — Swarm Server (20 地基主 A2A agents)
-python scripts/start_swarm.py
+python agents/dijizhu/swarm_server.py
 
 # Terminal 2 — FastAPI Gateway
 uvicorn apps.api.gateway:app --host 127.0.0.1 --port 8080 --reload
@@ -266,7 +279,7 @@ The system uses a 5-layer NGSI-LD inspired data model for each neighborhood:
 - `DebateMessage` — Inter-agent debate text
 - `JudgmentResult` — Final itinerary with `ItineraryStop[]`, recommendation, reasoning
 - `CommunityAnswer` / `CommunityQueryResult` — Community Q&A models
-- `CouncilStatement` / `CouncilVerdict` — Council deliberation models
+- `CouncilStatement` / `CouncilAlignment` / `CouncilVerdict` — Council deliberation models (stance: support/oppose/question/inform/silent)
 
 ---
 
