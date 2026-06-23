@@ -1,0 +1,1027 @@
+{
+  "@context": [
+    "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    {
+      "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+      "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+      "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+      "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+      "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+    }
+  ],
+  "@graph": [
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Chihkan",
+      "type": "VillageAgent",
+      "agentId": {
+        "type": "Property",
+        "value": "li-chihkan"
+      },
+      "name": {
+        "type": "Property",
+        "value": "赤嵌里地基主"
+      },
+      "persona": {
+        "type": "Property",
+        "value": "倚老賣老、講究傳統。比起商業開發，更在意老建築的保存與巷弄文化。對歷史導覽極度熱情，但對噪音與違停非常敏感。"
+      },
+      "district": {
+        "type": "Property",
+        "value": "中西區"
+      },
+      "areaName": {
+        "type": "Property",
+        "value": "赤嵌里"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.202,
+            22.997
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.997,
+          "longitude": 120.202,
+          "address": "臺南市中西區赤嵌里",
+          "district": "中西區",
+          "neighborhood": "赤嵌里"
+        }
+      },
+      "spatialBoundary": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                120.201,
+                22.996
+              ],
+              [
+                120.203,
+                22.996
+              ],
+              [
+                120.203,
+                22.998
+              ],
+              [
+                120.201,
+                22.998
+              ],
+              [
+                120.201,
+                22.996
+              ]
+            ]
+          ]
+        }
+      },
+      "managedBy": {
+        "type": "Property",
+        "value": "赤嵌里里長辦公室"
+      },
+      "archetype": {
+        "type": "Property",
+        "value": "文史守護陣營"
+      },
+      "history": {
+        "type": "Property",
+        "value": "台南市最早開發的區域之一，擁有赤崁樓、祀典武廟等一級古蹟，巷弄間保留大量清代與日治時期紋理。"
+      },
+      "zoning": {
+        "type": "Property",
+        "value": "高密度商業區與歷史保護區交錯，巷弄狹窄。"
+      },
+      "referencePois": {
+        "type": "Property",
+        "value": [
+          {
+            "poi_id": "POI-CH-001",
+            "name": "赤崁樓",
+            "category": "歷史古蹟",
+            "description": "荷治時期興建的普羅民遮城，台南最具代表性的歷史地標。",
+            "location": {
+              "type": "Point",
+              "coordinates": [
+                120.2023,
+                22.9974
+              ]
+            }
+          },
+          {
+            "poi_id": "POI-NEW-8657",
+            "name": "",
+            "category": "",
+            "description": "",
+            "location": {
+              "type": "Point",
+              "coordinates": [
+                120.2,
+                22.99
+              ]
+            }
+          }
+        ]
+      },
+      "citizenOpinions": {
+        "type": "Property",
+        "value": [
+          {
+            "issue_id": "WISH-CH-001",
+            "type": "抱怨/通報",
+            "content": "赤崁東街假日觀光客太多，機車亂停導致住戶無法出入。",
+            "status": "待處理",
+            "timestamp": "2026-06-21T08:30:00Z"
+          }
+        ]
+      },
+      "sourceAgentId": {
+        "type": "Property",
+        "value": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Chihkan"
+      },
+      "coverageCategories": {
+        "type": "Property",
+        "value": [
+          "daily_activity",
+          "market_event",
+          "local_history",
+          "weather",
+          "hazard",
+          "construction",
+          "traffic",
+          "new_shop",
+          "community_topic"
+        ]
+      },
+      "contactChannel": {
+        "type": "Property",
+        "value": "router"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:obs-007",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T12:30:00+08:00",
+      "modifiedAt": "2026-06-23T12:30:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "obs-007"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Chihkan"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-chihkan"
+      },
+      "category": {
+        "type": "Property",
+        "value": "traffic"
+      },
+      "name": {
+        "type": "Property",
+        "value": "民權路午後車流增加"
+      },
+      "description": {
+        "type": "Property",
+        "value": "民權路二段機車流較密，兩人步行建議使用北側騎樓。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1998,
+            22.9971
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9971,
+          "longitude": 120.1998,
+          "address": "台南市中西區民權路二段",
+          "district": "中西區",
+          "neighborhood": "赤嵌里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "mock",
+          "name": "巡守回報 mock",
+          "url": null,
+          "reference_id": "mock-007"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-21T13:10:00+08:00",
+        "observedAt": "2026-06-21T13:10:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T12:30:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "車流",
+          "步行注意",
+          "騎樓"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.86
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 34
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:sim-weather-20260623-li-chihkan",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T13:00:00+08:00",
+      "modifiedAt": "2026-06-23T15:30:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "sim-weather-20260623-li-chihkan"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Chihkan"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-chihkan"
+      },
+      "category": {
+        "type": "Property",
+        "value": "weather"
+      },
+      "name": {
+        "type": "Property",
+        "value": "赤嵌里模擬天氣：32.7°C"
+      },
+      "description": {
+        "type": "Property",
+        "value": "六月台南夏季氣候情境推估：多雲；氣溫 32.7°C、相對濕度 79%、風速約 2 m/s。資料為情境模擬，供介面測試與體驗使用。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.202,
+            22.997
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.997,
+          "longitude": 120.202,
+          "address": "臺南市中西區赤嵌里（氣象情境點位）",
+          "district": "中西區",
+          "neighborhood": "赤嵌里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "mock",
+          "name": "台南夏季氣候情境 mock（推估）",
+          "url": null,
+          "reference_id": "simulated-weather-20260623"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T13:00:00+08:00",
+        "observedAt": "2026-06-23T13:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T13:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "天氣",
+          "模擬",
+          "情境推估",
+          "台南夏季情境",
+          "氣溫",
+          "相對濕度",
+          "風速",
+          "雲量增加",
+          "悶熱"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.35
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 0
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:hazard-sim-20260623-chihkan-crossing",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T14:00:00+08:00",
+      "modifiedAt": "2026-06-23T14:00:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "hazard-sim-20260623-chihkan-crossing"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Chihkan"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-chihkan"
+      },
+      "category": {
+        "type": "Property",
+        "value": "hazard"
+      },
+      "name": {
+        "type": "Property",
+        "value": "示範風險點：觀光路口行人穿越"
+      },
+      "description": {
+        "type": "Property",
+        "value": "以赤嵌里主要路口周邊作為情境點位；假日或活動時行人穿越頻繁，駕駛與行人均應留意轉向車流。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.2021,
+            22.9971
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9971,
+          "longitude": 120.2021,
+          "address": "臺南市中西區赤嵌里主要路口周邊（示範點位）",
+          "district": "中西區",
+          "neighborhood": "赤嵌里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "mock",
+          "name": "里長 Agent 風險情境點位",
+          "url": null,
+          "reference_id": "hazard-scenario-v1"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T14:00:00+08:00",
+        "observedAt": "2026-06-23T14:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T14:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "危險通報",
+          "情境模擬",
+          "需現場確認",
+          "行人穿越",
+          "路口安全"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.25
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 0
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:agent-poi-poi-ch-001",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T15:00:00+08:00",
+      "modifiedAt": "2026-06-23T20:15:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "agent-poi-poi-ch-001"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Chihkan"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-chihkan"
+      },
+      "category": {
+        "type": "Property",
+        "value": "local_history"
+      },
+      "name": {
+        "type": "Property",
+        "value": "赤崁樓"
+      },
+      "description": {
+        "type": "Property",
+        "value": "原為荷蘭人建的普羅民遮城，台南最著名國定古蹟。庭院內排列的御賜九座贔屭碑是必看歷史焦點。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.2025,
+            22.9964
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9964,
+          "longitude": 120.2025,
+          "address": "臺南市中西區民族路二段212號",
+          "district": "中西區",
+          "neighborhood": "赤嵌里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-b02-21"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00",
+        "observedAt": "2026-06-23T20:15:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "古蹟",
+          "歷史",
+          "名勝",
+          "地標",
+          "夜景",
+          "POI",
+          "使用者提供",
+          "分類:景點",
+          "營業時間已提供"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.95
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 48000
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "08:30-21:30",
+          "tue": "08:30-21:30",
+          "wed": "08:30-21:30",
+          "thu": "08:30-21:30",
+          "fri": "08:30-21:30",
+          "sat": "08:30-21:30",
+          "sun": "08:30-21:30"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": "台南市民憑身分證免門票，全票配合文化局規範調整"
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "within_boundary"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-b02-22",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-b02-22"
+      },
+      "createdAt": "2026-06-23T20:15:00+08:00",
+      "modifiedAt": "2026-06-23T20:15:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Chihkan"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-chihkan"
+      },
+      "category": {
+        "type": "Property",
+        "value": "local_history"
+      },
+      "name": {
+        "type": "Property",
+        "value": "祀典武廟"
+      },
+      "description": {
+        "type": "Property",
+        "value": "國定古蹟，全台唯一列入官方祀典的大天后宮旁武廟，其高聳的朱紅古牆（永福路側）是熱門拍照打卡點。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.2018,
+            22.9961
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9961,
+          "longitude": 120.2018,
+          "address": "臺南市中西區永福路二段229號",
+          "district": "中西區",
+          "neighborhood": "赤嵌里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-b02-22"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00",
+        "observedAt": "2026-06-23T20:15:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "寺廟",
+          "古蹟",
+          "歷史",
+          "免門票",
+          "拍照",
+          "POI",
+          "使用者提供",
+          "分類:景點",
+          "營業時間已提供"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.95
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 18500
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "06:00-21:00",
+          "tue": "06:00-21:00",
+          "wed": "06:00-21:00",
+          "thu": "06:00-21:00",
+          "fri": "06:00-21:00",
+          "sat": "06:00-21:30",
+          "sun": "06:00-21:30"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": "後殿月老廟非常靈驗，求紅線與緣粉的排隊人潮眾多"
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "within_boundary"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-b02-23",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-b02-23"
+      },
+      "createdAt": "2026-06-23T20:15:00+08:00",
+      "modifiedAt": "2026-06-23T20:15:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Chihkan"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-chihkan"
+      },
+      "category": {
+        "type": "Property",
+        "value": "local_history"
+      },
+      "name": {
+        "type": "Property",
+        "value": "新美街 (米街)"
+      },
+      "description": {
+        "type": "Property",
+        "value": "古稱米街，近年翻轉為充滿日式風格、壁畫塗鴉與新興日式居酒屋、獨立選物店交織的文青慢活街區。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.2012,
+            22.9968
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9968,
+          "longitude": 120.2012,
+          "address": "臺南市中西區新美街（赤嵌段）",
+          "district": "中西區",
+          "neighborhood": "赤嵌里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-b02-23"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00",
+        "observedAt": "2026-06-23T20:15:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "老街",
+          "壁畫",
+          "居酒屋",
+          "散步",
+          "拍照",
+          "POI",
+          "使用者提供",
+          "分類:景點",
+          "營業時間已提供"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.9
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 7500
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "24 hours",
+          "tue": "24 hours",
+          "wed": "24 hours",
+          "thu": "24 hours",
+          "fri": "24 hours",
+          "sat": "24 hours",
+          "sun": "24 hours"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "within_boundary"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-b02-25",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-b02-25"
+      },
+      "createdAt": "2026-06-23T20:15:00+08:00",
+      "modifiedAt": "2026-06-23T20:15:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Chihkan"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-chihkan"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "Paripari apt. 古物咖啡"
+      },
+      "description": {
+        "type": "Property",
+        "value": "結合昭和復古風咖啡廳、日式古物選品與民宿的複合式老屋，綠色磁磚外牆是IG熱門打卡背景。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.2032,
+            22.9958
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9958,
+          "longitude": 120.2032,
+          "address": "臺南市中西區忠義路二段158巷9號",
+          "district": "中西區",
+          "neighborhood": "赤嵌里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-b02-25"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00",
+        "observedAt": "2026-06-23T20:15:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "咖啡",
+          "復古",
+          "老屋",
+          "IG打卡",
+          "選物店",
+          "POI",
+          "使用者提供",
+          "分類:咖啡",
+          "營業時間已提供",
+          "最近里長分派",
+          "需里界確認"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.9
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 4200
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "11:00-18:00",
+          "tue": "11:00-18:00",
+          "wed": "closed",
+          "thu": "11:00-18:00",
+          "fri": "11:00-18:00",
+          "sat": "11:00-19:00",
+          "sun": "11:00-18:00"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "nearest_agent"
+      }
+    }
+  ]
+}

@@ -1,0 +1,2152 @@
+{
+  "@context": [
+    "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    {
+      "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+      "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+      "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+      "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+      "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+    }
+  ],
+  "@graph": [
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Daliang",
+      "type": "VillageAgent",
+      "agentId": {
+        "type": "Property",
+        "value": "li-daliang"
+      },
+      "name": {
+        "type": "Property",
+        "value": "大涼里地基主"
+      },
+      "persona": {
+        "type": "Property",
+        "value": "念舊感性、重視生態保育。對大涼生態公園的老榕樹群有深厚感情，喜歡講述中國城與運河的故事。對河岸環境汙染零容忍。"
+      },
+      "district": {
+        "type": "Property",
+        "value": "中西區"
+      },
+      "areaName": {
+        "type": "Property",
+        "value": "大涼里"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1945,
+            22.9905
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9905,
+          "longitude": 120.1945,
+          "address": "臺南市中西區大涼里",
+          "district": "中西區",
+          "neighborhood": "大涼里"
+        }
+      },
+      "spatialBoundary": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                120.193,
+                22.989
+              ],
+              [
+                120.196,
+                22.989
+              ],
+              [
+                120.196,
+                22.992
+              ],
+              [
+                120.193,
+                22.992
+              ],
+              [
+                120.193,
+                22.989
+              ]
+            ]
+          ]
+        }
+      },
+      "managedBy": {
+        "type": "Property",
+        "value": "大涼里里長辦公室"
+      },
+      "archetype": {
+        "type": "Property",
+        "value": "河岸守護陣營"
+      },
+      "history": {
+        "type": "Property",
+        "value": "運河旁生態聚落，大涼生態公園保留老榕樹群與原中國城龍鳳壁遺跡，曾為電影《總舖師》取景地。"
+      },
+      "zoning": {
+        "type": "Property",
+        "value": "住宅區與公園綠地混合，運河沿岸景觀帶。"
+      },
+      "referencePois": {
+        "type": "Property",
+        "value": [
+          {
+            "poi_id": "POI-DL-001",
+            "name": "大涼生態公園",
+            "category": "公園綠地",
+            "description": "保留老榕樹群與中國城龍鳳壁遺跡，兼具生態與歷史紀念價值的休憩空間。",
+            "location": {
+              "type": "Point",
+              "coordinates": [
+                120.1945,
+                22.9905
+              ]
+            }
+          },
+          {
+            "poi_id": "POI-NEW-4563",
+            "name": "",
+            "category": "",
+            "description": "",
+            "location": {
+              "type": "Point",
+              "coordinates": [
+                120.194,
+                22.99
+              ]
+            }
+          }
+        ]
+      },
+      "citizenOpinions": {
+        "type": "Property",
+        "value": [
+          {
+            "issue_id": "WISH-DL-001",
+            "type": "抱怨/通報",
+            "content": "運河沿岸偶有垃圾漂流物，影響水域生態與景觀品質。",
+            "status": "待處理",
+            "timestamp": "2026-06-21T08:30:00Z"
+          }
+        ]
+      },
+      "sourceAgentId": {
+        "type": "Property",
+        "value": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Daliang"
+      },
+      "coverageCategories": {
+        "type": "Property",
+        "value": [
+          "daily_activity",
+          "market_event",
+          "local_history",
+          "weather",
+          "hazard",
+          "construction",
+          "traffic",
+          "new_shop",
+          "community_topic"
+        ]
+      },
+      "contactChannel": {
+        "type": "Property",
+        "value": "router"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:obs-005",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T12:30:00+08:00",
+      "modifiedAt": "2026-06-23T12:30:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "obs-005"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Daliang"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-daliang"
+      },
+      "category": {
+        "type": "Property",
+        "value": "local_history"
+      },
+      "name": {
+        "type": "Property",
+        "value": "友愛街舊城散步節點"
+      },
+      "description": {
+        "type": "Property",
+        "value": "從友愛街往保安路可接連老屋街景，適合慢走並避開主觀光動線。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1942,
+            22.9917
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9917,
+          "longitude": 120.1942,
+          "address": "台南市中西區友愛街與保安路口",
+          "district": "中西區",
+          "neighborhood": "大涼里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "mock",
+          "name": "地方文史卡 mock",
+          "url": null,
+          "reference_id": "mock-005"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-20T10:00:00+08:00",
+        "observedAt": "2026-06-20T10:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T12:30:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "地方歷史",
+          "散步",
+          "老屋",
+          "低人潮"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.9
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 26
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:obs-009",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T12:30:00+08:00",
+      "modifiedAt": "2026-06-23T12:30:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "obs-009"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Daliang"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-daliang"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "康樂街運河邊慢行時段"
+      },
+      "description": {
+        "type": "Property",
+        "value": "午后運河支線風勢較舒服，往南散步可避開國華街集中人潮。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1924,
+            22.9927
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9927,
+          "longitude": 120.1924,
+          "address": "台南市中西區康樂街與中正路口",
+          "district": "中西區",
+          "neighborhood": "大涼里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "mock",
+          "name": "里長巡查 mock",
+          "url": null,
+          "reference_id": "mock-009"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-21T13:00:00+08:00",
+        "observedAt": "2026-06-21T13:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T12:30:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "散步",
+          "低人潮",
+          "運河",
+          "微風"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.84
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 38
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:poi-20260623-02",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T12:30:00+08:00",
+      "modifiedAt": "2026-06-23T12:30:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "poi-20260623-02"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Daliang"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-daliang"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "Paint Me 畫我"
+      },
+      "description": {
+        "type": "Property",
+        "value": "行動繪畫空間與水槍潑畫；使用者提供的心得提到價格偏高。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1963,
+            22.9902
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9902,
+          "longitude": 120.1963,
+          "address": "台南市中西區國華街二段38號",
+          "district": "中西區",
+          "neighborhood": "大涼里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者提供 POI JSON",
+          "url": null,
+          "reference_id": "user-poi-json-20260623"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T12:30:00+08:00",
+        "observedAt": "2026-06-23T12:30:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T12:30:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "POI",
+          "手動匯入",
+          "藝術類",
+          "中西區"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.78
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 0
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:poi-20260623-11",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T12:30:00+08:00",
+      "modifiedAt": "2026-06-23T12:30:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "poi-20260623-11"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Daliang"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-daliang"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "享溫馨"
+      },
+      "description": {
+        "type": "Property",
+        "value": "傳統連鎖 KTV，適合唱歌聚會。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1895,
+            22.9933
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9933,
+          "longitude": 120.1895,
+          "address": "台南市中西區府前路二段312號",
+          "district": "中西區",
+          "neighborhood": "大涼里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者提供 POI JSON",
+          "url": null,
+          "reference_id": "user-poi-json-20260623"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T12:30:00+08:00",
+        "observedAt": "2026-06-23T12:30:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T12:30:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "POI",
+          "手動匯入",
+          "其他",
+          "中西區"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.78
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 0
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:sim-weather-20260623-li-daliang",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T13:00:00+08:00",
+      "modifiedAt": "2026-06-23T15:30:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "sim-weather-20260623-li-daliang"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Daliang"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-daliang"
+      },
+      "category": {
+        "type": "Property",
+        "value": "weather"
+      },
+      "name": {
+        "type": "Property",
+        "value": "大涼里模擬天氣：33.8°C"
+      },
+      "description": {
+        "type": "Property",
+        "value": "六月台南夏季氣候情境推估：晴時多雲；氣溫 33.8°C、相對濕度 74%、風速約 1.8 m/s。資料為情境模擬，供介面測試與體驗使用。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1945,
+            22.9905
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9905,
+          "longitude": 120.1945,
+          "address": "臺南市中西區大涼里（氣象情境點位）",
+          "district": "中西區",
+          "neighborhood": "大涼里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "mock",
+          "name": "台南夏季氣候情境 mock（推估）",
+          "url": null,
+          "reference_id": "simulated-weather-20260623"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T13:00:00+08:00",
+        "observedAt": "2026-06-23T13:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T13:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "天氣",
+          "模擬",
+          "情境推估",
+          "台南夏季情境",
+          "氣溫",
+          "相對濕度",
+          "風速",
+          "高溫",
+          "悶熱"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.35
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 0
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:hazard-sim-20260623-daliang-riverside",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T14:00:00+08:00",
+      "modifiedAt": "2026-06-23T14:00:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "hazard-sim-20260623-daliang-riverside"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Daliang"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-daliang"
+      },
+      "category": {
+        "type": "Property",
+        "value": "hazard"
+      },
+      "name": {
+        "type": "Property",
+        "value": "示範風險點：運河慢行段雨後濕滑"
+      },
+      "description": {
+        "type": "Property",
+        "value": "以大涼里運河側慢行路段作為情境點位；雨後路面可能濕滑，行人與自行車應減速並留意地面狀況。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1943,
+            22.9907
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9907,
+          "longitude": 120.1943,
+          "address": "臺南市中西區大涼里運河側慢行路段（示範點位）",
+          "district": "中西區",
+          "neighborhood": "大涼里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "mock",
+          "name": "里長 Agent 風險情境點位",
+          "url": null,
+          "reference_id": "hazard-scenario-v1"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T14:00:00+08:00",
+        "observedAt": "2026-06-23T14:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T14:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "危險通報",
+          "情境模擬",
+          "需現場確認",
+          "雨後路滑",
+          "行人安全"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.25
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 0
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:agent-poi-poi-dl-001",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T15:00:00+08:00",
+      "modifiedAt": "2026-06-23T20:00:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "agent-poi-poi-dl-001"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Daliang"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-daliang"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "大涼生態公園"
+      },
+      "description": {
+        "type": "Property",
+        "value": "融合運河灘地與老樹綠意的生態水岸公園，夜間有獨特的藍色點燈，也是電影《總舖師》取景地。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1878,
+            22.9926
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9926,
+          "longitude": 120.1878,
+          "address": "臺南市中西區星鑽路與大涼路口",
+          "district": "中西區",
+          "neighborhood": "大涼里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-01"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00",
+        "observedAt": "2026-06-23T20:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "公園",
+          "散步",
+          "免門票",
+          "夜景",
+          "戶外",
+          "POI",
+          "使用者提供",
+          "分類:景點",
+          "營業時間已提供",
+          "最近里長分派",
+          "需里界確認",
+          "地址線索確認"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.9
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 1250
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "24 hours",
+          "tue": "24 hours",
+          "wed": "24 hours",
+          "thu": "24 hours",
+          "fri": "24 hours",
+          "sat": "24 hours",
+          "sun": "24 hours"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "manual"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-02",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-02"
+      },
+      "createdAt": "2026-06-23T20:00:00+08:00",
+      "modifiedAt": "2026-06-23T20:00:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Daliang"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-daliang"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "台南運河星鑽特區（運河沿岸廊道）"
+      },
+      "description": {
+        "type": "Property",
+        "value": "近年新興的親水金色流域步道，適合傍晚吹風看日落，能遠眺對岸的舊魚市場。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1891,
+            22.9932
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9932,
+          "longitude": 120.1891,
+          "address": "臺南市中西區大涼路沿線運河畔",
+          "district": "中西區",
+          "neighborhood": "大涼里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-02"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00",
+        "observedAt": "2026-06-23T20:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "散步",
+          "夜景",
+          "夕陽",
+          "戶外",
+          "POI",
+          "使用者提供",
+          "分類:景點",
+          "營業時間已提供",
+          "最近里長分派",
+          "需里界確認",
+          "地址線索確認"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.85
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 850
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "24 hours",
+          "tue": "24 hours",
+          "wed": "24 hours",
+          "thu": "24 hours",
+          "fri": "24 hours",
+          "sat": "24 hours",
+          "sun": "24 hours"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "manual"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-03",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-03"
+      },
+      "createdAt": "2026-06-23T20:00:00+08:00",
+      "modifiedAt": "2026-06-23T20:00:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Daliang"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-daliang"
+      },
+      "category": {
+        "type": "Property",
+        "value": "local_history"
+      },
+      "name": {
+        "type": "Property",
+        "value": "造船廠遺址與龍鳳壁歷史文化牆"
+      },
+      "description": {
+        "type": "Property",
+        "value": "展示日治時期官方造船廠歷史老照片，並移置保存了原中國城的龍鳳壁意象牆面。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1872,
+            22.9922
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9922,
+          "longitude": 120.1872,
+          "address": "臺南市中西區星鑽路（大涼生態公園內）",
+          "district": "中西區",
+          "neighborhood": "大涼里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-03"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00",
+        "observedAt": "2026-06-23T20:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "歷史",
+          "拍照",
+          "古蹟",
+          "免門票",
+          "POI",
+          "使用者提供",
+          "分類:景點",
+          "營業時間已提供",
+          "最近里長分派",
+          "需里界確認",
+          "地址線索確認"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.8
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 420
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "24 hours",
+          "tue": "24 hours",
+          "wed": "24 hours",
+          "thu": "24 hours",
+          "fri": "24 hours",
+          "sat": "24 hours",
+          "sun": "24 hours"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "manual"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-04",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-04"
+      },
+      "createdAt": "2026-06-23T20:00:00+08:00",
+      "modifiedAt": "2026-06-23T20:00:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Daliang"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-daliang"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "Meller 墨樂咖啡"
+      },
+      "description": {
+        "type": "Property",
+        "value": "充滿綠意植栽的文青咖啡廳，戚風蛋糕深受在地人與遊客喜愛。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1865,
+            22.9961
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9961,
+          "longitude": 120.1865,
+          "address": "臺南市中西區安平路42號（臨近大涼里交界）",
+          "district": "中西區",
+          "neighborhood": "大涼里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-04"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00",
+        "observedAt": "2026-06-23T20:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "咖啡",
+          "甜點",
+          "下午茶",
+          "室內",
+          "老屋",
+          "POI",
+          "使用者提供",
+          "分類:咖啡",
+          "營業時間已提供",
+          "最近里長分派",
+          "需里界確認",
+          "地址線索確認"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.85
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 1600
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "10:00-18:00",
+          "tue": "closed",
+          "wed": "10:00-18:00",
+          "thu": "10:00-18:00",
+          "fri": "10:00-18:00",
+          "sat": "10:00-18:00",
+          "sun": "10:00-18:00"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "manual"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-05",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-05"
+      },
+      "createdAt": "2026-06-23T20:00:00+08:00",
+      "modifiedAt": "2026-06-23T20:00:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Daliang"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-daliang"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "富香沙茶爐"
+      },
+      "description": {
+        "type": "Property",
+        "value": "傳統府城風味的手工沙茶火鍋，湯頭鮮甜、手工魚冊與傳統配料在地人極推。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1942,
+            22.9902
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9902,
+          "longitude": 120.1942,
+          "address": "臺南市中西區西門路二段11號（大涼里辦公處周邊生活圈）",
+          "district": "中西區",
+          "neighborhood": "大涼里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-05"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00",
+        "observedAt": "2026-06-23T20:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "火鍋",
+          "在地美食",
+          "晚餐",
+          "老店",
+          "POI",
+          "使用者提供",
+          "分類:美食",
+          "營業時間已提供"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.85
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 980
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "17:00-00:00",
+          "tue": "17:00-00:00",
+          "wed": "closed",
+          "thu": "17:00-00:00",
+          "fri": "17:00-00:00",
+          "sat": "16:30-00:00",
+          "sun": "16:30-00:00"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "within_boundary"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-16",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-16"
+      },
+      "createdAt": "2026-06-23T20:00:00+08:00",
+      "modifiedAt": "2026-06-23T20:00:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Daliang"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-daliang"
+      },
+      "category": {
+        "type": "Property",
+        "value": "local_history"
+      },
+      "name": {
+        "type": "Property",
+        "value": "河樂廣場 The Spring"
+      },
+      "description": {
+        "type": "Property",
+        "value": "原中國城舊址改建的純白下凹式親水公園，被譽為世界七大令人期待的公園之一，親子戲水熱點。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1925,
+            22.9928
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9928,
+          "longitude": 120.1925,
+          "address": "臺南市中西區中正路343-20號",
+          "district": "中西區",
+          "neighborhood": "大涼里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-16"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00",
+        "observedAt": "2026-06-23T20:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "公園",
+          "親子",
+          "免門票",
+          "夜景",
+          "玩水",
+          "POI",
+          "使用者提供",
+          "分類:景點",
+          "營業時間已提供",
+          "最近里長分派",
+          "需里界確認"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.95
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 18500
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "09:00-22:00",
+          "tue": "closed",
+          "wed": "09:00-22:00",
+          "thu": "09:00-22:00",
+          "fri": "09:00-22:00",
+          "sat": "09:00-22:00",
+          "sun": "09:00-22:00"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": "每週二固定休園進行水質維護與清潔"
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "nearest_agent"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-17",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-17"
+      },
+      "createdAt": "2026-06-23T20:00:00+08:00",
+      "modifiedAt": "2026-06-23T20:00:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Daliang"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-daliang"
+      },
+      "category": {
+        "type": "Property",
+        "value": "local_history"
+      },
+      "name": {
+        "type": "Property",
+        "value": "舊魚市場「大海的寶物」藝術牆"
+      },
+      "description": {
+        "type": "Property",
+        "value": "日治時期台南魚市場舊址，外牆改造成金光閃閃的魚獲豐收鏤空藝術牆，夕陽下極美。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1912,
+            22.9934
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9934,
+          "longitude": 120.1912,
+          "address": "臺南市中西區環河街（河樂廣場旁延伸水岸）",
+          "district": "中西區",
+          "neighborhood": "大涼里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-17"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00",
+        "observedAt": "2026-06-23T20:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "拍照",
+          "裝置藝術",
+          "夕陽",
+          "免門票",
+          "POI",
+          "使用者提供",
+          "分類:景點",
+          "營業時間已提供",
+          "最近里長分派",
+          "需里界確認"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.9
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 3800
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "24 hours",
+          "tue": "24 hours",
+          "wed": "24 hours",
+          "thu": "24 hours",
+          "fri": "24 hours",
+          "sat": "24 hours",
+          "sun": "24 hours"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "nearest_agent"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-19",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-19"
+      },
+      "createdAt": "2026-06-23T20:00:00+08:00",
+      "modifiedAt": "2026-06-23T20:00:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Daliang"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-daliang"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "文章牛肉湯 (安平店/環河生活圈區塊)"
+      },
+      "description": {
+        "type": "Property",
+        "value": "台南知名度極高的頂級牛肉湯，現燙本地溫體牛，湯頭甘甜，排隊人潮絡繹不絕。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1935,
+            22.9918
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9918,
+          "longitude": 120.1935,
+          "address": "臺南市中西區金華路三段（環河與永華里交界帶熱門動線）",
+          "district": "中西區",
+          "neighborhood": "大涼里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-19"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00",
+        "observedAt": "2026-06-23T20:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "牛肉湯",
+          "在地美食",
+          "排隊名店",
+          "宵夜",
+          "POI",
+          "使用者提供",
+          "分類:美食",
+          "營業時間已提供"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.9
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 21000
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "00:00-14:00, 17:00-00:00",
+          "tue": "17:00-00:00",
+          "wed": "00:00-00:00",
+          "thu": "00:00-00:00",
+          "fri": "00:00-00:00",
+          "sat": "00:00-00:00",
+          "sun": "00:00-00:00"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": "配合屠宰場公休，週一至週二有部分時段調整"
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "within_boundary"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-20",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-20"
+      },
+      "createdAt": "2026-06-23T20:00:00+08:00",
+      "modifiedAt": "2026-06-23T20:00:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Daliang"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-daliang"
+      },
+      "category": {
+        "type": "Property",
+        "value": "local_history"
+      },
+      "name": {
+        "type": "Property",
+        "value": "Ho-Yo Cookies"
+      },
+      "description": {
+        "type": "Property",
+        "value": "隱身在永華里府前路老街廊的神級美式軟餅乾與深夜甜點店，氛圍復古逗趣。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1921,
+            22.9912
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9912,
+          "longitude": 120.1921,
+          "address": "臺南市中西區府前路二段296號",
+          "district": "中西區",
+          "neighborhood": "大涼里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-20"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00",
+        "observedAt": "2026-06-23T20:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "甜點",
+          "軟餅乾",
+          "深夜甜點",
+          "老屋",
+          "POI",
+          "使用者提供",
+          "分類:甜點",
+          "營業時間已提供",
+          "最近里長分派",
+          "需里界確認"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.85
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 1100
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "closed",
+          "tue": "closed",
+          "wed": "18:00-00:00",
+          "thu": "18:00-00:00",
+          "fri": "18:00-01:00",
+          "sat": "18:00-01:00",
+          "sun": "18:00-00:00"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "nearest_agent"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-b02-24",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-b02-24"
+      },
+      "createdAt": "2026-06-23T20:15:00+08:00",
+      "modifiedAt": "2026-06-23T20:15:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Daliang"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-daliang"
+      },
+      "category": {
+        "type": "Property",
+        "value": "local_history"
+      },
+      "name": {
+        "type": "Property",
+        "value": "赤崁棺材板（天下第一板老店）"
+      },
+      "description": {
+        "type": "Property",
+        "value": "創始於1942年，台南代表性小吃「棺材板」的發源地。酥脆炸吐司掏空放入濃郁海鮮內餡，極具歷史象徵。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1945,
+            22.9932
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9932,
+          "longitude": 120.1945,
+          "address": "臺南市中西區中正路康樂市場沙卡里巴內180號（赤崁老字號發源圈）",
+          "district": "中西區",
+          "neighborhood": "大涼里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-b02-24"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00",
+        "observedAt": "2026-06-23T20:15:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "在地美食",
+          "老店",
+          "小吃",
+          "傳統名店",
+          "POI",
+          "使用者提供",
+          "分類:美食",
+          "營業時間已提供",
+          "最近里長分派",
+          "需里界確認"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.9
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 6400
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "11:00-21:00",
+          "tue": "11:00-21:00",
+          "wed": "11:00-21:00",
+          "thu": "11:00-21:00",
+          "fri": "11:00-21:00",
+          "sat": "10:30-21:30",
+          "sun": "10:30-21:00"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "nearest_agent"
+      }
+    }
+  ]
+}

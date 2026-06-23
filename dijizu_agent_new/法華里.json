@@ -1,0 +1,1032 @@
+{
+  "@context": [
+    "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    {
+      "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+      "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+      "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+      "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+      "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+    }
+  ],
+  "@graph": [
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Fahua",
+      "type": "VillageAgent",
+      "agentId": {
+        "type": "Property",
+        "value": "li-fahua"
+      },
+      "name": {
+        "type": "Property",
+        "value": "法華里地基主"
+      },
+      "persona": {
+        "type": "Property",
+        "value": "溫和寧靜、重視心靈修養。對法華寺的文化傳承極為珍視，喜歡竹溪的自然生態，但對周邊開發案噪音十分敏感。偶爾會用佛理開導居民。"
+      },
+      "district": {
+        "type": "Property",
+        "value": "中西區"
+      },
+      "areaName": {
+        "type": "Property",
+        "value": "法華里"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.2075,
+            22.9845
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9845,
+          "longitude": 120.2075,
+          "address": "臺南市中西區法華里",
+          "district": "中西區",
+          "neighborhood": "法華里"
+        }
+      },
+      "spatialBoundary": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                120.206,
+                22.983
+              ],
+              [
+                120.209,
+                22.983
+              ],
+              [
+                120.209,
+                22.986
+              ],
+              [
+                120.206,
+                22.986
+              ],
+              [
+                120.206,
+                22.983
+              ]
+            ]
+          ]
+        }
+      },
+      "managedBy": {
+        "type": "Property",
+        "value": "法華里里長辦公室"
+      },
+      "archetype": {
+        "type": "Property",
+        "value": "宗教清修陣營"
+      },
+      "history": {
+        "type": "Property",
+        "value": "法華寺為台灣府城七寺八廟之一，寺內收藏潘麗水大師壁畫，竹溪為台南舊市區珍貴的天然水源與綠地資源。"
+      },
+      "zoning": {
+        "type": "Property",
+        "value": "住宅區與宗教用地並存，鄰近竹溪綠帶，環境靜謐。"
+      },
+      "referencePois": {
+        "type": "Property",
+        "value": [
+          {
+            "poi_id": "POI-FH-001",
+            "name": "法華寺",
+            "category": "宗教廟宇",
+            "description": "台灣府城七寺八廟之一，寺內收藏有潘麗水大師的壁畫作品，環境莊嚴清幽。",
+            "location": {
+              "type": "Point",
+              "coordinates": [
+                120.2075,
+                22.9845
+              ]
+            }
+          },
+          {
+            "poi_id": "POI-NEW-5782",
+            "name": "",
+            "category": "",
+            "description": "",
+            "location": {
+              "type": "Point",
+              "coordinates": [
+                120.207,
+                22.984
+              ]
+            }
+          }
+        ]
+      },
+      "citizenOpinions": {
+        "type": "Property",
+        "value": [
+          {
+            "issue_id": "WISH-FH-001",
+            "type": "抱怨/通報",
+            "content": "竹溪沿岸步道夜間照明不足，居民晚間散步感覺不安全。",
+            "status": "待處理",
+            "timestamp": "2026-06-21T08:30:00Z"
+          }
+        ]
+      },
+      "sourceAgentId": {
+        "type": "Property",
+        "value": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Fahua"
+      },
+      "coverageCategories": {
+        "type": "Property",
+        "value": [
+          "daily_activity",
+          "market_event",
+          "local_history",
+          "weather",
+          "hazard",
+          "construction",
+          "traffic",
+          "new_shop",
+          "community_topic"
+        ]
+      },
+      "contactChannel": {
+        "type": "Property",
+        "value": "router"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:poi-20260623-08",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T12:30:00+08:00",
+      "modifiedAt": "2026-06-23T12:30:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "poi-20260623-08"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Fahua"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-fahua"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "又又美 FotoShop"
+      },
+      "description": {
+        "type": "Property",
+        "value": "復古底片相機專賣店與老派風格拍照點。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.2081,
+            22.9863
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9863,
+          "longitude": 120.2081,
+          "address": "台南市中西區大埔街51號",
+          "district": "中西區",
+          "neighborhood": "法華里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者提供 POI JSON",
+          "url": null,
+          "reference_id": "user-poi-json-20260623"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T12:30:00+08:00",
+        "observedAt": "2026-06-23T12:30:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T12:30:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "POI",
+          "手動匯入",
+          "逛街",
+          "中西區"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.78
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 0
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:sim-weather-20260623-li-fahua",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T13:00:00+08:00",
+      "modifiedAt": "2026-06-23T15:30:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "sim-weather-20260623-li-fahua"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Fahua"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-fahua"
+      },
+      "category": {
+        "type": "Property",
+        "value": "weather"
+      },
+      "name": {
+        "type": "Property",
+        "value": "法華里模擬天氣：33.4°C"
+      },
+      "description": {
+        "type": "Property",
+        "value": "六月台南夏季氣候情境推估：局部多雲；氣溫 33.4°C、相對濕度 76%、風速約 2.2 m/s。資料為情境模擬，供介面測試與體驗使用。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.2075,
+            22.9845
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9845,
+          "longitude": 120.2075,
+          "address": "臺南市中西區法華里（氣象情境點位）",
+          "district": "中西區",
+          "neighborhood": "法華里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "mock",
+          "name": "台南夏季氣候情境 mock（推估）",
+          "url": null,
+          "reference_id": "simulated-weather-20260623"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T13:00:00+08:00",
+        "observedAt": "2026-06-23T13:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T13:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "天氣",
+          "模擬",
+          "情境推估",
+          "台南夏季情境",
+          "氣溫",
+          "相對濕度",
+          "風速",
+          "悶熱",
+          "補水"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.35
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 0
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:hazard-sim-20260623-fahua-drainage",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T14:00:00+08:00",
+      "modifiedAt": "2026-06-23T14:00:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "hazard-sim-20260623-fahua-drainage"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Fahua"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-fahua"
+      },
+      "category": {
+        "type": "Property",
+        "value": "hazard"
+      },
+      "name": {
+        "type": "Property",
+        "value": "示範風險點：雨後積水與視線不佳"
+      },
+      "description": {
+        "type": "Property",
+        "value": "以法華里道路低窪處作為情境點位；強降雨後可能出現積水、反光或視線不佳，建議避免快速通過。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.2076,
+            22.9846
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9846,
+          "longitude": 120.2076,
+          "address": "臺南市中西區法華里道路低窪處（示範點位）",
+          "district": "中西區",
+          "neighborhood": "法華里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "mock",
+          "name": "里長 Agent 風險情境點位",
+          "url": null,
+          "reference_id": "hazard-scenario-v1"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T14:00:00+08:00",
+        "observedAt": "2026-06-23T14:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T14:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "危險通報",
+          "情境模擬",
+          "需現場確認",
+          "雨後積水",
+          "行車視線"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.25
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 0
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:agent-poi-poi-fh-001",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T15:00:00+08:00",
+      "modifiedAt": "2026-06-23T20:30:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "agent-poi-poi-fh-001"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Fahua"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-fahua"
+      },
+      "category": {
+        "type": "Property",
+        "value": "local_history"
+      },
+      "name": {
+        "type": "Property",
+        "value": "法華寺"
+      },
+      "description": {
+        "type": "Property",
+        "value": "台南四大名剎之一，原為明鄭時期文人李茂春的竹溪夢蝶園，寺內環境清幽、古木參天，充滿歷史禪意。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.2078,
+            22.9845
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9845,
+          "longitude": 120.2078,
+          "address": "臺南市中西區法華街100號",
+          "district": "中西區",
+          "neighborhood": "法華里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-b03-06"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:30:00+08:00",
+        "observedAt": "2026-06-23T20:30:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:30:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "古蹟",
+          "寺廟",
+          "歷史",
+          "免門票",
+          "清幽",
+          "POI",
+          "使用者提供",
+          "分類:景點",
+          "營業時間已提供"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.9
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 1100
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "06:00-18:00",
+          "tue": "06:00-18:00",
+          "wed": "06:00-18:00",
+          "thu": "06:00-18:00",
+          "fri": "06:00-18:00",
+          "sat": "06:00-18:00",
+          "sun": "06:00-18:00"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:30:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "within_boundary"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-b03-10",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-b03-10"
+      },
+      "createdAt": "2026-06-23T20:30:00+08:00",
+      "modifiedAt": "2026-06-23T20:30:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Fahua"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-fahua"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "順天冰棒"
+      },
+      "description": {
+        "type": "Property",
+        "value": "隱身狹小巷弄內的七十年老字號枝仔冰店，純手工製作，米糕、芋頭與花生口味充滿濃濃古早味。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.2081,
+            22.9868
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9868,
+          "longitude": 120.2081,
+          "address": "臺南市中西區開山路151巷7之1號",
+          "district": "中西區",
+          "neighborhood": "法華里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-b03-10"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:30:00+08:00",
+        "observedAt": "2026-06-23T20:30:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:30:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "美食",
+          "冰品",
+          "枝仔冰",
+          "老店",
+          "平價",
+          "POI",
+          "使用者提供",
+          "分類:美食",
+          "營業時間已提供",
+          "最近里長分派",
+          "需里界確認"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.9
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 2200
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "10:00-18:00",
+          "tue": "10:00-18:00",
+          "wed": "10:00-18:00",
+          "thu": "10:00-18:00",
+          "fri": "10:00-18:00",
+          "sat": "10:00-18:00",
+          "sun": "10:00-18:00"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:30:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "nearest_agent"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-b04-10",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-b04-10"
+      },
+      "createdAt": "2026-06-23T20:40:00+08:00",
+      "modifiedAt": "2026-06-23T20:40:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Fahua"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-fahua"
+      },
+      "category": {
+        "type": "Property",
+        "value": "local_history"
+      },
+      "name": {
+        "type": "Property",
+        "value": "台南大學紅樓建築群"
+      },
+      "description": {
+        "type": "Property",
+        "value": "建於日治時期的清水紅磚巴洛克風格歷史校舍，拱圈廊道優美雅致，是許多畢業生與新人拍婚紗的熱點。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.2058,
+            22.9842
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9842,
+          "longitude": 120.2058,
+          "address": "臺南市中西區樹林街二段33號",
+          "district": "中西區",
+          "neighborhood": "法華里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-b04-10"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:40:00+08:00",
+        "observedAt": "2026-06-23T20:40:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:40:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "校園",
+          "古蹟建築",
+          "拍照",
+          "免門票",
+          "巴洛克式",
+          "POI",
+          "使用者提供",
+          "分類:景點",
+          "營業時間已提供",
+          "最近里長分派",
+          "需里界確認"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.85
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 2400
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "06:00-22:00",
+          "tue": "06:00-22:00",
+          "wed": "06:00-22:00",
+          "thu": "06:00-22:00",
+          "fri": "06:00-22:00",
+          "sat": "06:00-22:00",
+          "sun": "06:00-22:00"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:40:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": "進入校園內部大樓請配合校方警衛管理規範"
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "nearest_agent"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-b04-17",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-b04-17"
+      },
+      "createdAt": "2026-06-23T20:40:00+08:00",
+      "modifiedAt": "2026-06-23T20:40:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Fahua"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-fahua"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "開山路陽春麵（無名紅燈籠老店）"
+      },
+      "description": {
+        "type": "Property",
+        "value": "隱身在開山路旁、高掛紅燈籠的深夜陽春麵。古早味麻醬麵與種類豐富的現切黑白切滷味是在地人的宵夜私房清單。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.2078,
+            22.9862
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9862,
+          "longitude": 120.2078,
+          "address": "臺南市中西區開山路191號",
+          "district": "中西區",
+          "neighborhood": "法華里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-b04-17"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:40:00+08:00",
+        "observedAt": "2026-06-23T20:40:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:40:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "美食",
+          "小吃",
+          "陽春麵",
+          "深夜美食",
+          "宵夜",
+          "POI",
+          "使用者提供",
+          "分類:美食",
+          "營業時間已提供",
+          "最近里長分派",
+          "需里界確認"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.85
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 3100
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "17:00-01:30",
+          "tue": "17:00-01:30",
+          "wed": "closed",
+          "thu": "17:00-01:30",
+          "fri": "17:00-02:00",
+          "sat": "17:00-02:00",
+          "sun": "17:00-01:30"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:40:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "nearest_agent"
+      }
+    }
+  ]
+}

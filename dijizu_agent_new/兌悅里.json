@@ -1,0 +1,2804 @@
+{
+  "@context": [
+    "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    {
+      "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+      "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+      "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+      "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+      "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+    }
+  ],
+  "@graph": [
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Duiyue",
+      "type": "VillageAgent",
+      "agentId": {
+        "type": "Property",
+        "value": "li-duiyue"
+      },
+      "name": {
+        "type": "Property",
+        "value": "兌悅里地基主"
+      },
+      "persona": {
+        "type": "Property",
+        "value": "堅毅守舊、不隨波逐流。以兌悅門為精神地標，堅持維護咾咕石街的歷史風貌。對信義街的老屋改造持審慎態度，希望新舊共存而非取代。"
+      },
+      "district": {
+        "type": "Property",
+        "value": "中西區"
+      },
+      "areaName": {
+        "type": "Property",
+        "value": "兌悅里"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1945,
+            22.9975
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9975,
+          "longitude": 120.1945,
+          "address": "臺南市中西區兌悅里",
+          "district": "中西區",
+          "neighborhood": "兌悅里"
+        }
+      },
+      "spatialBoundary": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                120.193,
+                22.996
+              ],
+              [
+                120.196,
+                22.996
+              ],
+              [
+                120.196,
+                22.999
+              ],
+              [
+                120.193,
+                22.999
+              ],
+              [
+                120.193,
+                22.996
+              ]
+            ]
+          ]
+        }
+      },
+      "managedBy": {
+        "type": "Property",
+        "value": "兌悅里里長辦公室"
+      },
+      "archetype": {
+        "type": "Property",
+        "value": "古城門陣營"
+      },
+      "history": {
+        "type": "Property",
+        "value": "兌悅門建於清道光年間，為府城大西門外城門，是台灣唯一現存且仍在通行的古城門。信義街舊稱咾咕石街，因建材多為珊瑚礁石而得名。"
+      },
+      "zoning": {
+        "type": "Property",
+        "value": "歷史保存區與住宅混合，老屋活化與文創新店並存，街區尺度小巧。"
+      },
+      "referencePois": {
+        "type": "Property",
+        "value": [
+          {
+            "poi_id": "POI-DY-001",
+            "name": "兌悅門",
+            "category": "歷史古蹟",
+            "description": "清道光年間所建，台灣唯一現存且仍在通行的古城門，周邊有石獅爺鎮煞。",
+            "location": {
+              "type": "Point",
+              "coordinates": [
+                120.1945,
+                22.9975
+              ]
+            }
+          },
+          {
+            "poi_id": "POI-NEW-3148",
+            "name": "",
+            "category": "",
+            "description": "",
+            "location": {
+              "type": "Point",
+              "coordinates": [
+                120.194,
+                22.997
+              ]
+            }
+          }
+        ]
+      },
+      "citizenOpinions": {
+        "type": "Property",
+        "value": [
+          {
+            "issue_id": "WISH-DY-001",
+            "type": "抱怨/通報",
+            "content": "信義街假日觀光車輛湧入，狹窄巷道會車困難，建議實施假日交通管制。",
+            "status": "待處理",
+            "timestamp": "2026-06-21T08:30:00Z"
+          }
+        ]
+      },
+      "sourceAgentId": {
+        "type": "Property",
+        "value": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Duiyue"
+      },
+      "coverageCategories": {
+        "type": "Property",
+        "value": [
+          "daily_activity",
+          "market_event",
+          "local_history",
+          "weather",
+          "hazard",
+          "construction",
+          "traffic",
+          "new_shop",
+          "community_topic"
+        ]
+      },
+      "contactChannel": {
+        "type": "Property",
+        "value": "router"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:obs-001",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T12:30:00+08:00",
+      "modifiedAt": "2026-06-23T12:30:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "obs-001"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Duiyue"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-duiyue"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "神農街北側午后巷弄咖啡座"
+      },
+      "description": {
+        "type": "Property",
+        "value": "14:00 前北側支巷人流較緩，適合喝咖啡後往運河方向散步。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1958,
+            22.9972
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9972,
+          "longitude": 120.1958,
+          "address": "台南市中西區神農街79巷",
+          "district": "中西區",
+          "neighborhood": "兌悅里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "mock",
+          "name": "里長巡查 mock",
+          "url": null,
+          "reference_id": "mock-001"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-21T12:40:00+08:00",
+        "observedAt": "2026-06-21T12:40:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T12:30:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "咖啡",
+          "散步",
+          "低人潮",
+          "巷弄"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.88
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 42
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:obs-010",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T12:30:00+08:00",
+      "modifiedAt": "2026-06-23T12:30:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "obs-010"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Duiyue"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-duiyue"
+      },
+      "category": {
+        "type": "Property",
+        "value": "new_shop"
+      },
+      "name": {
+        "type": "Property",
+        "value": "西門路側巷的預約制咖啡小店"
+      },
+      "description": {
+        "type": "Property",
+        "value": "距主幹道約一分鐘，店家以安靜閱讀客為主，適合兩人短坐。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1914,
+            22.994
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.994,
+          "longitude": 120.1914,
+          "address": "台南市中西區西門路二段136巷",
+          "district": "中西區",
+          "neighborhood": "兌悅里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "mock",
+          "name": "店家手動登錄 mock",
+          "url": null,
+          "reference_id": "mock-010"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-20T15:20:00+08:00",
+        "observedAt": "2026-06-20T15:20:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T12:30:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "咖啡",
+          "安靜",
+          "巷弄",
+          "低人潮"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.8
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 49
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:sim-weather-20260623-li-duiyue",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T13:00:00+08:00",
+      "modifiedAt": "2026-06-23T15:30:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "sim-weather-20260623-li-duiyue"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Duiyue"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-duiyue"
+      },
+      "category": {
+        "type": "Property",
+        "value": "weather"
+      },
+      "name": {
+        "type": "Property",
+        "value": "兌悅里模擬天氣：34.1°C"
+      },
+      "description": {
+        "type": "Property",
+        "value": "六月台南夏季氣候情境推估：晴時多雲；氣溫 34.1°C、相對濕度 72%、風速約 1.7 m/s。資料為情境模擬，供介面測試與體驗使用。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1945,
+            22.9975
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9975,
+          "longitude": 120.1945,
+          "address": "臺南市中西區兌悅里（氣象情境點位）",
+          "district": "中西區",
+          "neighborhood": "兌悅里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "mock",
+          "name": "台南夏季氣候情境 mock（推估）",
+          "url": null,
+          "reference_id": "simulated-weather-20260623"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T13:00:00+08:00",
+        "observedAt": "2026-06-23T13:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T13:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "天氣",
+          "模擬",
+          "情境推估",
+          "台南夏季情境",
+          "氣溫",
+          "相對濕度",
+          "風速",
+          "高溫",
+          "日照"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.35
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 0
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:agent-poi-poi-dy-001",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T15:00:00+08:00",
+      "modifiedAt": "2026-06-23T20:00:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "agent-poi-poi-dy-001"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Duiyue"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-duiyue"
+      },
+      "category": {
+        "type": "Property",
+        "value": "local_history"
+      },
+      "name": {
+        "type": "Property",
+        "value": "兌悅門"
+      },
+      "description": {
+        "type": "Property",
+        "value": "國定古蹟，臺南市現存唯一仍可通行人車的咾咕石造古城門，見證府城西外城歷史。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1942,
+            22.9992
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9992,
+          "longitude": 120.1942,
+          "address": "臺南市中西區文賢路與信義街口",
+          "district": "中西區",
+          "neighborhood": "兌悅里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-21"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00",
+        "observedAt": "2026-06-23T20:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "古蹟",
+          "歷史",
+          "免門票",
+          "拍照",
+          "POI",
+          "使用者提供",
+          "分類:景點",
+          "營業時間已提供",
+          "最近里長分派",
+          "需里界確認",
+          "地址線索確認"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.95
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 4500
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "24 hours",
+          "tue": "24 hours",
+          "wed": "24 hours",
+          "thu": "24 hours",
+          "fri": "24 hours",
+          "sat": "24 hours",
+          "sun": "24 hours"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": "為維護古蹟結構，僅限行人與機慢車通行"
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "manual"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-13",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-13"
+      },
+      "createdAt": "2026-06-23T20:00:00+08:00",
+      "modifiedAt": "2026-06-23T20:00:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Duiyue"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-duiyue"
+      },
+      "category": {
+        "type": "Property",
+        "value": "local_history"
+      },
+      "name": {
+        "type": "Property",
+        "value": "風神廟"
+      },
+      "description": {
+        "type": "Property",
+        "value": "全台灣唯一主祀風神的廟宇，廟前著名的接官亭石坊在感光照明大師規劃下，夜間點燈美感十足。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1948,
+            22.9968
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9968,
+          "longitude": 120.1948,
+          "address": "臺南市中西區民權路三段143巷8號",
+          "district": "中西區",
+          "neighborhood": "兌悅里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-13"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00",
+        "observedAt": "2026-06-23T20:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "古蹟",
+          "寺廟",
+          "歷史",
+          "夜景",
+          "免門票",
+          "POI",
+          "使用者提供",
+          "分類:景點",
+          "營業時間已提供"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.9
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 3200
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "06:00-21:00",
+          "tue": "06:00-21:00",
+          "wed": "06:00-21:00",
+          "thu": "06:00-21:00",
+          "fri": "06:00-21:00",
+          "sat": "06:00-21:00",
+          "sun": "06:00-21:00"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "within_boundary"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-15",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-15"
+      },
+      "createdAt": "2026-06-23T20:00:00+08:00",
+      "modifiedAt": "2026-06-23T20:00:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Duiyue"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-duiyue"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "TAIKOO 太古百貨店"
+      },
+      "description": {
+        "type": "Property",
+        "value": "位於神農街內的老屋美式工業風酒吧，擺設大量古董家具，氣氛慵懶放鬆。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1958,
+            22.9971
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9971,
+          "longitude": 120.1958,
+          "address": "臺南市中西區神農街94號",
+          "district": "中西區",
+          "neighborhood": "兌悅里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-15"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00",
+        "observedAt": "2026-06-23T20:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "酒吧",
+          "老屋",
+          "夜生活",
+          "約會",
+          "POI",
+          "使用者提供",
+          "分類:酒吧",
+          "營業時間已提供"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.85
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 1800
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "18:00-02:00",
+          "tue": "18:00-02:00",
+          "wed": "18:00-02:00",
+          "thu": "18:00-02:00",
+          "fri": "18:00-03:00",
+          "sat": "18:00-03:00",
+          "sun": "18:00-02:00"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "within_boundary"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-18",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-18"
+      },
+      "createdAt": "2026-06-23T20:00:00+08:00",
+      "modifiedAt": "2026-06-23T20:00:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Duiyue"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-duiyue"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "烏邦圖書店 (環河店)"
+      },
+      "description": {
+        "type": "Property",
+        "value": "臨近安平運河畔的絕美玻璃屋獨立書店，一邊喝咖啡一邊俯瞰運河水色，氣氛極佳。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1908,
+            22.9942
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9942,
+          "longitude": 120.1908,
+          "address": "臺南市中西區環河街129巷27號2樓",
+          "district": "中西區",
+          "neighborhood": "兌悅里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-18"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00",
+        "observedAt": "2026-06-23T20:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "獨立書店",
+          "咖啡",
+          "看書",
+          "運河景觀",
+          "室內",
+          "POI",
+          "使用者提供",
+          "分類:咖啡",
+          "營業時間已提供",
+          "最近里長分派",
+          "需里界確認"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.9
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 4200
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "08:30-20:30",
+          "tue": "closed",
+          "wed": "08:30-20:30",
+          "thu": "08:30-20:30",
+          "fri": "08:30-22:00",
+          "sat": "08:30-22:00",
+          "sun": "08:30-20:30"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "nearest_agent"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-22",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-22"
+      },
+      "createdAt": "2026-06-23T20:00:00+08:00",
+      "modifiedAt": "2026-06-23T20:00:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Duiyue"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-duiyue"
+      },
+      "category": {
+        "type": "Property",
+        "value": "local_history"
+      },
+      "name": {
+        "type": "Property",
+        "value": "信義街 (咾咕石街)"
+      },
+      "description": {
+        "type": "Property",
+        "value": "延伸自兌悅門的文青小巷，街道以咾咕石鋪設基底，聚集許多優質咖啡廳與餐酒館。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1952,
+            22.9989
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9989,
+          "longitude": 120.1952,
+          "address": "臺南市中西區信義街",
+          "district": "中西區",
+          "neighborhood": "兌悅里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-22"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00",
+        "observedAt": "2026-06-23T20:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "老街",
+          "文創",
+          "散步",
+          "拍照",
+          "POI",
+          "使用者提供",
+          "分類:景點",
+          "營業時間已提供"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.9
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 3200
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "24 hours",
+          "tue": "24 hours",
+          "wed": "24 hours",
+          "thu": "24 hours",
+          "fri": "24 hours",
+          "sat": "24 hours",
+          "sun": "24 hours"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "within_boundary"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-23",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-23"
+      },
+      "createdAt": "2026-06-23T20:00:00+08:00",
+      "modifiedAt": "2026-06-23T20:00:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Duiyue"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-duiyue"
+      },
+      "category": {
+        "type": "Property",
+        "value": "local_history"
+      },
+      "name": {
+        "type": "Property",
+        "value": "狐狸小屋"
+      },
+      "description": {
+        "type": "Property",
+        "value": "坐落在老古石街、緊鄰兌悅門的老屋咖啡館，二樓窗景可直視城門，極具特色。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1945,
+            22.9991
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9991,
+          "longitude": 120.1945,
+          "address": "臺南市中西區信義街118號",
+          "district": "中西區",
+          "neighborhood": "兌悅里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-23"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00",
+        "observedAt": "2026-06-23T20:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "咖啡",
+          "老屋",
+          "窗景",
+          "下午茶",
+          "POI",
+          "使用者提供",
+          "分類:咖啡",
+          "營業時間已提供",
+          "最近里長分派",
+          "需里界確認"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.85
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 850
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "11:00-19:00",
+          "tue": "closed",
+          "wed": "11:00-19:00",
+          "thu": "11:00-19:00",
+          "fri": "11:00-19:00",
+          "sat": "11:00-19:00",
+          "sun": "11:00-19:00"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "nearest_agent"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-24",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-24"
+      },
+      "createdAt": "2026-06-23T20:00:00+08:00",
+      "modifiedAt": "2026-06-23T20:00:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Duiyue"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-duiyue"
+      },
+      "category": {
+        "type": "Property",
+        "value": "local_history"
+      },
+      "name": {
+        "type": "Property",
+        "value": "筑馨居"
+      },
+      "description": {
+        "type": "Property",
+        "value": "清代百年老私塾改建的無菜單台菜料理，採預約制，辦桌手路菜精緻地道。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1955,
+            22.9988
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9988,
+          "longitude": 120.1955,
+          "address": "臺南市中西區信義街69號",
+          "district": "中西區",
+          "neighborhood": "兌悅里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-24"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00",
+        "observedAt": "2026-06-23T20:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "台菜",
+          "老屋",
+          "無菜單",
+          "預約制",
+          "聚餐",
+          "POI",
+          "使用者提供",
+          "分類:美食",
+          "營業時間已提供"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.9
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 1400
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "11:30-14:00, 17:30-21:00",
+          "tue": "11:30-14:00, 17:30-21:00",
+          "wed": "11:30-14:00, 17:30-21:00",
+          "thu": "11:30-14:00, 17:30-21:00",
+          "fri": "11:30-14:00, 17:30-21:00",
+          "sat": "11:30-14:00, 17:30-21:00",
+          "sun": "11:30-14:00, 17:30-21:00"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": "純預約制，請務必提前電話或網路訂位"
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "within_boundary"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-25",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-25"
+      },
+      "createdAt": "2026-06-23T20:00:00+08:00",
+      "modifiedAt": "2026-06-23T20:00:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Duiyue"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-duiyue"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "Lola 蘿拉冷飲店"
+      },
+      "description": {
+        "type": "Property",
+        "value": "結合黑膠唱片、古董與電影元素的復古清吧，老屋氛圍迷人，供應調酒與薄餅。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1948,
+            22.9991
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9991,
+          "longitude": 120.1948,
+          "address": "臺南市中西區信義街110號",
+          "district": "中西區",
+          "neighborhood": "兌悅里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-25"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00",
+        "observedAt": "2026-06-23T20:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "酒吧",
+          "黑膠",
+          "老屋",
+          "文青",
+          "夜生活",
+          "POI",
+          "使用者提供",
+          "分類:酒吧",
+          "營業時間已提供",
+          "最近里長分派",
+          "需里界確認"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.85
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 1650
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "closed",
+          "tue": "18:00-00:00",
+          "wed": "18:00-00:00",
+          "thu": "18:00-00:00",
+          "fri": "18:00-01:00",
+          "sat": "18:00-01:00",
+          "sun": "18:00-00:00"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:00:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "nearest_agent"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-b02-16",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-b02-16"
+      },
+      "createdAt": "2026-06-23T20:15:00+08:00",
+      "modifiedAt": "2026-06-23T20:15:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Duiyue"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-duiyue"
+      },
+      "category": {
+        "type": "Property",
+        "value": "local_history"
+      },
+      "name": {
+        "type": "Property",
+        "value": "集福宮"
+      },
+      "description": {
+        "type": "Property",
+        "value": "創建於清乾隆年間的在地古老廟宇，主祀玄天上帝，是咾咕石街在地信仰與文創聚落的精神中心。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1948,
+            22.9989
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9989,
+          "longitude": 120.1948,
+          "address": "臺南市中西區信義街81號（兌悅里核心）",
+          "district": "中西區",
+          "neighborhood": "兌悅里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-b02-16"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00",
+        "observedAt": "2026-06-23T20:15:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "寺廟",
+          "古蹟",
+          "歷史",
+          "免門票",
+          "POI",
+          "使用者提供",
+          "分類:景點",
+          "營業時間已提供",
+          "地址名稱線索確認",
+          "需里界確認"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.95
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 1200
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "06:00-21:00",
+          "tue": "06:00-21:00",
+          "wed": "06:00-21:00",
+          "thu": "06:00-21:00",
+          "fri": "06:00-21:00",
+          "sat": "06:00-21:30",
+          "sun": "06:00-21:30"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "manual"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-b02-17",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-b02-17"
+      },
+      "createdAt": "2026-06-23T20:15:00+08:00",
+      "modifiedAt": "2026-06-23T20:15:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Duiyue"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-duiyue"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "Imma Bakery Cafe 伊馬以色列育才烘焙"
+      },
+      "description": {
+        "type": "Property",
+        "value": "由以色列主廚開設的地中海異國風烘焙咖啡廳，巨大的手工歐式麵包與傳統夏克舒卡早午餐非常熱門。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1942,
+            22.9969
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9969,
+          "longitude": 120.1942,
+          "address": "臺南市中西區民權路三段邊緣帶（近兌悅里與五條港交界）",
+          "district": "中西區",
+          "neighborhood": "兌悅里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-b02-17"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00",
+        "observedAt": "2026-06-23T20:15:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "早午餐",
+          "烘焙",
+          "異國料理",
+          "室內",
+          "聚餐",
+          "POI",
+          "使用者提供",
+          "分類:咖啡",
+          "營業時間已提供",
+          "地址名稱線索確認",
+          "需里界確認"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.85
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 3400
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "09:00-20:00",
+          "tue": "09:00-20:00",
+          "wed": "09:00-20:00",
+          "thu": "09:00-20:00",
+          "fri": "09:00-21:00",
+          "sat": "09:00-21:00",
+          "sun": "09:00-20:00"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "manual"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-b02-18",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-b02-18"
+      },
+      "createdAt": "2026-06-23T20:15:00+08:00",
+      "modifiedAt": "2026-06-23T20:15:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Duiyue"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-duiyue"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "FAT CAT Coffee 肥貓咖啡"
+      },
+      "description": {
+        "type": "Property",
+        "value": "神農街尾極具人氣的貓咪主題老屋咖啡，招牌珍珠伯爵茶戚風蛋糕是下午茶拍照必點。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1951,
+            22.9972
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9972,
+          "longitude": 120.1951,
+          "address": "臺南市中西區神農街135號（兌悅里西側延伸巷弄）",
+          "district": "中西區",
+          "neighborhood": "兌悅里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-b02-18"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00",
+        "observedAt": "2026-06-23T20:15:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "咖啡",
+          "甜點",
+          "貓咪",
+          "老屋",
+          "下午茶",
+          "POI",
+          "使用者提供",
+          "分類:咖啡",
+          "營業時間已提供",
+          "地址名稱線索確認",
+          "需里界確認"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.9
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 2100
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "13:30-18:30",
+          "tue": "13:30-18:30",
+          "wed": "13:30-18:30",
+          "thu": "13:30-18:30",
+          "fri": "13:30-18:30",
+          "sat": "13:30-18:30",
+          "sun": "13:30-18:30"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": "店內有貓咪店長，入內請遵守寵物友善規範"
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "manual"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-b02-19",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-b02-19"
+      },
+      "createdAt": "2026-06-23T20:15:00+08:00",
+      "modifiedAt": "2026-06-23T20:15:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Duiyue"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-duiyue"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "文賢油條（百年老店生活圈）"
+      },
+      "description": {
+        "type": "Property",
+        "value": "傳統手工現做現炸的超大酥脆油條，搭配現磨熱豆漿或杏仁茶，是古早府城最豪邁的經典早餐組合。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1938,
+            22.9995
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9995,
+          "longitude": 120.1938,
+          "address": "臺南市中西區文賢路（兌悅門外老字號聚集帶）",
+          "district": "中西區",
+          "neighborhood": "兌悅里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-b02-19"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00",
+        "observedAt": "2026-06-23T20:15:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "傳統早餐",
+          "古早味",
+          "在地美食",
+          "老店",
+          "POI",
+          "使用者提供",
+          "分類:美食",
+          "營業時間已提供",
+          "地址名稱線索確認",
+          "需里界確認"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.85
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 680
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "05:30-10:00",
+          "tue": "05:30-10:00",
+          "wed": "05:30-10:00",
+          "thu": "05:30-10:00",
+          "fri": "05:30-10:00",
+          "sat": "05:30-10:30",
+          "sun": "05:30-10:30"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:15:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "manual"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-b04-21",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-b04-21"
+      },
+      "createdAt": "2026-06-23T20:40:00+08:00",
+      "modifiedAt": "2026-06-23T20:40:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Duiyue"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-duiyue"
+      },
+      "category": {
+        "type": "Property",
+        "value": "local_history"
+      },
+      "name": {
+        "type": "Property",
+        "value": "藥王廟"
+      },
+      "description": {
+        "type": "Property",
+        "value": "全台主祀藥皇大帝之開基首廟，古稱五條港之「佛頭港」核心信仰，建築雄偉，見證中醫藥文化歷史。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1942,
+            22.9979
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9979,
+          "longitude": 120.1942,
+          "address": "臺南市中西區金華路四段86號",
+          "district": "中西區",
+          "neighborhood": "兌悅里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-b04-21"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:40:00+08:00",
+        "observedAt": "2026-06-23T20:40:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:40:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "古蹟",
+          "寺廟",
+          "歷史",
+          "免門票",
+          "文化體驗",
+          "POI",
+          "使用者提供",
+          "分類:景點",
+          "營業時間已提供"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.95
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 2100
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "06:00-21:00",
+          "tue": "06:00-21:00",
+          "wed": "06:00-21:00",
+          "thu": "06:00-21:00",
+          "fri": "06:00-21:00",
+          "sat": "06:00-21:30",
+          "sun": "06:00-21:30"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:40:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "within_boundary"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-b04-22",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-b04-22"
+      },
+      "createdAt": "2026-06-23T20:40:00+08:00",
+      "modifiedAt": "2026-06-23T20:40:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Duiyue"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-duiyue"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "金華路四段深夜小吃聚落"
+      },
+      "description": {
+        "type": "Property",
+        "value": "台南在地人深夜覓食的秘密基地，聚集無名當歸鴨、燒烤、海鮮熱炒與古早味意麵，宵夜熱度極高。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1945,
+            22.9982
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9982,
+          "longitude": 120.1945,
+          "address": "臺南市中西區金華路四段（民權路至民族路段）",
+          "district": "中西區",
+          "neighborhood": "兌悅里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-b04-22"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:40:00+08:00",
+        "observedAt": "2026-06-23T20:40:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:40:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "小吃",
+          "宵夜",
+          "熱炒",
+          "在地美食",
+          "深夜",
+          "POI",
+          "使用者提供",
+          "分類:美食",
+          "營業時間已提供"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.9
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 5400
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "17:00-02:00",
+          "tue": "17:00-02:00",
+          "wed": "17:00-02:00",
+          "thu": "17:00-02:00",
+          "fri": "17:00-03:00",
+          "sat": "17:00-03:00",
+          "sun": "17:00-01:00"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:40:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": "各攤位營業與公休時間不一，主要自傍晚展開至凌晨"
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "within_boundary"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-b04-23",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-b04-23"
+      },
+      "createdAt": "2026-06-23T20:40:00+08:00",
+      "modifiedAt": "2026-06-23T20:40:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Duiyue"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-duiyue"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "水仙宮呾仔麵 (近藥王廟生活圈)"
+      },
+      "description": {
+        "type": "Property",
+        "value": "古早風味的台南傳統呾仔麵與米粉炒，淋上香噴噴的慢熬老肉燥，配上一顆滷鴨蛋是完美的在地吃法。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1948,
+            22.9975
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9975,
+          "longitude": 120.1948,
+          "address": "臺南市中西區民權路三段與金華路口帶",
+          "district": "中西區",
+          "neighborhood": "兌悅里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-b04-23"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:40:00+08:00",
+        "observedAt": "2026-06-23T20:40:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:40:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "小吃",
+          "呾仔麵",
+          "古早味",
+          "在地美食",
+          "平價",
+          "POI",
+          "使用者提供",
+          "分類:美食",
+          "營業時間已提供"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.85
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 1800
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "16:00-23:00",
+          "tue": "16:00-23:00",
+          "wed": "16:00-23:00",
+          "thu": "closed",
+          "fri": "16:00-23:00",
+          "sat": "16:00-23:30",
+          "sun": "16:00-23:00"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:40:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "within_boundary"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-b04-24",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-b04-24"
+      },
+      "createdAt": "2026-06-23T20:40:00+08:00",
+      "modifiedAt": "2026-06-23T20:40:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Duiyue"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-duiyue"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "微光咖啡 (Weiguang Coffee)"
+      },
+      "description": {
+        "type": "Property",
+        "value": "隱身在五條港舊河道巷弄間的老屋咖啡，簡約靜謐，招牌單品手沖與巴斯克乳酪蛋糕廣受好評。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1939,
+            22.9985
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9985,
+          "longitude": 120.1939,
+          "address": "臺南市中西區民族路三段鄰近藥王廟巷弄",
+          "district": "中西區",
+          "neighborhood": "兌悅里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-b04-24"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:40:00+08:00",
+        "observedAt": "2026-06-23T20:40:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:40:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "咖啡",
+          "老屋",
+          "安靜聊聊天",
+          "手沖",
+          "下午茶",
+          "POI",
+          "使用者提供",
+          "分類:咖啡",
+          "營業時間已提供"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.85
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 650
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "12:00-19:00",
+          "tue": "12:00-19:00",
+          "wed": "closed",
+          "thu": "12:00-19:00",
+          "fri": "12:00-20:00",
+          "sat": "11:30-20:00",
+          "sun": "11:30-19:00"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:40:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "within_boundary"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:manual-poi-20260623-b04-25",
+      "type": "LocalObservation",
+      "observationId": {
+        "type": "Property",
+        "value": "manual-poi-20260623-b04-25"
+      },
+      "createdAt": "2026-06-23T20:40:00+08:00",
+      "modifiedAt": "2026-06-23T20:40:00+08:00",
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Duiyue"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-duiyue"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "風神烤肉 (五條港深夜商圈)"
+      },
+      "description": {
+        "type": "Property",
+        "value": "主打遠紅外線與炭火交織的古早味台式烤肉，特製的偏甜鹹台南風味刷醬包裹肉串，是宵夜佐酒絕配。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1932,
+            22.9981
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9981,
+          "longitude": 120.1932,
+          "address": "臺南市中西區民族路三段與金華路交叉帶",
+          "district": "中西區",
+          "neighborhood": "兌悅里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "使用者整理／店家官方／社群截圖",
+          "url": null,
+          "reference_id": "user-poi-import-20260623-b04-25"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:40:00+08:00",
+        "observedAt": "2026-06-23T20:40:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:40:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "美食",
+          "烤肉",
+          "串燒",
+          "深夜美食",
+          "宵夜",
+          "POI",
+          "使用者提供",
+          "分類:美食",
+          "營業時間已提供"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.85
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 1200
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      },
+      "openingHours": {
+        "type": "Property",
+        "value": {
+          "mon": "18:00-01:30",
+          "tue": "18:00-01:30",
+          "wed": "18:00-01:30",
+          "thu": "18:00-01:30",
+          "fri": "18:00-02:00",
+          "sat": "18:00-02:00",
+          "sun": "closed"
+        }
+      },
+      "openingHoursUpdatedAt": {
+        "type": "Property",
+        "value": "2026-06-23T20:40:00+08:00"
+      },
+      "temporaryNotice": {
+        "type": "Property",
+        "value": null
+      },
+      "eventStartAt": {
+        "type": "Property",
+        "value": null
+      },
+      "eventEndAt": {
+        "type": "Property",
+        "value": null
+      },
+      "agentAssignmentMethod": {
+        "type": "Property",
+        "value": "within_boundary"
+      }
+    }
+  ]
+}

@@ -1,0 +1,383 @@
+{
+  "@context": [
+    "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    {
+      "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+      "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+      "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+      "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+      "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+    }
+  ],
+  "@graph": [
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Guangxian",
+      "type": "VillageAgent",
+      "agentId": {
+        "type": "Property",
+        "value": "li-guangxian"
+      },
+      "name": {
+        "type": "Property",
+        "value": "光賢里地基主"
+      },
+      "persona": {
+        "type": "Property",
+        "value": "務實低調、重視鄰里互助。不太在意觀光發展，更關心巷弄排水與路燈維修。是中西區的「好厝邊」代表，常主動關心獨居長輩。"
+      },
+      "district": {
+        "type": "Property",
+        "value": "中西區"
+      },
+      "areaName": {
+        "type": "Property",
+        "value": "光賢里"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1995,
+            22.9995
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9995,
+          "longitude": 120.1995,
+          "address": "臺南市中西區光賢里",
+          "district": "中西區",
+          "neighborhood": "光賢里"
+        }
+      },
+      "spatialBoundary": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                120.198,
+                22.998
+              ],
+              [
+                120.201,
+                22.998
+              ],
+              [
+                120.201,
+                23.001
+              ],
+              [
+                120.198,
+                23.001
+              ],
+              [
+                120.198,
+                22.998
+              ]
+            ]
+          ]
+        }
+      },
+      "managedBy": {
+        "type": "Property",
+        "value": "光賢里里長辦公室"
+      },
+      "archetype": {
+        "type": "Property",
+        "value": "庶民生活陣營"
+      },
+      "history": {
+        "type": "Property",
+        "value": "中西區核心住宅區，生活機能完善，鄰近赤崁樓與國華街商圈，為府城在地居民日常生活圈。"
+      },
+      "zoning": {
+        "type": "Property",
+        "value": "住宅密集區，巷弄狹窄，傳統市場與小商鋪林立。"
+      },
+      "referencePois": {
+        "type": "Property",
+        "value": [
+          {
+            "poi_id": "POI-GX-001",
+            "name": "國華街",
+            "category": "美食商圈",
+            "description": "台南最知名的庶民美食街，匯集各式傳統小吃與排隊名店。",
+            "location": {
+              "type": "Point",
+              "coordinates": [
+                120.1995,
+                22.999
+              ]
+            }
+          },
+          {
+            "poi_id": "POI-NEW-7812",
+            "name": "",
+            "category": "",
+            "description": "",
+            "location": {
+              "type": "Point",
+              "coordinates": [
+                120.199,
+                22.999
+              ]
+            }
+          }
+        ]
+      },
+      "citizenOpinions": {
+        "type": "Property",
+        "value": [
+          {
+            "issue_id": "WISH-GX-001",
+            "type": "抱怨/通報",
+            "content": "巷弄內排水溝經常堵塞，雨天積水嚴重影響通行。",
+            "status": "待處理",
+            "timestamp": "2026-06-21T08:30:00Z"
+          }
+        ]
+      },
+      "sourceAgentId": {
+        "type": "Property",
+        "value": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Guangxian"
+      },
+      "coverageCategories": {
+        "type": "Property",
+        "value": [
+          "daily_activity",
+          "market_event",
+          "local_history",
+          "weather",
+          "hazard",
+          "construction",
+          "traffic",
+          "new_shop",
+          "community_topic"
+        ]
+      },
+      "contactChannel": {
+        "type": "Property",
+        "value": "router"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:sim-weather-20260623-li-guangxian",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T13:00:00+08:00",
+      "modifiedAt": "2026-06-23T15:30:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "sim-weather-20260623-li-guangxian"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Guangxian"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-guangxian"
+      },
+      "category": {
+        "type": "Property",
+        "value": "weather"
+      },
+      "name": {
+        "type": "Property",
+        "value": "光賢里模擬天氣：32.7°C"
+      },
+      "description": {
+        "type": "Property",
+        "value": "六月台南夏季氣候情境推估：多雲；氣溫 32.7°C、相對濕度 79%、風速約 2 m/s。資料為情境模擬，供介面測試與體驗使用。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1995,
+            22.9995
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9995,
+          "longitude": 120.1995,
+          "address": "臺南市中西區光賢里（氣象情境點位）",
+          "district": "中西區",
+          "neighborhood": "光賢里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "mock",
+          "name": "台南夏季氣候情境 mock（推估）",
+          "url": null,
+          "reference_id": "simulated-weather-20260623"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T13:00:00+08:00",
+        "observedAt": "2026-06-23T13:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T13:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "天氣",
+          "模擬",
+          "情境推估",
+          "台南夏季情境",
+          "氣溫",
+          "相對濕度",
+          "風速",
+          "雲量增加",
+          "悶熱"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.35
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 0
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:agent-poi-poi-gx-001",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T15:00:00+08:00",
+      "modifiedAt": "2026-06-23T15:00:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "agent-poi-poi-gx-001"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Guangxian"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-guangxian"
+      },
+      "category": {
+        "type": "Property",
+        "value": "daily_activity"
+      },
+      "name": {
+        "type": "Property",
+        "value": "國華街"
+      },
+      "description": {
+        "type": "Property",
+        "value": "台南最知名的庶民美食街，匯集各式傳統小吃與排隊名店。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1995,
+            22.999
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.999,
+          "longitude": 120.1995,
+          "address": "臺南市中西區光賢里（國華街；來源僅提供座標）",
+          "district": "中西區",
+          "neighborhood": "光賢里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "partner",
+          "name": "地基主 Agent 管理器里別資料",
+          "url": null,
+          "reference_id": "POI-GX-001"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-21T17:24:02.663Z",
+        "observedAt": "2026-06-21T17:24:02.663Z"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T15:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "POI",
+          "Agent基礎資料",
+          "來源座標",
+          "光賢里",
+          "美食商圈"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.75
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 0
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      }
+    }
+  ]
+}

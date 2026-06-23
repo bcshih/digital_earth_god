@@ -1,0 +1,587 @@
+{
+  "@context": [
+    "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    {
+      "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+      "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+      "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+      "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+      "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+    }
+  ],
+  "@graph": [
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Qiancao",
+      "type": "VillageAgent",
+      "agentId": {
+        "type": "Property",
+        "value": "li-qiancao"
+      },
+      "name": {
+        "type": "Property",
+        "value": "淺草里地基主"
+      },
+      "persona": {
+        "type": "Property",
+        "value": "親切熱鬧、充滿生意活力。以西市場（大菜市）的繁華歷史為傲，樂見淺草青春新天地帶來的年輕能量。但對攤販衛生與環境整潔標準很高。"
+      },
+      "district": {
+        "type": "Property",
+        "value": "中西區"
+      },
+      "areaName": {
+        "type": "Property",
+        "value": "淺草里"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1985,
+            22.9915
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9915,
+          "longitude": 120.1985,
+          "address": "臺南市中西區淺草里",
+          "district": "中西區",
+          "neighborhood": "淺草里"
+        }
+      },
+      "spatialBoundary": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                120.197,
+                22.99
+              ],
+              [
+                120.2,
+                22.99
+              ],
+              [
+                120.2,
+                22.993
+              ],
+              [
+                120.197,
+                22.993
+              ],
+              [
+                120.197,
+                22.99
+              ]
+            ]
+          ]
+        }
+      },
+      "managedBy": {
+        "type": "Property",
+        "value": "淺草里里長辦公室"
+      },
+      "archetype": {
+        "type": "Property",
+        "value": "市場活力陣營"
+      },
+      "history": {
+        "type": "Property",
+        "value": "西市場建於日治時期，為台南第一座現代化公有市場，修復後融合懷舊與新潮面貌。周邊淺草青春新天地聚集文創市集與潮流店家。"
+      },
+      "zoning": {
+        "type": "Property",
+        "value": "商業區，傳統市場與文創商圈並存，年輕客群與在地居民共用空間。"
+      },
+      "referencePois": {
+        "type": "Property",
+        "value": [
+          {
+            "poi_id": "POI-QC-001",
+            "name": "西市場（大菜市）",
+            "category": "傳統市場",
+            "description": "日治時期建造的台南第一座現代化公有市場，經修復後以新舊融合的面貌重生。",
+            "location": {
+              "type": "Point",
+              "coordinates": [
+                120.1985,
+                22.9915
+              ]
+            }
+          },
+          {
+            "poi_id": "POI-NEW-7456",
+            "name": "",
+            "category": "",
+            "description": "",
+            "location": {
+              "type": "Point",
+              "coordinates": [
+                120.198,
+                22.991
+              ]
+            }
+          }
+        ]
+      },
+      "citizenOpinions": {
+        "type": "Property",
+        "value": [
+          {
+            "issue_id": "WISH-QC-001",
+            "type": "抱怨/通報",
+            "content": "西市場周邊機車停車空間不足，騎樓違停影響行人通行安全。",
+            "status": "待處理",
+            "timestamp": "2026-06-21T08:30:00Z"
+          }
+        ]
+      },
+      "sourceAgentId": {
+        "type": "Property",
+        "value": "urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Qiancao"
+      },
+      "coverageCategories": {
+        "type": "Property",
+        "value": [
+          "daily_activity",
+          "market_event",
+          "local_history",
+          "weather",
+          "hazard",
+          "construction",
+          "traffic",
+          "new_shop",
+          "community_topic"
+        ]
+      },
+      "contactChannel": {
+        "type": "Property",
+        "value": "router"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:social-local-finds-cwest-20251217",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T12:30:00+08:00",
+      "modifiedAt": "2026-06-23T12:30:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "social-local-finds-cwest-20251217"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Qiancao"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-qiancao"
+      },
+      "category": {
+        "type": "Property",
+        "value": "community_topic"
+      },
+      "name": {
+        "type": "Property",
+        "value": "社群推薦：林百貨／友愛市場周邊在地小吃與茶店"
+      },
+      "description": {
+        "type": "Property",
+        "value": "截圖回覆提到現炸蒜香枝、鍋燒意麵、萬茶川、開山路碗粿與魚羹麵、惠比壽壽司；店址與營業資訊需再確認。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.198,
+            22.992
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.992,
+          "longitude": 120.198,
+          "address": "台南市中西區林百貨與友愛市場周邊（精確店址待確認）",
+          "district": "中西區",
+          "neighborhood": "淺草里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "manual",
+          "name": "Threads 公開貼文手動截圖",
+          "url": null,
+          "reference_id": "S__46022671_0.jpg"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2025-12-17T12:00:00+08:00",
+        "observedAt": "2025-12-17T12:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T12:30:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "在地小吃",
+          "茶店",
+          "林百貨",
+          "友愛市場",
+          "社群推薦",
+          "手動截圖"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.54
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 186
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:sim-weather-20260623-li-qiancao",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T13:00:00+08:00",
+      "modifiedAt": "2026-06-23T15:30:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "sim-weather-20260623-li-qiancao"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Qiancao"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-qiancao"
+      },
+      "category": {
+        "type": "Property",
+        "value": "weather"
+      },
+      "name": {
+        "type": "Property",
+        "value": "淺草里模擬天氣：32.9°C"
+      },
+      "description": {
+        "type": "Property",
+        "value": "六月台南夏季氣候情境推估：多雲，午後短暫雷雨機率；氣溫 32.9°C、相對濕度 80%、風速約 2.4 m/s。資料為情境模擬，供介面測試與體驗使用。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1985,
+            22.9915
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9915,
+          "longitude": 120.1985,
+          "address": "臺南市中西區淺草里（氣象情境點位）",
+          "district": "中西區",
+          "neighborhood": "淺草里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "mock",
+          "name": "台南夏季氣候情境 mock（推估）",
+          "url": null,
+          "reference_id": "simulated-weather-20260623"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T13:00:00+08:00",
+        "observedAt": "2026-06-23T13:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T13:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "天氣",
+          "模擬",
+          "情境推估",
+          "台南夏季情境",
+          "氣溫",
+          "相對濕度",
+          "風速",
+          "午後雷雨機率",
+          "悶熱"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.35
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 0
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:hazard-sim-20260623-qiancao-crowd",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T14:00:00+08:00",
+      "modifiedAt": "2026-06-23T14:00:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "hazard-sim-20260623-qiancao-crowd"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Qiancao"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-qiancao"
+      },
+      "category": {
+        "type": "Property",
+        "value": "hazard"
+      },
+      "name": {
+        "type": "Property",
+        "value": "示範風險點：市集活動周邊人潮通行"
+      },
+      "description": {
+        "type": "Property",
+        "value": "以淺草里市集活動周邊作為情境點位；活動期間通道可能因人潮、攤車與排隊而變窄，建議避開尖峰或改走外圍。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1986,
+            22.9916
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9916,
+          "longitude": 120.1986,
+          "address": "臺南市中西區淺草里市集活動周邊（示範點位）",
+          "district": "中西區",
+          "neighborhood": "淺草里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "mock",
+          "name": "里長 Agent 風險情境點位",
+          "url": null,
+          "reference_id": "hazard-scenario-v1"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-23T14:00:00+08:00",
+        "observedAt": "2026-06-23T14:00:00+08:00"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T14:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "危險通報",
+          "情境模擬",
+          "需現場確認",
+          "市集人潮",
+          "通行受限"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.25
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 0
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      }
+    },
+    {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "VillageAgentDataset": "https://digital-tudigong.example.org/ngsi-ld/VillageAgentDataset",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation",
+          "TudigongRouteResult": "https://digital-tudigong.example.org/ngsi-ld/TudigongRouteResult"
+        }
+      ],
+      "id": "urn:ngsi-ld:LocalObservation:Tainan:agent-poi-poi-qc-001",
+      "type": "LocalObservation",
+      "createdAt": "2026-06-23T15:00:00+08:00",
+      "modifiedAt": "2026-06-23T15:20:00+08:00",
+      "observationId": {
+        "type": "Property",
+        "value": "agent-poi-poi-qc-001"
+      },
+      "agent": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Qiancao"
+      },
+      "agentId": {
+        "type": "Property",
+        "value": "li-qiancao"
+      },
+      "category": {
+        "type": "Property",
+        "value": "local_history"
+      },
+      "name": {
+        "type": "Property",
+        "value": "西市場（大菜市）"
+      },
+      "description": {
+        "type": "Property",
+        "value": "日治時期建造的台南第一座現代化公有市場，經修復後以新舊融合的面貌重生。"
+      },
+      "location": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            120.1985,
+            22.9915
+          ]
+        }
+      },
+      "address": {
+        "type": "Property",
+        "value": {
+          "latitude": 22.9915,
+          "longitude": 120.1985,
+          "address": "臺南市中西區淺草里（西市場（大菜市）；來源僅提供座標）",
+          "district": "中西區",
+          "neighborhood": "淺草里"
+        }
+      },
+      "source": {
+        "type": "Property",
+        "value": {
+          "kind": "partner",
+          "name": "地基主 Agent 管理器里別資料",
+          "url": null,
+          "reference_id": "POI-QC-001"
+        }
+      },
+      "occurredAt": {
+        "type": "Property",
+        "value": "2026-06-21T17:24:02.663Z",
+        "observedAt": "2026-06-21T17:24:02.663Z"
+      },
+      "collectedAt": {
+        "type": "Property",
+        "value": "2026-06-23T15:00:00+08:00"
+      },
+      "tags": {
+        "type": "Property",
+        "value": [
+          "POI",
+          "Agent基礎資料",
+          "來源座標",
+          "淺草里",
+          "傳統市場",
+          "歷史市場",
+          "日治時期市場",
+          "修復再生"
+        ]
+      },
+      "confidence": {
+        "type": "Property",
+        "value": 0.75
+      },
+      "engagement": {
+        "type": "Property",
+        "value": 0
+      },
+      "status": {
+        "type": "Property",
+        "value": "active"
+      }
+    }
+  ]
+}

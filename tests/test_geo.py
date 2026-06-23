@@ -6,7 +6,7 @@ from pathlib import Path
 from deg.seed.geo import haversine_m, li_centroid, nearest_li
 from deg.seed.loader import load_agents, LiAgentData, GeoJsonPolygon, GeoProperty, Metadata
 
-_LI_DIR = Path(__file__).resolve().parents[1] / "dijizu_agent"
+_LI_DIR = Path(__file__).resolve().parents[1] / "dijizu_agent_new"
 
 
 def _make_li(lng: float, lat: float, name: str = "TestLi") -> LiAgentData:
@@ -147,10 +147,10 @@ def test_nearest_li_returns_tuples_with_distance():
     assert dist < 100
 
 
-@pytest.mark.skipif(not _LI_DIR.exists(), reason="dijizu_agent/ not present")
+@pytest.mark.skipif(not _LI_DIR.exists(), reason="dijizu_agent_new/ not present")
 def test_nearest_li_loads_default_agents_if_none():
-    """nearest_li should load from dijizu_agent/ if agents=None."""
-    # This test only passes if dijizu_agent/ exists with valid JSON files.
+    """nearest_li should load from dijizu_agent_new/ if agents=None."""
+    # This test only passes if dijizu_agent_new/ exists with valid JSON files.
     result = nearest_li(lat=22.999, lng=120.196, n=5)
     assert len(result) > 0
     assert all(isinstance(li, LiAgentData) for li, _ in result)

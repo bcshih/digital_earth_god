@@ -1,166 +1,139 @@
 # 數位土地公 Digital Earth God
 
-[English](README.md) | 繁體中文
+繁體中文 | [English](README.md)
 
 > **以神明為喻的多智能體系統，守護台南中西區的文化探索與社區治理。**
 >
-> 一套以台灣民間信仰為隱喻的多智能體系統（MAS）——**土地公**統籌 **20 位地基主（街區守護神）**，透過競標、辯論與協商，為你規劃最佳旅遊路線，並回答社區治理的各種問題。
+> 數位土地公是一個多智能體系統（MAS），它透過台灣民間信仰的隱喻來重新詮釋台南市的文化探索與治理——在這裡，**土地公**作為統籌者，指揮 20 位**地基主**（各里守護神）為您進行競標、辯論，並協商出最佳的旅遊行程與社區洞察。
 
 ---
 
-## ✨ 功能一覽
+## ✨ 核心功能
 
-| 流程 | 說明 | WebSocket |
-|------|------|-----------|
-| 🧭 **向土地公問路**（探索） | 輸入旅遊意圖＋GPS → 20 位地基主先後偵察、競標、辯論 → 土地公裁決並產出多日行程＋Leaflet 地圖 | `/ws/explore/a2ui` |
-| 🏘️ **問土地公**（社區問答） | 提出社區問題 → 地基主評估相關性並回答 → 土地公整合摘要 | `/ws/ask/a2ui` |
-| 🏛️ **里長大會**（議事） | 提出議題 → 多輪自由搶話，每輪地基主可表態（支持／反駁／提問／補充／沉默） → 土地公下裁示，地圖呈現共識 | `/ws/council/a2ui` |
-| 🙏 **向土地公許願**（許願） | 向土地公許願，五營兵將分類，土地公賜福 | `/ws/wish/a2ui` |
+| 流程 | 描述 | WebSocket 節點 |
+|------|-------------|-----------|
+| 🧭 **向土地公問路** (探索) | 輸入您的旅遊意圖與 GPS 位置 → 20 位地基主進行探勘、競標、辯論 → 土地公進行評判，並產出多日遊行程與地圖 | `/ws/explore/a2ui` |
+| 🏘️ **問土地公** (社區問答) | 詢問社區相關問題 → 地基主評估相關性並提供解答 → 土地公匯總出總結報告 | `/ws/ask/a2ui` |
+| 🏛️ **里長大會** (議會) | 提出社區議題 → 地基主進行多輪審議，表達支持/反對/質疑立場 → 土地公給出最終裁定 | `/ws/council/a2ui` |
+| 🙏 **向土地公許願** (祈願) | 向土地公提交您的祈願或訴求 | `/ws/wish` |
 
-### 特色亮點
+### 亮點特色
 
-- **Contract Net 協議** — 去中心化任務分配：廣播 → 偵察 → 競標 → 辯論 → 裁決
-- **A2UI（Agent-to-UI）** — 伺服器透過 WebSocket 推送元件樹與資料補丁；前端用通用 Renderer 渲染，搭配領域裝飾器（印章動畫、擲筊揭示、香煙背景）
-- **5 種 Agent 類型** — 土地公（統籌者）、20× 地基主（街區守護神）、虎爺、巡境使、五營兵將
-- **20 個自主街區 Agent** — 每位地基主預載一個台南中西區街里的空間資料（景點、歷史、社區輿情）
-- **神明個性** — 每次呼叫隨機抽取今日心情語錄，注入土地公的裁決文字
-- **廟宇劇場 UI** — 朱砂印章動畫、擲筊（杯珓）儀式揭示、香煙縹緲背景、對話泡泡式偵察回報
+- **合約網協定 (Contract Net)** — 去中心化任務分配：廣播 → 探勘 → 競標 → 辯論 → 評判。
+- **A2UI (Agent-to-UI)** — 伺服器透過 WebSocket 推送元件樹與資料補丁；前端使用通用渲染器搭配領域專屬裝飾器（如印章、擲筊、線香背景）進行渲染。
+- **五大神明代理人 (5 Agent Types)** — 土地公（統籌者）、20× 地基主（街道守護神）、虎爺（社群情資）、巡境使（環境感測）、五營兵將（意圖解析）。
+- **20 個自治街道代理人** — 每位地基主皆預載了台南中西區單一里（Neighborhood）的空間資料（POI、歷史、社群貼文）。
+- **神明性格系統** — 土地公每日的「神明心情」會隨機改變，並反映在最終的評判語氣中。
+- **劇場式使用者介面** — 朱印蓋章動畫、擲筊揭曉、線香煙霧背景，以及聊天室風格的探勘回報。
 
 ---
 
 ## 🏗️ 系統架構
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    前端（Next.js）                       │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌────────┐  │
-│  │  探索 /  │  │ 問答 /ask│  │議事/council│ │許願/wish│ │
-│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └───┬────┘  │
-│       │ WS          │ WS          │ WS          │ WS    │
-└───────┼─────────────┼─────────────┼─────────────┼───────┘
-        ▼             ▼             ▼             ▼
-┌─────────────────────────────────────────────────────────┐
-│              FastAPI Gateway（:8080）                    │
-│         apps/api/gateway.py                             │
-│                                                         │
-│  ┌───────────────────────────────────────────┐          │
-│  │  土地公 Pipeline（Google ADK）             │          │
-│  │  ┌──────────┐ → 前 N 名 Agent             │          │
-│  │  │RouterAgent│                            │          │
-│  │  └──────────┘                             │          │
-│  │  ┌────────────────────────┐               │          │
-│  │  │ ParallelAgent（偵察×20）│               │          │
-│  │  └────────────────────────┘               │          │
-│  │  ┌────────────────────────┐               │          │
-│  │  │ ParallelAgent（競標×N） │               │          │
-│  │  └────────────────────────┘               │          │
-│  │  ┌────────────────────────┐               │          │
-│  │  │ ParallelAgent（辯論×N） │               │          │
-│  │  └────────────────────────┘               │          │
-│  │  ┌────────────────────────┐               │          │
-│  │  │ LlmAgent（裁決）        │               │          │
-│  │  └────────────────────────┘               │          │
-│  └───────────────────────────────────────────┘          │
-└─────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────┐
+│                    Frontend (Next.js)                │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌─────┐ │
+│  │ 探索問路 │  │ 社區問答 │  │ 里長大會 │  │祈願 │ │
+│  │ /        │  │ /ask     │  │ /council │  │/wish│ │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └──┬──┘ │
+│       │ WS          │ WS          │ WS         │ WS │
+└───────┼─────────────┼─────────────┼────────────┼────┘
+        ▼             ▼             ▼            ▼
+┌─────────────────────────────────────────────────────┐
+│              FastAPI Gateway (:8080)                 │
+│         apps/api/gateway.py                         │
+│                                                     │
+│  ┌─────────────────────────────────┐                │
+│  │  土地公 Pipeline (ADK)          │                │
+│  │  ┌───────────┐                  │                │
+│  │  │RouterAgent│ → 篩選前 N 名    │                │
+│  │  └───────────┘                  │                │
+│  │  ┌──────────────────────────┐   │                │
+│  │  │ParallelAgent (探勘 ×20)  │   │                │
+│  │  └──────────────────────────┘   │                │
+│  │  ┌──────────────────────────┐   │                │
+│  │  │ParallelAgent (競標 ×N)   │   │                │
+│  │  └──────────────────────────┘   │                │
+│  │  ┌──────────────────────────┐   │                │
+│  │  │ParallelAgent (辯論 ×N)   │   │                │
+│  │  └──────────────────────────┘   │                │
+│  │  ┌──────────────────────────┐   │                │
+│  │  │LlmAgent (評判法官)       │   │                │
+│  │  └──────────────────────────┘   │                │
+│  └─────────────────────────────────┘                │
+└─────────────────────────────────────────────────────┘
         │               │               │
         ▼               ▼               ▼
-┌──────────────────────────────────────────────────┐
-│         Swarm Server（:9000）                     │
-│  ┌──────┐  ┌──────┐  ┌──────┐    ┌──────┐        │
-│  │五條港│  │光賢里│  │兌悅里│ …  │共20里│        │
-│  │:9001 │  │:9002 │  │:9003 │    │      │        │
-│  └──────┘  └──────┘  └──────┘    └──────┘        │
-│        （A2A JSON-RPC 端點）                       │
-└──────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────┐
+│         Swarm Server (:9000)                 │
+│   ┌──────┐  ┌──────┐  ┌──────┐    ┌──────┐  │
+│   │神農街│  │海安路│  │正興街│ …  │共20里│  │
+│   │:9001 │  │:9002 │  │:9003 │    │      │  │
+│   └──────┘  └──────┘  └──────┘    └──────┘  │
+│        (A2A JSON-RPC endpoints)              │
+└──────────────────────────────────────────────┘
 ```
 
-### 技術棧
+### 技術堆疊
 
-| 層級 | 技術 |
-|------|------|
+| 階層 | 技術 |
+|-------|-----------|
 | LLM | Google Gemini 3.1 Flash Lite |
-| Agent 框架 | [Google ADK](https://google.github.io/adk-docs/)（Agent Development Kit） |
-| Agent 通訊 | [A2A Protocol](https://github.com/google/A2A)（Agent-to-Agent） v0.3 |
+| 代理人框架 | [Google ADK](https://google.github.io/adk-docs/) (Agent Development Kit) |
+| 通訊協定 | [A2A Protocol](https://github.com/google/A2A) (Agent-to-Agent) |
 | 後端 | FastAPI + WebSocket |
-| 前端 | Next.js 16（Turbopack）+ Motion（Framer Motion）+ Leaflet |
-| 資料 | NGSI-LD 啟發的 5 層資料模型（空間、動態、歷史、民情、元資料） |
+| 前端 | Next.js 16 (Turbopack) + Motion (Framer Motion) + Leaflet |
+| 資料 | 靈感來自 NGSI-LD 的五層資料架構（空間、動態、歷史、市民意見、元資料） |
 
 ---
 
-## 📁 專案結構
+## 📁 專案目錄結構
 
 ```
 digital-earth-god/
 ├── agents/
-│   ├── tudigong/            # 土地公（Earth God）— 統籌者、裁決者、里長大會主席、賜福
-│   │   ├── agent.py         #   Contract Net pipeline、心情池、社區/議事裁決
-│   │   └── blessing_agent.py#   許願賜福 agent
-│   ├── dijizhu/             # 地基主（街區守護神）— 20 個街區 agent
-│   │   ├── agent.py         #   偵察、競標、辯論、社區、議事發言 agent
-│   │   ├── a2a_server.py    #   每個街區的 A2A HTTP 伺服器
-│   │   └── swarm_server.py  #   同時啟動全部 20 個 A2A 伺服器
-│   ├── huye/                # 虎爺 — 感測器證據 mock 轉接器，A2A 伺服器
-│   ├── wuying/              # 五營兵將 — 意圖 agent + 許願分類器
-│   └── xunjingshi/          # 巡境使 — 社群輿情 mock 轉接器，A2A 伺服器
+│   ├── tudigong/            # 土地公 — 統籌者、評判者、大會主席、賜福
+│   ├── dijizhu/             # 地基主 — 20 個里級代理人（探勘、競標、辯論、大會發言）
+│   ├── huye/                # 虎爺 — 模擬社群情資適配器、A2A 伺服器
+│   ├── wuying/              # 五營兵將 — 意圖解析與祈願分類代理人
+│   └── xunjingshi/          # 巡境使 — 模擬感測器資料適配器、A2A 伺服器
 │
 ├── apps/
 │   ├── api/
-│   │   └── gateway.py       # FastAPI gateway — 4 個 WS 端點、pipeline 統籌
+│   │   └── gateway.py       # FastAPI 閘道器 — 管理 WebSocket 與工作流編排
 │   └── web/                 # Next.js 16 前端
-│       ├── app/
-│       │   ├── page.tsx           #   探索（向土地公問路）
-│       │   ├── ask/page.tsx       #   社區問答（問土地公）
-│       │   ├── council/page.tsx   #   里長大會
-│       │   ├── wish/page.tsx      #   許願（上香）
-│       │   └── dashboard/page.tsx #   儀表板（城市風向球）
-│       ├── components/
-│       │   ├── theater/           #   SealStamp、Jiaobei、IncenseBackground
-│       │   ├── NegotiationBoard.tsx   # 競標/辯論緊湊檢視器（含分頁）
-│       │   ├── ChatBubble.tsx         # 偵察報告對話泡泡
-│       │   ├── CouncilMap.tsx         # 響應式里界地圖（Leaflet，SSR-safe）
-│       │   └── ResultMap.tsx          # Leaflet 行程地圖
-│       └── lib/a2ui/          # 通用 A2UI 渲染器
-│           └── Renderer.tsx
+│       ├── app/             # 各頁面路由（探索、問事、大會、許願、儀表板）
+│       ├── components/      # 共用元件、地圖與劇場式特效（印章、擲筊等）
+│       └── lib/a2ui/        # A2UI 通用渲染器
 │
-├── deg/                       # 核心函式庫（pip install -e .）
-│   ├── schemas/
-│   │   └── contracts.py       #   Pydantic 資料模型（TaskBroadcast → CouncilVerdict）
-│   ├── a2ui/
-│   │   ├── __init__.py        #   A2UI 協議（狀態、補丁、建構器）
-│   │   └── surfaces.py        #   各流程的元件樹建構器（探索/問答/議事/許願）
-│   ├── adapters/              #   感測器與社群資料轉接器（虎爺/巡境使證據）
-│   ├── warmdata/              #   SQLite 許願資料庫（store.py）
-│   ├── mcp/spatial_db/        #   MCP 空間資料庫（景點查詢）
-│   └── seed/loader.py         #   從 JSON 載入 5 層 NGSI-LD agent 資料
+├── deg/                       # 核心函式庫 (pip install -e .)
+│   ├── schemas/             # Pydantic 資料模型
+│   ├── a2ui/                # A2UI 協定（狀態、補丁、建構器）
+│   ├── adapters/            # 虎爺/巡境使等資料適配器
+│   ├── warmdata/            # 溫資料 (SQLite 祈願儲存庫)
+│   ├── mcp/spatial_db/      # MCP 空間資料庫
+│   └── seed/loader.py       # NGSI-LD 代理人資料載入器
 │
-├── dijizu_agent/              # 20 個里的 JSON 資料檔（每個里一份 5 層資料）
-│   ├── 五條港里.json           # … （共 20 個檔案）
-│   └── …
-│
-├── data/seed/
-│   ├── streets.json           # 街道 / 景點種子資料
-│   ├── sensor.json            # 感測器讀數種子資料
-│   └── social.json            # 社群 / 民情種子資料
-│
-├── tests/                     # 80+ 單元測試（整合測試需 API 金鑰）
-├── docs/                      # 設計文件與功能計畫
-├── scripts/demo.py            # CLI 示範腳本
-├── start.ps1                  # 一鍵啟動腳本（Windows）
-├── pyproject.toml             # Python 專案設定
-└── .env.example               # 環境變數範本
+├── dijizu_agent/              # 20 個里的 JSON 資料檔（每份為 5 層 NGSI-LD 架構）
+├── data/seed/                 # 種子資料（街道 POI、感測器、社群資料）
+├── tests/                     # 80+ 單元與整合測試
+├── docs/                      # 設計文件與開發計畫
+├── start.ps1                  # 一鍵啟動腳本 (Windows)
+└── .env.example               # 環境變數範例檔
 ```
 
 ---
 
 ## 🚀 快速開始
 
-### 前置需求
+### 系統需求
 
 - **Python** ≥ 3.11
 - **Node.js** ≥ 20
-- **Google Gemini API 金鑰**（[在此申請](https://aistudio.google.com/apikey)）
+- **Google Gemini API Key** ([在此取得](https://aistudio.google.com/apikey))
 
-### 1. 複製與安裝
+### 1. 複製專案與安裝依賴
 
 ```bash
 git clone https://github.com/bcshih/digital_earth_god.git
@@ -182,24 +155,24 @@ cd ../..
 
 ```bash
 cp .env.example .env
-# 編輯 .env，填入你的 Gemini API 金鑰：
+# 編輯 .env 檔案並加入您的 Gemini API 金鑰：
 #   GOOGLE_API_KEY=your-gemini-api-key-here
 ```
 
-### 3. 啟動服務
+### 3. 啟動系統
 
-**選項 A：一鍵啟動（Windows PowerShell）**
+**選項 A：一鍵啟動 (Windows PowerShell)**
 
 ```powershell
 .\start.ps1
 ```
 
-會自動啟動 Swarm Server、FastAPI Gateway、Next.js 前端並開啟瀏覽器。
+這將依序啟動 Swarm Server、FastAPI Gateway 以及 Next.js 前端，並在 10 秒後開啟瀏覽器。
 
-**選項 B：手動啟動（3 個終端機）**
+**選項 B：手動啟動 (需開啟 3 個終端機)**
 
 ```bash
-# 終端機 1 — Swarm Server（20 個地基主 A2A agent）
+# 終端機 1 — Swarm Server (20 個地基主 A2A 伺服器)
 python agents/dijizhu/swarm_server.py
 
 # 終端機 2 — FastAPI Gateway
@@ -211,130 +184,31 @@ cd apps/web && npm run dev
 
 ### 4. 開啟瀏覽器
 
-前往 **http://localhost:3000**，開始探索台南！
-
----
-
-## 🎮 運作原理
-
-### 探索流程（向土地公問路）
-
-1. **你** 輸入旅遊意圖（例如「我想找老巷弄裡的文青咖啡廳」）並分享 GPS 位置
-2. **土地公** 向全部 20 位地基主廣播 `TaskBroadcast`
-3. **20 位偵察員** 快速評估相關性（0–10 信心分數）—— 結果以對話泡泡即時串流
-4. **前 N 名** 被選中，提交完整 `BiddingProposal`（含景點、適切度分數、理由）
-5. **辯論輪** —— 地基主互相批評提案並為自己的街區辯護
-6. **土地公裁決** —— 土地公讀取所有競標＋辯論，加入今日神明心情，產出 `JudgmentResult`（多日行程）
-7. **擲筊揭示** —— 裁決以擲筊動畫揭曉，接著顯示互動式 Leaflet 地圖
-
-### 社區問答流程（問土地公）
-
-1. 提出社區問題（例如「最近中西區有什麼活動？」）
-2. 偵察員評估哪些街里有相關資料
-3. 入選的地基主從各自的在地資料庫提供詳細回答，以對話泡泡呈現
-4. 土地公整合所有回答，輸出統一摘要
-
-### 里長大會流程（Council）
-
-1. 提出議題（例如「海安路應不應該辦共同夜市？」）
-2. 多輪自由搶話：每輪地基主可看完前面的逐字稿後決定表態——
-   - 🟢 **支持**（附議）
-   - 🔴 **反駁**（有意見）
-   - 🔵 **提問**（發問）
-   - 🟡 **補充**（中性補充）
-   - ⬛ **沉默**（本輪不發言）
-3. 每則發言以 0.6 秒間隔串流，地圖同步反應：
-   - 發言中的里界閃金色光暈＋鏡頭飛移
-   - 各里依最新立場著色
-   - 回應對象之間連虛線
-4. 整輪無人發言則提前結束討論
-5. 土地公下裁示，地圖重新著色呈現最終共識
-
-### 許願流程（Wish）
-
-1. 向土地公許願（輸入心願文字）
-2. 五營兵將分類許願主題（健康、工作、感情、祈平安…）
-3. 土地公閱覽許願，以神明口吻賜福回覆
-4. 許願資料存入 SQLite 暖資料庫，儀表板顯示城市整體心願分布
-
----
-
-## 🧪 測試
-
-```bash
-# 執行所有測試
-pytest
-
-# 執行特定測試檔
-pytest tests/test_contracts.py
-pytest tests/test_gateway.py
-pytest tests/test_council_schemas.py
-
-# 整合測試（需要真實 Gemini API 金鑰）
-pytest -m integration
-```
-
-> 整合測試標有 `@pytest.mark.integration`，沒有設定 `GOOGLE_API_KEY` 時會自動跳過。
+前往 **http://localhost:3000** 開始體驗數位土地公！
 
 ---
 
 ## 📐 資料模型
 
-系統對每個街里採用 5 層 NGSI-LD 啟發式資料模型：
+本系統採用基於 NGSI-LD 標準的 JSON-LD 圖形架構。每個里的資料集包含多個實體：
 
-| 層級 | 內容 | 範例 |
-|------|------|------|
-| Layer 1 | 空間（景點、邊界、質心） | 咖啡廳、廟宇、公園（附經緯度） |
-| Layer 2 | 動態活動 | 當前活動、展覽、市集 |
-| Layer 3 | 歷史脈絡 | 街道歷史、文化意義 |
-| Layer 4 | 民情輿論 | 居民回報、意見、建議 |
-| Layer 5 | 元資料 | Agent 個性、街名、行政區 |
+1. **VillageAgent (里代理人)**：代表該街區的核心實體，包含元資料（性格設定、名稱）、空間邊界（GeoJSON Polygon）與歷史脈絡。
+2. **LocalObservation (在地觀察)**：代表該街區內各項事件、地點或市民反饋的細粒度資料節點。這些節點會被動態載入 Agent 的五層知識庫中：
+   * `daily_activity` (日常活動), `weather` (天氣), `new_shop` (新店) → Layer 2 (動態活動)
+   * `poi` (景點), `local_history` (在地歷史) → Layer 3 (空間與 POI)
+   * `citizen_feedback` (市民回饋) → Layer 4 (市民意見)
 
-### 主要 Pydantic 資料模型
-
-- `TaskBroadcast` — 意圖 + GPS + 限制條件廣播給所有 agent
-- `ScoutResult` — 快速信心評分（0–10）+ 一行理由
-- `BiddingProposal` — 完整提案（候選景點、適切度分數、理由）
-- `DebateMessage` — Agent 間辯論文字
-- `JudgmentResult` — 最終行程（含 `ItineraryStop[]`、推薦理由）
-- `CommunityAnswer` / `CommunityQueryResult` — 社區問答模型
-- `CouncilStatement` / `CouncilAlignment` / `CouncilVerdict` — 里長大會議事模型（立場：support/oppose/question/inform/silent）
+> **注意**：為防止平行執行時 LLM 發生 Token 溢出，資料載入器 (`deg/seed/loader.py`) 會自動將每個 Agent 載入的觀察節點截斷，僅保留前 15 筆最重要的實體。
 
 ---
 
-## 🎨 A2UI 協議
+## 📜 授權條款
 
-**Agent-to-UI（A2UI）** 協議將 agent pipeline 與前端完全解耦：
-
-1. **伺服器**推送一棵元件樹（JSON），定義 UI 結構
-2. **伺服器**隨 agent 結果到達，持續推送資料模型補丁
-3. **前端**用通用 `Renderer` 元件渲染整棵樹
-4. **Decorator**在上層疊加領域特定的呈現方式（動畫、地圖、泡泡）
-
-這讓同一個 agent pipeline 可以驅動不同前端（網頁、行動裝置、語音）而無須修改 agent 程式碼。A2UI 合約文件詳見 `docs/a2ui-contract.md`。
-
----
-
-## 🌐 環境變數
-
-| 變數 | 說明 | 預設值 |
-|------|------|--------|
-| `GOOGLE_API_KEY` | Google Gemini API 金鑰 | （必填） |
-| `GOOGLE_GENAI_USE_VERTEXAI` | 改用 Vertex AI | `FALSE` |
-| `NEXT_PUBLIC_GATEWAY_WS` | 探索流程 WS URL | `ws://127.0.0.1:8080/ws/explore/a2ui` |
-| `NEXT_PUBLIC_GATEWAY_WS_COMMUNITY` | 問答流程 WS URL | `ws://127.0.0.1:8080/ws/ask/a2ui` |
-| `NEXT_PUBLIC_GATEWAY_WS_COUNCIL` | 里長大會 WS URL | `ws://127.0.0.1:8080/ws/council/a2ui` |
-| `DEG_WARMDATA_DB` | SQLite 許願資料庫路徑 | `data/warmdata.db` |
-
----
-
-## 📜 授權
-
-本專案為智慧城市多智能體系統的學術研究成果。
+本專案為智慧城市多智能體系統（MAS）學術研究計畫之一部分。
 
 ---
 
 <p align="center">
   <strong>🏯 台南・中西區・數位土地公 🏯</strong><br/>
-  <em>以 Google ADK · A2A Protocol · Gemini · Next.js 建構</em>
+  <em>Built with Google ADK · A2A Protocol · Gemini · Next.js</em>
 </p>

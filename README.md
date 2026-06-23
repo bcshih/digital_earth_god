@@ -261,15 +261,15 @@ pytest tests/test_gateway.py
 
 ## 📐 Data Model
 
-The system uses a 5-layer NGSI-LD inspired data model for each neighborhood:
+The system uses a standard JSON-LD graph structure based on NGSI-LD. Each neighborhood contains a dataset with multiple entities:
 
-| Layer | Content | Example |
-|-------|---------|---------|
-| Layer 1 | Spatial (POIs, boundaries, centroid) | Cafés, temples, parks with lat/lng |
-| Layer 2 | Dynamic Activities | Current events, exhibitions, markets |
-| Layer 3 | Historical Context | Street history, cultural significance |
-| Layer 4 | Citizen Opinions | Resident reports, complaints, suggestions |
-| Layer 5 | Metadata | Agent personality, street name, district |
+1. **VillageAgent**: The core entity representing the neighborhood. Contains metadata (personality, name), spatial boundaries (GeoJSON polygons), and historical context.
+2. **LocalObservation**: Granular data points representing events, locations, or citizen feedback within the neighborhood. These are dynamically loaded into the agent's 5-layer knowledge base:
+   - `daily_activity`, `weather`, `new_shop` → Layer 2 (Dynamic Activities)
+   - `poi`, `local_history` → Layer 3 (Spatial & POIs)
+   - `citizen_feedback` → Layer 4 (Citizen Opinions)
+
+> **Note**: To prevent LLM context overflow during parallel execution, the data loader (`deg/seed/loader.py`) intelligently truncates observations to the Top 15 most relevant entities per agent.
 
 ### Key Schemas (Pydantic)
 

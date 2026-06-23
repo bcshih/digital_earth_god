@@ -1,6 +1,6 @@
 """Load and validate the Tainan NGSI-LD agent datasets into typed objects.
 
-Reads from the 20 li JSON files in dijizu_agent/ and provides both raw
+Reads from the 20 li JSON files in dijizu_agent_new/ and provides both raw
 NGSI-LD models and backward-compatible Street models for the MCP spatial db.
 """
 
@@ -15,7 +15,7 @@ from pydantic import BaseModel, Field
 from deg.schemas import LatLng, Poi
 
 # repo root: deg/seed/loader.py -> parents[2]
-_DEFAULT_LI_DIR = Path(__file__).resolve().parents[2] / "dijizu_agent"
+_DEFAULT_LI_DIR = Path(__file__).resolve().parents[2] / "dijizu_agent_new"
 
 
 class GeoJsonPoint(BaseModel):
@@ -66,7 +66,7 @@ class LiAgentData(BaseModel):
 
     def to_street(self) -> Street:
         """Convert to the legacy internal Street object for backward compatibility."""
-        # Extract agent ID from URN: urn:ngsi-ld:EarthGodAgent:Tainan:WestCentral:Wutiaogang -> wutiaogang
+        # Extract agent ID from URN: urn:ngsi-ld:VillageAgent:Tainan:WestCentral:Wutiaogang -> wutiaogang
         agent_id_suffix = self.id.split(":")[-1].lower()
         agent_id = f"street_{agent_id_suffix}_node"
         
@@ -117,6 +117,101 @@ class Street(BaseModel):
     pois: list[Poi]
 
 
+def _get_val(obs: dict, key: str, default: Any = "") -> Any:
+    val = obs.get(key)
+    if isinstance(val, dict) and "value" in val:
+        return val["value"]
+    return val if val is not None else default
+
+
+def parse_ngsi_ld_graph(data: dict) -> LiAgentData:
+    """Transform the new JSON-LD @graph format into the expected LiAgentData structure."""
+    if "@graph" not in data:
+        # Fallback to old format if directly provided
+        return LiAgentData.model_validate(data)
+
+    graph = data.get("@graph", [])
+    village = next((item for item in graph if item.get("type") == "VillageAgent"), None)
+    if not village:
+        raise ValueError("No VillageAgent node found in @graph")
+
+    observations = [item for item in graph if item.get("type") == "LocalObservation"]
+
+    metadata = {
+        "agent_name": _get_val(village, "name", "未知"),
+        "managed_by": _get_val(village, "managedBy", None),
+        "personality": _get_val(village, "persona", "熱心護航在地"),
+    }
+
+    spatial = _get_val(village, "spatialBoundary", None)
+    spatial_prop = {"type": "GeoProperty", "value": spatial} if spatial and isinstance(spatial, dict) else None
+
+    history = _get_val(village, "history", "")
+    layer1 = {"value": {"history": history}}
+
+    # Limit the number of observations to protect LLM token limit
+    MAX_OBS = 15
+    pois = []
+    activities = []
+    opinions = []
+
+    for obs in observations[:MAX_OBS]:
+        cat = _get_val(obs, "category", "")
+        name = _get_val(obs, "name", "")
+        desc = _get_val(obs, "description", "")
+        loc = _get_val(obs, "location", {})
+        tags = _get_val(obs, "tags", [])
+        
+        # Format tags to include in description or just keep them
+        if tags:
+            desc = f"{desc} (標籤: {', '.join(tags)})"
+
+        if cat in ("daily_activity", "weather", "new_shop"):
+            activities.append({
+                "title": name,
+                "content": desc,
+                "category": cat
+            })
+        elif cat == "citizen_feedback" or "opinion" in cat.lower():
+            opinions.append({
+                "title": name,
+                "content": desc
+            })
+        else:
+            coords = [0.0, 0.0]
+            if isinstance(loc, dict) and "value" in loc:
+                loc_val = loc["value"]
+                if isinstance(loc_val, dict) and "coordinates" in loc_val:
+                    coords = loc_val["coordinates"]
+            elif isinstance(loc, dict) and "coordinates" in loc:
+                coords = loc["coordinates"]
+                
+            pois.append({
+                "poi_id": obs.get("id", ""),
+                "name": name,
+                "category": cat,
+                "description": desc,
+                "location": {"type": "Point", "coordinates": coords}
+            })
+
+    layer2 = {"value": activities}
+    layer3 = {"type": "Property", "value": pois}
+    layer4 = {"value": opinions}
+
+    raw_mapped = {
+        "id": village.get("id", "unknown"),
+        "type": "AgentData",
+        "metadata": metadata,
+        "spatial_boundary": spatial_prop,
+        "layer_1_objective": layer1,
+        "layer_2_dynamic_activities": layer2,
+        "layer_3_dynamic_pois": layer3,
+        "layer_4_citizen_opinions": layer4
+    }
+
+    return LiAgentData.model_validate(raw_mapped)
+
+
 def load_agents(directory: Path | str | None = None) -> list[LiAgentData]:
     """Read all NGSI-LD agent files and return validated LiAgentData objects."""
     d = Path(directory) if directory is not None else _DEFAULT_LI_DIR
@@ -126,7 +221,7 @@ def load_agents(directory: Path | str | None = None) -> list[LiAgentData]:
     for f in d.glob("*.json"):
         try:
             raw = json.loads(f.read_text(encoding="utf-8"))
-            agents.append(LiAgentData.model_validate(raw))
+            agents.append(parse_ngsi_ld_graph(raw))
         except Exception as e:
             print(f"Failed to parse {f.name}: {e}")
     return agents
