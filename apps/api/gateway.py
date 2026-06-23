@@ -490,7 +490,7 @@ def _nearby_li_payload(lat: float, lng: float, n: int = 3) -> list[dict]:
             "street_name": li.metadata.agent_name,
             "distance_m": round(dist_m),
             "activities": activities_raw.get("value", []) if isinstance(activities_raw, dict) else [],
-            "opinions": opinions_raw.get("value", {}) if isinstance(opinions_raw, dict) else {},
+            "opinions": opinions_raw.get("value", []) if isinstance(opinions_raw, dict) else [],
         })
     return out
 
