@@ -1,16 +1,305 @@
-# 數位土地公 (Digital Earth God)
+# 數位土地公 Digital Earth God
 
-MAS 微觀治理系統 — 在地 Agent 動態協商（Contract Net）+ 神學科技 A2UI + Warm Data。
-詳見 `docs/superpowers/specs/` 設計與 `docs/superpowers/plans/` 實作計畫。
+> **以神明為喻的多智能體系統，守護台南中西區的文化探索與社區治理。**
+>
+> A Multi-Agent System (MAS) that reimagines Tainan City's cultural heritage exploration through the metaphor of Taiwanese folk religion — where a **土地公 (Earth God)** orchestrates **20 地基主 (Street Guardians)** to bid, debate, and negotiate the best travel itineraries and community insights for you.
 
-## Dev bootstrap (Windows / PowerShell)
+---
 
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -e ".[dev]"
-python -m pytest
+## ✨ Features
+
+| Flow | Description | WebSocket |
+|------|-------------|-----------|
+| 🧭 **向土地公問路** (Explore) | Input your travel intent + GPS → 20 street guardians scout, bid, debate → Earth God judges and produces a multi-day itinerary with a Leaflet map | `/ws/explore/a2ui` |
+| 🏘️ **問土地公** (Community Ask) | Ask a community question → guardians evaluate relevance, provide answers → Earth God consolidates a summary | `/ws/ask/a2ui` |
+| 🏛️ **里長大會** (Council) | Raise a community topic → multi-round deliberation among guardians with support/oppose/question stances → Earth God delivers a verdict | `/ws/council/a2ui` |
+| 🙏 **向土地公許願** (Wish) | Submit a prayer/wish to the Earth God | `/ws/wish` |
+
+### Key Highlights
+
+- **Contract Net Protocol** — Decentralized task allocation: broadcast → scout → bid → debate → judge
+- **A2UI (Agent-to-UI)** — Server pushes component trees + data patches over WebSocket; the frontend renders them with a generic renderer + domain-specific decorators (seal stamps, jiaobei divination, incense backgrounds)
+- **20 Autonomous Street Agents** — Each guardian has pre-loaded spatial data (POIs, history, social posts) for one neighborhood in Tainan's West Central District
+- **Divine Personality** — Random "mood of the day" phrases inject personality into the Earth God's judgments
+- **Theatrical UI** — Vermillion seal-stamp animations, jiaobei (擲筊) divination reveals, incense smoke backgrounds, and chat-room-style scout reports
+
+---
+
+## 🏗️ Architecture
+
+```
+┌─────────────────────────────────────────────────────┐
+│                    Frontend (Next.js)                │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌─────┐ │
+│  │ Explore  │  │   Ask    │  │ Council  │  │Wish │ │
+│  │ /        │  │ /ask     │  │ /council │  │/wish│ │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └──┬──┘ │
+│       │ WS          │ WS          │ WS         │ WS │
+└───────┼─────────────┼─────────────┼────────────┼────┘
+        ▼             ▼             ▼            ▼
+┌─────────────────────────────────────────────────────┐
+│              FastAPI Gateway (:8080)                 │
+│         apps/api/gateway.py                         │
+│                                                     │
+│  ┌─────────────────────────────────┐                │
+│  │  土地公 Pipeline (ADK)          │                │
+│  │  ┌───────────┐                  │                │
+│  │  │RouterAgent│ → Top N agents   │                │
+│  │  └───────────┘                  │                │
+│  │  ┌──────────────────────────┐   │                │
+│  │  │ParallelAgent (Scout ×20) │   │                │
+│  │  └──────────────────────────┘   │                │
+│  │  ┌──────────────────────────┐   │                │
+│  │  │ParallelAgent (Bid ×N)   │   │                │
+│  │  └──────────────────────────┘   │                │
+│  │  ┌──────────────────────────┐   │                │
+│  │  │ParallelAgent (Debate ×N)│   │                │
+│  │  └──────────────────────────┘   │                │
+│  │  ┌──────────────────────────┐   │                │
+│  │  │LlmAgent (Judge)         │   │                │
+│  │  └──────────────────────────┘   │                │
+│  └─────────────────────────────────┘                │
+└─────────────────────────────────────────────────────┘
+        │               │               │
+        ▼               ▼               ▼
+┌──────────────────────────────────────────────┐
+│         Swarm Server (:9000)                 │
+│   ┌──────┐  ┌──────┐  ┌──────┐    ┌──────┐  │
+│   │神農街│  │海安路│  │正興街│ …  │共20里│  │
+│   │:9001 │  │:9002 │  │:9003 │    │      │  │
+│   └──────┘  └──────┘  └──────┘    └──────┘  │
+│        (A2A JSON-RPC endpoints)              │
+└──────────────────────────────────────────────┘
 ```
 
-## 資料說明
-`data/seed/streets.json` 為示意用 seed 資料（台南中西區三條街），非真實營業資訊。
+### Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| LLM | Google Gemini 3.1 Flash Lite |
+| Agent Framework | [Google ADK](https://google.github.io/adk-docs/) (Agent Development Kit) |
+| Agent Communication | [A2A Protocol](https://github.com/google/A2A) (Agent-to-Agent) |
+| Backend | FastAPI + WebSocket |
+| Frontend | Next.js 16 (Turbopack) + Motion (Framer Motion) + Leaflet |
+| Data | NGSI-LD inspired 5-layer model (spatial, dynamic, historical, citizen opinions, metadata) |
+
+---
+
+## 📁 Project Structure
+
+```
+digital-earth-god/
+├── agents/
+│   ├── tudigong/           # 土地公 (Earth God) — orchestrator & judge
+│   │   └── agent.py        #   Contract Net pipeline, mood pool, judge prompts
+│   └── dijizhu/            # 地基主 (Street Guardian) — per-street agents
+│       ├── agent.py         #   Scout, bidding, debate, community, council agents
+│       └── a2a_server.py    #   A2A HTTP server for each street
+│
+├── apps/
+│   ├── api/
+│   │   └── gateway.py       # FastAPI gateway — WS endpoints, pipeline orchestration
+│   └── web/                 # Next.js 16 frontend
+│       ├── app/
+│       │   ├── page.tsx      #   Explore (向土地公問路)
+│       │   ├── ask/page.tsx  #   Community Ask (問土地公)
+│       │   ├── council/page.tsx  # Council (里長大會)
+│       │   └── wish/page.tsx #   Wish (許願)
+│       ├── components/
+│       │   ├── theater/      #   SealStamp, Jiaobei, IncenseBackground
+│       │   ├── NegotiationBoard.tsx  # Compact bid/debate viewer with pagination
+│       │   ├── ChatBubble.tsx        # Scout chat-room bubbles
+│       │   └── ResultMap.tsx         # Leaflet itinerary map
+│       └── lib/a2ui/         # Generic A2UI renderer
+│           └── Renderer.tsx
+│
+├── deg/                      # Core library (pip install -e .)
+│   ├── schemas.py            #   Pydantic models (TaskBroadcast, BiddingProposal, etc.)
+│   ├── a2ui/
+│   │   ├── __init__.py       #   A2UI protocol (state, patches)
+│   │   └── surfaces.py       #   Component tree builders per flow
+│   └── seed/
+│       ├── loader.py          #   Load agent data from JSON (5-layer NGSI-LD model)
+│       └── tainan_agents.json #   Seed data for 20 neighborhoods
+│
+├── data/
+│   └── li_boundaries.geojson  # GeoJSON boundaries for Tainan districts
+│
+├── scripts/
+│   └── start_swarm.py         # Launch all 地基主 A2A servers in parallel
+│
+├── tests/
+│   ├── test_gateway.py        # Gateway endpoint tests
+│   └── test_schemas.py        # Schema validation tests
+│
+├── docs/                      # Design documents & feature plans
+├── start.ps1                  # One-click startup script (Windows)
+├── pyproject.toml             # Python project config
+└── .env.example               # Environment variable template
+```
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- **Python** ≥ 3.11
+- **Node.js** ≥ 20
+- **Google Gemini API Key** ([Get one here](https://aistudio.google.com/apikey))
+
+### 1. Clone & Install
+
+```bash
+git clone https://github.com/bcshih/digital_earth_god.git
+cd digital_earth_god
+
+# Python dependencies
+python -m venv .venv
+.venv\Scripts\activate      # Windows
+# source .venv/bin/activate  # macOS/Linux
+pip install -e ".[dev]"
+
+# Frontend dependencies
+cd apps/web
+npm install
+cd ../..
+```
+
+### 2. Configure Environment
+
+```bash
+cp .env.example .env
+# Edit .env and add your Gemini API key:
+#   GOOGLE_API_KEY=your-gemini-api-key-here
+```
+
+### 3. Start Everything
+
+**Option A: One-click (Windows PowerShell)**
+
+```powershell
+.\start.ps1
+```
+
+This will start the Swarm Server, FastAPI Gateway, and Next.js frontend, then open your browser.
+
+**Option B: Manual (3 terminals)**
+
+```bash
+# Terminal 1 — Swarm Server (20 地基主 A2A agents)
+python scripts/start_swarm.py
+
+# Terminal 2 — FastAPI Gateway
+uvicorn apps.api.gateway:app --host 127.0.0.1 --port 8080 --reload
+
+# Terminal 3 — Next.js Frontend
+cd apps/web && npm run dev
+```
+
+### 4. Open Browser
+
+Navigate to **http://localhost:3000** and start exploring Tainan!
+
+---
+
+## 🎮 How It Works
+
+### Explore Flow (向土地公問路)
+
+1. **You** type a travel intent (e.g., "我想找老巷弄裡的文青咖啡廳") and share your GPS location
+2. **土地公** broadcasts a `TaskBroadcast` to all 20 street guardians
+3. **20 Scouts** quickly evaluate relevance (0-10 confidence score) — results stream in real-time as chat bubbles
+4. **Top N Guardians** are selected and submit full `BiddingProposal` with POIs, fitness scores, and reasoning
+5. **Debate Round** — Guardians critique each other's proposals and defend their streets
+6. **土地公 Judge** — The Earth God reads all bids + debates, applies today's divine mood, and produces a `JudgmentResult` with a curated multi-day itinerary
+7. **擲筊 (Jiaobei)** — The verdict is revealed with a divination animation, followed by an interactive Leaflet map
+
+### Community Ask Flow (問土地公)
+
+1. Ask a community question (e.g., "最近中西區有什麼活動？")
+2. Scouts evaluate which neighborhoods have relevant data
+3. Selected guardians provide detailed answers from their local data
+4. Earth God consolidates all answers into a unified summary
+
+### Council Flow (里長大會)
+
+1. Raise a topic for discussion (e.g., "海安路的交通改善")
+2. Multi-round deliberation: guardians take stances (support/oppose/question/inform/silent)
+3. Each round's statements stream in with stance indicators and boundary maps
+4. Earth God delivers a final verdict summarizing consensus and disagreements
+
+---
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+pytest
+
+# Run specific test files
+pytest tests/test_schemas.py
+pytest tests/test_gateway.py
+```
+
+> **Note**: Gateway tests require `google-adk` to be installed. Schema tests run independently.
+
+---
+
+## 📐 Data Model
+
+The system uses a 5-layer NGSI-LD inspired data model for each neighborhood:
+
+| Layer | Content | Example |
+|-------|---------|---------|
+| Layer 1 | Spatial (POIs, boundaries, centroid) | Cafés, temples, parks with lat/lng |
+| Layer 2 | Dynamic Activities | Current events, exhibitions, markets |
+| Layer 3 | Historical Context | Street history, cultural significance |
+| Layer 4 | Citizen Opinions | Resident reports, complaints, suggestions |
+| Layer 5 | Metadata | Agent personality, street name, district |
+
+### Key Schemas (Pydantic)
+
+- `TaskBroadcast` — Intent + GPS + constraints broadcast to all agents
+- `ScoutResult` — Quick confidence score (0-10) + one-line reason
+- `BiddingProposal` — Full proposal with candidate POIs, fitness score, reasoning
+- `DebateMessage` — Inter-agent debate text
+- `JudgmentResult` — Final itinerary with `ItineraryStop[]`, recommendation, reasoning
+- `CommunityAnswer` / `CommunityQueryResult` — Community Q&A models
+- `CouncilStatement` / `CouncilVerdict` — Council deliberation models
+
+---
+
+## 🎨 A2UI Protocol
+
+The **Agent-to-UI (A2UI)** protocol decouples the agent pipeline from the frontend:
+
+1. **Server** pushes a component tree (JSON) defining the UI structure
+2. **Server** pushes data model patches as agent results arrive
+3. **Frontend** renders the tree with a generic `Renderer` component
+4. **Decorators** layer domain-specific presentation (animations, maps) on top
+
+This allows the same agent pipeline to power different frontends (web, mobile, voice) without changing agent code.
+
+---
+
+## 🌐 Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `GOOGLE_API_KEY` | Google Gemini API key | (required) |
+| `GOOGLE_GENAI_USE_VERTEXAI` | Use Vertex AI instead of AI Studio | `FALSE` |
+| `NEXT_PUBLIC_GATEWAY_WS` | WebSocket URL for frontend | `ws://127.0.0.1:8080/ws/explore/a2ui` |
+
+---
+
+## 📜 License
+
+This project is part of an academic research initiative on multi-agent systems for smart city applications.
+
+---
+
+<p align="center">
+  <strong>🏯 台南・中西區・數位土地公 🏯</strong><br/>
+  <em>Built with Google ADK · A2A Protocol · Gemini · Next.js</em>
+</p>
