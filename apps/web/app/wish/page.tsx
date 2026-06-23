@@ -9,6 +9,7 @@ import { setAtPointer, getAtPointer } from "@/lib/a2ui/pointer";
 import { SurfaceState, A2uiMessage } from "@/lib/a2ui/types";
 import { IncenseBackground } from "@/components/theater/IncenseBackground";
 import { BlessingBloom } from "@/components/theater/BlessingBloom";
+import { WishLocationPicker } from "@/components/WishLocationPicker";
 import { TempleNav } from "@/components/TempleNav";
 import { wishDemo } from "@/lib/transcript/wishDemo";
 
@@ -70,6 +71,11 @@ function WishLive() {
   const wsRef = useRef<WebSocket | null>(null);
   const stateRef = useRef<SurfaceState>(state);
   const terminalRef = useRef(false);
+  const pickerLatRef = useRef<number>(DEFAULT_LAT);
+  const pickerLngRef = useRef<number>(DEFAULT_LNG);
+  const [pickerLat, setPickerLat] = useState<number>(DEFAULT_LAT);
+  const [pickerLng, setPickerLng] = useState<number>(DEFAULT_LNG);
+  const locationReady = useRef(false);
 
   useEffect(() => {
     stateRef.current = state;
@@ -130,17 +136,27 @@ function WishLive() {
     };
   }, []);
 
-  const onEvent = useCallback(async (name: string, context: EventContext) => {
+  useEffect(() => {
+    if (locationReady.current) return;
+    getLatLng().then(({ lat, lng }) => {
+      locationReady.current = true;
+      setPickerLat(lat);
+      setPickerLng(lng);
+      pickerLatRef.current = lat;
+      pickerLngRef.current = lng;
+    });
+  }, []);
+
+  const onEvent = useCallback((name: string, context: EventContext) => {
     if (name !== "submit_wish") return;
     const fromCtx = typeof context.text === "string" ? context.text : null;
     const fromModel = getAtPointer(stateRef.current.dataModel, "/wish/text");
     const wishText = (fromCtx ?? (typeof fromModel === "string" ? fromModel : "")) || "";
     if (!wishText.trim()) return;
 
-    const { lat, lng } = await getLatLng();
     const ws = wsRef.current;
     if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({ wish_text: wishText, lat, lng }));
+      ws.send(JSON.stringify({ wish_text: wishText, lat: pickerLatRef.current, lng: pickerLngRef.current }));
       setConn("submitted");
     }
   }, []);
@@ -189,12 +205,34 @@ function WishLive() {
           ) : null}
         </div>
       ) : (
-        <Renderer
-          state={state}
-          onEvent={onEvent}
-          onDataModelChange={onDataModelChange}
-          decorate={decorate}
-        />
+        <>
+          {conn === "open" && (
+            <div style={{ marginBottom: "1rem" }}>
+              <p
+                className="a2-text a2-text--caption"
+                style={{ marginBottom: "0.4rem" }}
+              >
+                許願地點（可拖動圖釘或點擊地圖調整）
+              </p>
+              <WishLocationPicker
+                lat={pickerLat}
+                lng={pickerLng}
+                onChange={(lat, lng) => {
+                  setPickerLat(lat);
+                  setPickerLng(lng);
+                  pickerLatRef.current = lat;
+                  pickerLngRef.current = lng;
+                }}
+              />
+            </div>
+          )}
+          <Renderer
+            state={state}
+            onEvent={onEvent}
+            onDataModelChange={onDataModelChange}
+            decorate={decorate}
+          />
+        </>
       )}
 
       {!offline && conn === "connecting" && state.surfaceId === null ? (
