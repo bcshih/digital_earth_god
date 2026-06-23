@@ -5,6 +5,10 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  NEXT_PUBLIC_GATEWAY_WS          = "wss://digital-earth-god-backend-production.up.railway.app/ws/explore/a2ui"
+  NEXT_PUBLIC_GATEWAY_WS_COMMUNITY = "wss://digital-earth-god-backend-production.up.railway.app/ws/ask/a2ui"
+  NEXT_PUBLIC_GATEWAY_WS_COUNCIL   = "wss://digital-earth-god-backend-production.up.railway.app/ws/council/a2ui"
+  NEXT_PUBLIC_GATEWAY_HTTP         = "https://digital-earth-god-backend-production.up.railway.app"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
@@ -13,8 +17,3 @@
 # Next.js App Router routes are handled by the plugin above.
 # Add any custom redirects here if needed.
 
-# ── Environment variables (set in Netlify dashboard — not committed here) ─────
-# NEXT_PUBLIC_GATEWAY_WS          = wss://<your-backend>/ws/explore/a2ui
-# NEXT_PUBLIC_GATEWAY_WS_COMMUNITY = wss://<your-backend>/ws/ask/a2ui
-# NEXT_PUBLIC_GATEWAY_WS_COUNCIL   = wss://<your-backend>/ws/council/a2ui
-# NEXT_PUBLIC_GATEWAY_HTTP         = https://<your-backend>
