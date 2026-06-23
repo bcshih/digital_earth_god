@@ -1,5 +1,8 @@
+import os
 import sys
 from pathlib import Path
+
+import pytest
 
 _REPO = Path(__file__).resolve().parents[1]
 for _p in (_REPO, _REPO / "agents"):
@@ -7,7 +10,14 @@ for _p in (_REPO, _REPO / "agents"):
         sys.path.insert(0, str(_p))
 
 from dijizhu.agent import create_community_scout, create_community_agent
-from deg.seed.loader import LiAgentData, Metadata, PoiListProperty
+from deg.seed.loader import LiAgentData, Metadata
+
+
+def _require_api_key() -> None:
+    key = os.environ.get("GOOGLE_API_KEY", "")
+    if not key or key == "paste_your_real_key_here":
+        pytest.skip("GOOGLE_API_KEY not set — skipping integration test")
+
 
 def _dummy_li(street_id: str = "wutiaogang") -> LiAgentData:
     return LiAgentData(
@@ -24,14 +34,19 @@ def _dummy_li(street_id: str = "wutiaogang") -> LiAgentData:
         },
     )
 
+@pytest.mark.integration
 def test_create_community_scout_returns_llm_agent():
+    _require_api_key()
     from google.adk.agents import LlmAgent
     agent = create_community_scout("wutiaogang", "五條港里", "street_wutiaogang_node", _dummy_li())
     assert isinstance(agent, LlmAgent)
     assert "wutiaogang" in agent.name
     assert "普濟殿元宵花燈展" in agent.instruction
 
+
+@pytest.mark.integration
 def test_create_community_agent_returns_llm_agent():
+    _require_api_key()
     from google.adk.agents import LlmAgent
     agent = create_community_agent("wutiaogang", "五條港里", "street_wutiaogang_node", _dummy_li())
     assert isinstance(agent, LlmAgent)
