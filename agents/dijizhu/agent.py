@@ -21,7 +21,7 @@ load_dotenv(_REPO_ROOT / ".env")
 
 from typing import Union
 from google.adk.agents import LlmAgent  # noqa: E402
-from deg.schemas import BiddingProposal, DebateMessage, ScoutResult  # noqa: E402
+from deg.schemas import BiddingProposal, CommunityAnswer, DebateMessage, ScoutResult  # noqa: E402
 from deg.seed.loader import load_agents, LiAgentData  # noqa: E402
 
 _MODEL = "gemini-3.1-flash-lite"
@@ -146,6 +146,115 @@ def create_scout(
         description="地基主前哨，負責極速評估意圖吻合度",
         instruction=instruction,
         output_schema=ScoutResult,
+    )
+
+
+def create_community_scout(
+    street_id: str,
+    street_name: str,
+    agent_id: str,
+    li_data: LiAgentData | None = None,
+) -> LlmAgent:
+    """Lightweight scout: evaluates whether this li's activities/opinions answer the community question."""
+    if li_data is None:
+        agents = load_agents()
+        for a in agents:
+            if a.id.endswith(street_id.capitalize()) or a.id.endswith(street_id):
+                li_data = a
+                break
+        else:
+            raise ValueError(f"Agent data for {street_id} not found.")
+
+    activities = []
+    if li_data.layer_2_dynamic_activities and "value" in li_data.layer_2_dynamic_activities:
+        activities = li_data.layer_2_dynamic_activities["value"]
+    opinions = []
+    if li_data.layer_4_citizen_opinions and "value" in li_data.layer_4_citizen_opinions:
+        opinions = li_data.layer_4_citizen_opinions["value"]
+
+    activities_json = json.dumps(activities, ensure_ascii=False)
+    opinions_json = json.dumps(opinions, ensure_ascii=False)
+
+    instruction = f"""你是「{street_name}」的地基主前哨 (agent_id: {agent_id})。
+
+這是一個快速舉手階段。根據使用者的問題，以及你轄區內的：
+
+【動態活動（layer_2）】
+{activities_json}
+
+【市民意見/通報（layer_4）】
+{opinions_json}
+
+判斷你的轄區是否有能回答這個問題的資料。
+請只給出 0 到 10 的 confidence_score（0 分 = 完全無關，10 分 = 有直接相關資料），以及一句話說明 reason。
+回傳必須是 ScoutResult JSON 格式。"""
+
+    return LlmAgent(
+        name=f"dijizhu_community_scout_{street_id}",
+        model=_MODEL,
+        description="地基主社區前哨，評估能否回答社區問題",
+        instruction=instruction,
+        output_schema=ScoutResult,
+    )
+
+
+def create_community_agent(
+    street_id: str,
+    street_name: str,
+    agent_id: str,
+    li_data: LiAgentData | None = None,
+) -> LlmAgent:
+    """Community responder: answers a community question using layer_2 + layer_4 data."""
+    if li_data is None:
+        agents = load_agents()
+        for a in agents:
+            if a.id.endswith(street_id.capitalize()) or a.id.endswith(street_id):
+                li_data = a
+                break
+        else:
+            raise ValueError(f"Agent data for {street_id} not found.")
+
+    activities = []
+    if li_data.layer_2_dynamic_activities and "value" in li_data.layer_2_dynamic_activities:
+        activities = li_data.layer_2_dynamic_activities["value"]
+    opinions = []
+    if li_data.layer_4_citizen_opinions and "value" in li_data.layer_4_citizen_opinions:
+        opinions = li_data.layer_4_citizen_opinions["value"]
+
+    activities_json = json.dumps(activities, ensure_ascii=False, indent=2)
+    opinions_json = json.dumps(opinions, ensure_ascii=False, indent=2)
+
+    instruction = f"""你是「{street_name}」的地基主 (agent_id: {agent_id})，守護這條街道的神明管理員。
+
+━━━━━━ 轄區社區資料庫（已預載） ━━━━━━
+
+【動態活動（近期活動、展覽、攤販等）】
+{activities_json}
+
+【市民意見與通報（居民反映的問題與狀態）】
+{opinions_json}
+
+━━━━━━ 任務 ━━━━━━
+
+收到一個社區問題後，根據上述資料回答。
+- 如果有相關資料，明確引用 title / content 作為依據，並列入 sources。
+- 如果資料與問題完全無關，answer_text 說「{street_name}目前無相關資訊」，sources 留空。
+- 語氣接地氣、有神明威嚴，展現對{street_name}的了解。
+
+⚠️ 回傳必須是 CommunityAnswer JSON：
+{{
+  "agent_id": "{agent_id}",
+  "street_name": "{street_name}",
+  "answer_text": "...",
+  "sources": ["來源標題1", ...]
+}}"""
+
+    return LlmAgent(
+        name=f"dijizhu_community_{street_id}",
+        model=_MODEL,
+        description=f"台南{street_name}的地基主，回答社區問題",
+        instruction=instruction,
+        output_schema=CommunityAnswer,
     )
 
 # Module-level root_agent required by `adk run dijizhu`.

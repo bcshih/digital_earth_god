@@ -271,3 +271,91 @@ def blessing_components() -> list[dict[str, Any]]:
         {"id": "blessing-cat", "component": "Text", "text": {"path": "/blessing/category"},
          "variant": "caption"},
     ]
+
+
+# ── Community Ask surface ────────────────────────────────────────────────────
+
+from deg.schemas import CommunityAnswer, CommunityQueryResult  # noqa: E402
+
+COMMUNITY_SURFACE_ID = "community"
+
+
+def community_input_components() -> list[dict[str, Any]]:
+    return [
+        {"id": "root", "component": "Column",
+         "children": ["community-title", "community-sub", "community-field", "community-submit"]},
+        {"id": "community-title", "component": "Text",
+         "text": "問土地公", "variant": "h1"},
+        {"id": "community-sub", "component": "Text",
+         "text": "有什麼社區大小事，都可以問土地公。活動、修繕、抱怨——神明一律收。",
+         "variant": "caption"},
+        {"id": "community-field", "component": "TextField",
+         "label": "你想問什麼？（例如：最近有什麼活動？哪裡在施工？）",
+         "value": {"path": "/community/question"}, "textFieldType": "text"},
+        {"id": "community-submit-label", "component": "Text", "text": "叩問神明"},
+        {"id": "community-submit", "component": "Button", "child": "community-submit-label",
+         "variant": "primary",
+         "checks": [{"condition": {"call": "required",
+                                   "args": {"value": {"path": "/community/question"}}},
+                     "message": "請先輸入你的問題"}],
+         "action": {"event": {"name": "submit_community",
+                              "context": {"question": {"path": "/community/question"}}}}},
+    ]
+
+
+def community_negotiation_components() -> list[dict[str, Any]]:
+    """Stable skeleton after question submitted: question card + answer list + summary placeholder."""
+    return [
+        {"id": "root", "component": "Column",
+         "children": ["community-q-card", "answers-row", "community-summary-card"]},
+        # — question recap —
+        {"id": "community-q-card", "component": "Card", "child": "community-q-body"},
+        {"id": "community-q-body", "component": "Column",
+         "children": ["community-q-title", "community-q-text"]},
+        {"id": "community-q-title", "component": "Text",
+         "text": "土地公正在問各地神明…", "variant": "h2"},
+        {"id": "community-q-text", "component": "Text", "text": {"path": "/community/question"}},
+        # — answers (data-bound List) —
+        {"id": "answers-row", "component": "List",
+         "children": {"path": "/answers", "componentId": "answer-card"}},
+        {"id": "answer-card", "component": "Card", "child": "answer-card-body"},
+        {"id": "answer-card-body", "component": "Column",
+         "children": ["answer-card-street", "answer-card-text", "answer-card-sources"]},
+        {"id": "answer-card-street", "component": "Text",
+         "text": {"path": "street_name"}, "variant": "h2"},
+        {"id": "answer-card-text", "component": "Text", "text": {"path": "answer_text"}},
+        {"id": "answer-card-sources", "component": "Text",
+         "text": {"path": "sources_label"}, "variant": "caption"},
+        # — summary placeholder —
+        {"id": "community-summary-card", "component": "Card", "child": "community-summary-wait"},
+        {"id": "community-summary-wait", "component": "Text",
+         "text": "靜待土地公彙整神諭…", "variant": "caption"},
+    ]
+
+
+def community_answer_data(answer: CommunityAnswer) -> dict[str, Any]:
+    sources_label = "來源：" + "、".join(answer.sources) if answer.sources else ""
+    return {
+        "agent_id": answer.agent_id,
+        "street_name": answer.street_name,
+        "answer_text": answer.answer_text,
+        "sources": answer.sources,
+        "sources_label": sources_label,
+    }
+
+
+def community_summary_components() -> list[dict[str, Any]]:
+    """Redefine community-summary-card in place."""
+    return [
+        {"id": "community-summary-card", "component": "Card", "child": "community-summary-body"},
+        {"id": "community-summary-body", "component": "Column",
+         "children": ["community-summary-title", "community-summary-text"]},
+        {"id": "community-summary-title", "component": "Text",
+         "text": "土地公的神諭總結", "variant": "h1"},
+        {"id": "community-summary-text", "component": "Text",
+         "text": {"path": "/community/tudigong_summary"}, "variant": "h2"},
+    ]
+
+
+def community_summary_data(result: CommunityQueryResult) -> dict[str, Any]:
+    return {"tudigong_summary": result.tudigong_summary}
