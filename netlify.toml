@@ -1,0 +1,20 @@
+[build]
+  base    = "apps/web"
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# ── Redirect rules ────────────────────────────────────────────────────────────
+# Next.js App Router routes are handled by the plugin above.
+# Add any custom redirects here if needed.
+
+# ── Environment variables (set in Netlify dashboard — not committed here) ─────
+# NEXT_PUBLIC_GATEWAY_WS          = wss://<your-backend>/ws/explore/a2ui
+# NEXT_PUBLIC_GATEWAY_WS_COMMUNITY = wss://<your-backend>/ws/ask/a2ui
+# NEXT_PUBLIC_GATEWAY_WS_COUNCIL   = wss://<your-backend>/ws/council/a2ui
+# NEXT_PUBLIC_GATEWAY_HTTP         = https://<your-backend>
