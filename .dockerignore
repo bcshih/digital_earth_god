@@ -1,0 +1,24 @@
+.env
+.env.local
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Frontend — not needed in backend container
+apps/web/
+node_modules/
+
+# Git / docs
+.git/
+docs/
+*.md
+tests/
+scripts/
+
+# Data store (ephemeral in cloud)
+data/warmdata.db
+*.db
