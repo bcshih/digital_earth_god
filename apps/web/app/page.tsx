@@ -12,6 +12,7 @@ import { Jiaobei } from "@/components/theater/Jiaobei";
 import { ResultMap, MapItineraryStop } from "@/components/ResultMap";
 import { TempleNav } from "@/components/TempleNav";
 import { ChatBubble } from "@/components/ChatBubble";
+import { NegotiationBoard } from "@/components/NegotiationBoard";
 
 const WS_URL =
   process.env.NEXT_PUBLIC_GATEWAY_WS ?? "ws://127.0.0.1:8080/ws/explore/a2ui";
@@ -209,15 +210,10 @@ export default function Home() {
   // layers presentation onto two well-known ids; everything else passes through.
   const decorate = useCallback<Decorator>(
     ({ id, scope, element }) => {
-      // 地基主 bid cards: stamp each in like a vermillion seal, staggered by index.
-      if (id === "bid-card") {
-        const m = scope.match(/\/bids\/(\d+)$/);
-        const index = m ? Number(m[1]) : 0;
-        return (
-          <SealStamp key={`seal@${scope}`} index={index}>
-            {element}
-          </SealStamp>
-        );
+      if (id === "negotiation-board") {
+        const bids = Array.isArray(state?.dataModel?.bids) ? state.dataModel.bids : [];
+        const debates = Array.isArray(state?.dataModel?.debates) ? state.dataModel.debates : [];
+        return <NegotiationBoard key="negotiation-board" bids={bids} debates={debates} />;
       }
       if (id === "scout-card") {
         return <ChatBubble key={`scout@${scope}`}>{element}</ChatBubble>;
@@ -241,7 +237,7 @@ export default function Home() {
       }
       return null;
     },
-    [verdictReady, itineraryByDay],
+    [verdictReady, itineraryByDay, state],
   );
 
   const offline = conn === "failed";

@@ -87,14 +87,14 @@ lat: {centroid["lat"]}, lng: {centroid["lng"]}
    若 wishlist 中有指名地點，優先納入並在 reasoning 中提及。
    若 constraints 為空，所有 POI 均可候選。
 3. 根據 POI 符合度、街廓特色、環境情報、社群情報綜合評估，給出 fitness_score（0.0~10.0）。
-4. 用繁體中文寫下投標理由 reasoning（至少 2 句），展現護航在地的自豪與性格：{li_data.metadata.personality}
+4. 用繁體中文寫下投標理由 reasoning（必須精簡在 50 字以內，直接切入重點，不需要過度客套的招呼語），展現護航在地的自豪與性格：{li_data.metadata.personality}
 回傳：必須回傳完整的 BiddingProposal JSON。
 
 若對話紀錄中【已經有其他地基主的 BiddingProposal 或推薦】：代表這是第二輪辯論。
 請按下列步驟辯論：
 1. 檢視其他里提出的景點與理由。
 2. 提出批評、反駁，或者說明你的景點如何跟他們的景點完美串聯。
-3. 強烈表達你的辯論觀點（debate_text）。
+3. 強烈表達你的辯論觀點（debate_text），必須精簡在 50 字以內，直接切入重點，不需廢話。
 回傳：必須回傳 DebateMessage JSON。
 
 ━━━━━━ 你的性格 ━━━━━━

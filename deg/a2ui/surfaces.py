@@ -130,7 +130,7 @@ def negotiation_components() -> list[dict[str, Any]]:
     """
     return [
         {"id": "root", "component": "Column",
-         "children": ["broadcast-card", "scouts-row", "bids-row", "debates-row", "verdict-card"]},
+         "children": ["broadcast-card", "scouts-row", "negotiation-board", "verdict-card"]},
         # — broadcast (招標令) —
         {"id": "broadcast-card", "component": "Card", "child": "broadcast-body"},
         {"id": "broadcast-body", "component": "Column",
@@ -148,25 +148,9 @@ def negotiation_components() -> list[dict[str, Any]]:
          "text": {"path": "street"}, "variant": "h2"},
         {"id": "scout-card-score", "component": "Text", "text": {"path": "confidence_score"}, "variant": "score"},
         {"id": "scout-card-reason", "component": "Text", "text": {"path": "reason"}},
-        # — bids (地基主投標) as a data-bound List + card template —
-        {"id": "bids-row", "component": "List",
-         "children": {"path": "/bids", "componentId": "bid-card"}},
-        {"id": "bid-card", "component": "Card", "child": "bid-card-body"},
-        {"id": "bid-card-body", "component": "Column",
-         "children": ["bid-card-street", "bid-card-score", "bid-card-reason"]},
-        {"id": "bid-card-street", "component": "Text",
-         "text": {"path": "street"}, "variant": "h2"},
-        {"id": "bid-card-score", "component": "Text", "text": {"path": "fitness_score"}},
-        {"id": "bid-card-reason", "component": "Text", "text": {"path": "reasoning"}},
-        # — debates (地基主辯論) as a data-bound List + card template —
-        {"id": "debates-row", "component": "List",
-         "children": {"path": "/debates", "componentId": "debate-card"}},
-        {"id": "debate-card", "component": "Card", "child": "debate-card-body"},
-        {"id": "debate-card-body", "component": "Column",
-         "children": ["debate-card-street", "debate-card-text"]},
-        {"id": "debate-card-street", "component": "Text",
-         "text": {"path": "street"}, "variant": "h2"},
-        {"id": "debate-card-text", "component": "Text", "text": {"path": "debate_text"}},
+        # — negotiation-board placeholder —
+        {"id": "negotiation-board", "component": "Card", "child": "negotiation-placeholder"},
+        {"id": "negotiation-placeholder", "component": "Text", "text": "正在等候地基主投標..."},
         # — verdict placeholder (filled in place by judgment_components) —
         {"id": "verdict-card", "component": "Card", "child": "verdict-wait"},
         {"id": "verdict-wait", "component": "Text",
