@@ -11,10 +11,11 @@ const HALLS: { key: string; href: string; label: string; glyph: string }[] = [
   { key: "explore", href: "/", label: "探索", glyph: "探" },
   { key: "wish", href: "/wish", label: "許願", glyph: "願" },
   { key: "ask", href: "/ask", label: "問土地公", glyph: "問" },
+  { key: "council", href: "/council", label: "里長大會", glyph: "會" },
   { key: "dashboard", href: "/dashboard", label: "儀表板", glyph: "卦" },
 ];
 
-export function TempleNav({ active }: { active: "explore" | "wish" | "ask" | "dashboard" }) {
+export function TempleNav({ active }: { active: "explore" | "wish" | "ask" | "council" | "dashboard" }) {
   return (
     <nav className="temple-nav" aria-label="土地公廟 · 三殿">
       <span className="temple-nav__plaque" aria-hidden>
