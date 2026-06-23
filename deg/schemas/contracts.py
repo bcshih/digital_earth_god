@@ -144,3 +144,53 @@ class WuyingOutput(BaseModel):
     question: str | None = None                                   # clarification question (when status=clarifying)
     collected: TravelContext = Field(default_factory=TravelContext)  # updated after each round
     task_broadcast: TaskBroadcast | None = None                   # populated when status=ready
+
+
+class CommunityAnswer(BaseModel):
+    """One 地基主's answer to a community question."""
+
+    agent_id: str
+    street_name: str
+    answer_text: str
+    sources: list[str] = Field(default_factory=list)
+
+
+class CommunityQueryResult(BaseModel):
+    """土地公's consolidated answer to a community query."""
+
+    question: str
+    answers: list[CommunityAnswer] = Field(default_factory=list)
+    tudigong_summary: str
+
+
+# ── 里長大會 (Council) — multi-里 discussion ──────────────────────────────────
+
+Stance = Literal["support", "oppose", "question", "inform", "silent"]
+
+
+class CouncilStatement(BaseModel):
+    """One 地基主's turn in the 里長大會 discussion."""
+
+    agent_id: str
+    street_name: str
+    round: int = 1
+    stance: Stance = "inform"
+    responds_to: str | None = None  # agent_id this statement reacts to, or None
+    statement_text: str = ""
+    sources: list[str] = Field(default_factory=list)
+
+
+class CouncilAlignment(BaseModel):
+    """One 里's final stance, used to paint the consensus map."""
+
+    agent_id: str
+    street_name: str
+    final_stance: Stance
+
+
+class CouncilVerdict(BaseModel):
+    """土地公's closing 裁示 for a 里長大會 discussion."""
+
+    topic: str
+    tudigong_summary: str
+    alignments: list[CouncilAlignment] = Field(default_factory=list)

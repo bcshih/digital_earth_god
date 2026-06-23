@@ -20,7 +20,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from deg.schemas import BiddingProposal, DebateMessage, JudgmentResult, Poi, TaskBroadcast
+from deg.schemas import BiddingProposal, DebateMessage, JudgmentResult, Poi, TaskBroadcast, ScoutResult
 
 SURFACE_ID = "explore"
 
@@ -109,6 +109,13 @@ def broadcast_data(tb: TaskBroadcast) -> dict[str, Any]:
         "lng": tb.user_location.lng,
     }
 
+def scout_data(result: ScoutResult) -> dict[str, Any]:
+    return {
+        "agent_id": result.agent_id,
+        "street": _STREET_LABELS.get(result.agent_id, result.agent_id),
+        "confidence_score": f"{result.confidence_score}/10",
+        "reason": result.reason,
+    }
 
 # ── Negotiation skeleton (broadcast + bids List template + verdict placeholder) ─
 
@@ -123,7 +130,7 @@ def negotiation_components() -> list[dict[str, Any]]:
     """
     return [
         {"id": "root", "component": "Column",
-         "children": ["broadcast-card", "bids-row", "debates-row", "verdict-card"]},
+         "children": ["broadcast-card", "scouts-row", "bids-row", "debates-row", "verdict-card"]},
         # — broadcast (招標令) —
         {"id": "broadcast-card", "component": "Card", "child": "broadcast-body"},
         {"id": "broadcast-body", "component": "Column",
@@ -131,6 +138,16 @@ def negotiation_components() -> list[dict[str, Any]]:
         {"id": "broadcast-title", "component": "Text",
          "text": "土地公已發出招標令，地基主們各顯神通", "variant": "h2"},
         {"id": "broadcast-intent", "component": "Text", "text": {"path": "/broadcast/intent"}},
+        # — scouts (前哨回報) —
+        {"id": "scouts-row", "component": "List",
+         "children": {"path": "/scouts", "componentId": "scout-card"}},
+        {"id": "scout-card", "component": "Card", "child": "scout-card-body"},
+        {"id": "scout-card-body", "component": "Column",
+         "children": ["scout-card-street", "scout-card-score", "scout-card-reason"]},
+        {"id": "scout-card-street", "component": "Text",
+         "text": {"path": "street"}, "variant": "h2"},
+        {"id": "scout-card-score", "component": "Text", "text": {"path": "confidence_score"}, "variant": "score"},
+        {"id": "scout-card-reason", "component": "Text", "text": {"path": "reason"}},
         # — bids (地基主投標) as a data-bound List + card template —
         {"id": "bids-row", "component": "List",
          "children": {"path": "/bids", "componentId": "bid-card"}},
@@ -271,3 +288,241 @@ def blessing_components() -> list[dict[str, Any]]:
         {"id": "blessing-cat", "component": "Text", "text": {"path": "/blessing/category"},
          "variant": "caption"},
     ]
+
+
+# ── Community Ask surface ────────────────────────────────────────────────────
+
+from deg.schemas import CommunityAnswer, CommunityQueryResult  # noqa: E402
+
+COMMUNITY_SURFACE_ID = "community"
+
+
+def community_input_components() -> list[dict[str, Any]]:
+    return [
+        {"id": "root", "component": "Column",
+         "children": ["community-title", "community-sub", "community-field", "community-submit"]},
+        {"id": "community-title", "component": "Text",
+         "text": "問土地公", "variant": "h1"},
+        {"id": "community-sub", "component": "Text",
+         "text": "有什麼社區大小事，都可以問土地公。活動、修繕、抱怨——神明一律收。",
+         "variant": "caption"},
+        {"id": "community-field", "component": "TextField",
+         "label": "你想問什麼？（例如：最近有什麼活動？哪裡在施工？）",
+         "value": {"path": "/community/question"}, "textFieldType": "text"},
+        {"id": "community-submit-label", "component": "Text", "text": "叩問神明"},
+        {"id": "community-submit", "component": "Button", "child": "community-submit-label",
+         "variant": "primary",
+         "checks": [{"condition": {"call": "required",
+                                   "args": {"value": {"path": "/community/question"}}},
+                     "message": "請先輸入你的問題"}],
+         "action": {"event": {"name": "submit_community",
+                              "context": {"question": {"path": "/community/question"}}}}},
+    ]
+
+
+def community_negotiation_components() -> list[dict[str, Any]]:
+    """Stable skeleton after question submitted: question card + answer list + summary placeholder."""
+    return [
+        {"id": "root", "component": "Column",
+         "children": ["community-q-card", "scouts-row", "answers-row", "community-summary-card"]},
+        # — question recap —
+        {"id": "community-q-card", "component": "Card", "child": "community-q-body"},
+        {"id": "community-q-body", "component": "Column",
+         "children": ["community-q-title", "community-q-text"]},
+        {"id": "community-q-title", "component": "Text",
+         "text": "土地公正在問各地神明…", "variant": "h2"},
+        {"id": "community-q-text", "component": "Text", "text": {"path": "/community/question"}},
+        # — scouts (前哨回報) —
+        {"id": "scouts-row", "component": "List",
+         "children": {"path": "/scouts", "componentId": "scout-card"}},
+        {"id": "scout-card", "component": "Card", "child": "scout-card-body"},
+        {"id": "scout-card-body", "component": "Column",
+         "children": ["scout-card-street", "scout-card-score", "scout-card-reason"]},
+        {"id": "scout-card-street", "component": "Text",
+         "text": {"path": "street"}, "variant": "h2"},
+        {"id": "scout-card-score", "component": "Text", "text": {"path": "confidence_score"}, "variant": "score"},
+        {"id": "scout-card-reason", "component": "Text", "text": {"path": "reason"}},
+        # — answers (data-bound List) —
+        {"id": "answers-row", "component": "List",
+         "children": {"path": "/answers", "componentId": "answer-card"}},
+        {"id": "answer-card", "component": "Card", "child": "answer-card-body"},
+        {"id": "answer-card-body", "component": "Column",
+         "children": ["answer-card-street", "answer-card-text", "answer-card-sources"]},
+        {"id": "answer-card-street", "component": "Text",
+         "text": {"path": "street_name"}, "variant": "h2"},
+        {"id": "answer-card-text", "component": "Text", "text": {"path": "answer_text"}},
+        {"id": "answer-card-sources", "component": "Text",
+         "text": {"path": "sources_label"}, "variant": "caption"},
+        # — summary placeholder —
+        {"id": "community-summary-card", "component": "Card", "child": "community-summary-wait"},
+        {"id": "community-summary-wait", "component": "Text",
+         "text": "靜待土地公彙整神諭…", "variant": "caption"},
+    ]
+
+
+def community_answer_data(answer: CommunityAnswer) -> dict[str, Any]:
+    sources_label = "來源：" + "、".join(answer.sources) if answer.sources else ""
+    return {
+        "agent_id": answer.agent_id,
+        "street_name": answer.street_name,
+        "answer_text": answer.answer_text,
+        "sources": answer.sources,
+        "sources_label": sources_label,
+    }
+
+
+def community_summary_components() -> list[dict[str, Any]]:
+    """Redefine community-summary-card in place."""
+    return [
+        {"id": "community-summary-card", "component": "Card", "child": "community-summary-body"},
+        {"id": "community-summary-body", "component": "Column",
+         "children": ["community-summary-title", "community-summary-text"]},
+        {"id": "community-summary-title", "component": "Text",
+         "text": "土地公的神諭總結", "variant": "h1"},
+        {"id": "community-summary-text", "component": "Text",
+         "text": {"path": "/community/tudigong_summary"}, "variant": "h2"},
+    ]
+
+
+def community_summary_data(result: CommunityQueryResult) -> dict[str, Any]:
+    return {"tudigong_summary": result.tudigong_summary}
+
+
+# ── 里長大會 (Council) surface ────────────────────────────────────────────────
+
+from deg.schemas import CouncilStatement, CouncilVerdict  # noqa: E402
+from deg.seed.loader import LiAgentData  # noqa: E402
+
+COUNCIL_SURFACE_ID = "council"
+
+_STANCE_LABELS = {
+    "support": "附議",
+    "oppose": "反駁",
+    "question": "提問",
+    "inform": "補充",
+    "silent": "",
+}
+
+
+def council_input_components() -> list[dict[str, Any]]:
+    return [
+        {"id": "root", "component": "Column",
+         "children": ["council-title", "council-sub", "council-field", "council-submit"]},
+        {"id": "council-title", "component": "Text",
+         "text": "里長大會", "variant": "h1"},
+        {"id": "council-sub", "component": "Text",
+         "text": "丟一個議題，讓中西區相關的里坐下來吵——啊不是，是好好討論。土地公當主席。",
+         "variant": "caption"},
+        {"id": "council-field", "component": "TextField",
+         "label": "想開什麼大會？（例如：中西區要不要合辦一個共同的夜市活動？）",
+         "value": {"path": "/council/topic"}, "textFieldType": "text"},
+        {"id": "council-submit-label", "component": "Text", "text": "召開大會"},
+        {"id": "council-submit", "component": "Button", "child": "council-submit-label",
+         "variant": "primary",
+         "checks": [{"condition": {"call": "required",
+                                   "args": {"value": {"path": "/council/topic"}}},
+                     "message": "請先輸入議題"}],
+         "action": {"event": {"name": "submit_council",
+                              "context": {"topic": {"path": "/council/topic"}}}}},
+    ]
+
+
+def council_assembly_components() -> list[dict[str, Any]]:
+    """Live layout: topic recap + reactive map + transcript list + verdict placeholder."""
+    return [
+        {"id": "root", "component": "Column",
+         "children": ["council-topic-card", "council-map", "transcript-row", "council-verdict-card"]},
+        # — topic recap —
+        {"id": "council-topic-card", "component": "Card", "child": "council-topic-body"},
+        {"id": "council-topic-body", "component": "Column",
+         "children": ["council-topic-title", "council-topic-text"]},
+        {"id": "council-topic-title", "component": "Text",
+         "text": "里長大會進行中…", "variant": "h2"},
+        {"id": "council-topic-text", "component": "Text", "text": {"path": "/council/topic"}},
+        # — reactive map (page decorate hook replaces this id with <CouncilMap>) —
+        {"id": "council-map", "component": "Text",
+         "text": "展開神界輿圖…", "variant": "caption"},
+        # — transcript (data-bound List) —
+        {"id": "transcript-row", "component": "List",
+         "children": {"path": "/statements", "componentId": "statement-card"}},
+        {"id": "statement-card", "component": "Card", "child": "statement-card-body"},
+        {"id": "statement-card-body", "component": "Column",
+         "children": ["statement-card-head", "statement-card-text", "statement-card-sources"]},
+        {"id": "statement-card-head", "component": "Text",
+         "text": {"path": "head_label"}, "variant": "h2"},
+        {"id": "statement-card-text", "component": "Text", "text": {"path": "statement_text"}},
+        {"id": "statement-card-sources", "component": "Text",
+         "text": {"path": "sources_label"}, "variant": "caption"},
+        # — verdict placeholder —
+        {"id": "council-verdict-card", "component": "Card", "child": "council-verdict-wait"},
+        {"id": "council-verdict-wait", "component": "Text",
+         "text": "靜待土地公裁示…", "variant": "caption"},
+    ]
+
+
+def council_statement_data(s: CouncilStatement) -> dict[str, Any]:
+    """One transcript row. head_label shows street + stance; map reads stance/responds_to."""
+    stance_label = _STANCE_LABELS.get(s.stance, "")
+    head_label = f"{s.street_name}　{stance_label}" if stance_label else s.street_name
+    sources_label = "來源：" + "、".join(s.sources) if s.sources else ""
+    return {
+        "agent_id": s.agent_id,
+        "street_name": s.street_name,
+        "round": s.round,
+        "stance": s.stance,
+        "responds_to": s.responds_to,
+        "statement_text": s.statement_text,
+        "sources": s.sources,
+        "head_label": head_label,
+        "sources_label": sources_label,
+    }
+
+
+def council_boundary_payload(selected_li: list[LiAgentData]) -> list[dict[str, Any]]:
+    """Boundary polygons for the participating 里 — what <CouncilMap> draws.
+
+    NGSI-LD stores coordinates as [lng, lat]; Leaflet wants [lat, lng], so swap.
+    """
+    payload: list[dict[str, Any]] = []
+    for li in selected_li:
+        sb = li.spatial_boundary
+        if not (sb and sb.value and getattr(sb.value, "type", None) == "Polygon"):
+            continue
+        ring = sb.value.coordinates[0]
+        polygon = [[pt[1], pt[0]] for pt in ring]  # [lng,lat] -> [lat,lng]
+        if not polygon:
+            continue
+        avg_lat = sum(p[0] for p in polygon) / len(polygon)
+        avg_lng = sum(p[1] for p in polygon) / len(polygon)
+        street = li.to_street()
+        payload.append({
+            "agent_id": street.agent_id,
+            "street_name": street.name,
+            "centroid": {"lat": avg_lat, "lng": avg_lng},
+            "polygon": polygon,
+        })
+    return payload
+
+
+def council_verdict_components() -> list[dict[str, Any]]:
+    """Redefine council-verdict-card in place with the final 裁示."""
+    return [
+        {"id": "council-verdict-card", "component": "Card", "child": "council-verdict-body"},
+        {"id": "council-verdict-body", "component": "Column",
+         "children": ["council-verdict-title", "council-verdict-text"]},
+        {"id": "council-verdict-title", "component": "Text",
+         "text": "土地公的裁示", "variant": "h1"},
+        {"id": "council-verdict-text", "component": "Text",
+         "text": {"path": "/council/tudigong_summary"}, "variant": "h2"},
+    ]
+
+
+def council_verdict_data(v: CouncilVerdict) -> dict[str, Any]:
+    """Verdict summary + per-里 alignments so the map can recolor to the consensus."""
+    return {
+        "tudigong_summary": v.tudigong_summary,
+        "alignments": [
+            {"agent_id": a.agent_id, "street_name": a.street_name, "final_stance": a.final_stance}
+            for a in v.alignments
+        ],
+    }

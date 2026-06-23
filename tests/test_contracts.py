@@ -158,3 +158,33 @@ def test_judgment_result_serializes_to_json():
     jr2 = JudgmentResult.model_validate_json(raw)
     assert jr2.task_id == "t3"
     assert jr2.recommendation == "海安路藝術氛圍最濃。"
+
+
+# ── CommunityAnswer & CommunityQueryResult ──────────────────────────────────
+
+def test_community_answer_round_trip():
+    from deg.schemas import CommunityAnswer
+    a = CommunityAnswer(
+        agent_id="street_wutiaogang_node",
+        street_name="五條港里",
+        answer_text="普濟殿本週有元宵花燈展，週末人多。",
+        sources=["2026 普濟殿元宵花燈展"],
+    )
+    assert CommunityAnswer.model_validate_json(a.model_dump_json()) == a
+
+
+def test_community_query_result_round_trip():
+    from deg.schemas import CommunityAnswer, CommunityQueryResult
+    r = CommunityQueryResult(
+        question="最近有什麼活動？",
+        answers=[
+            CommunityAnswer(
+                agent_id="street_wutiaogang_node",
+                street_name="五條港里",
+                answer_text="普濟殿元宵花燈展。",
+                sources=["2026 普濟殿元宵花燈展"],
+            )
+        ],
+        tudigong_summary="老人家我查了一輪，這幾個地方要注意…",
+    )
+    assert CommunityQueryResult.model_validate_json(r.model_dump_json()) == r

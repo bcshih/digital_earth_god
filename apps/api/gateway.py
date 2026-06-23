@@ -31,6 +31,8 @@ _PIPELINE_TIMEOUT = 120.0  # seconds per full Contract Net round-trip
 _WISH_TIMEOUT = 60.0
 _PIPELINE_MAX_ATTEMPTS = 5
 _PIPELINE_BACKOFF_CAP = 30  # seconds
+_COUNCIL_MAX_ROUNDS = 3  # 里長大會 discussion rounds (cost cap; early-break on a silent round)
+_COUNCIL_STAGGER = 0.6   # seconds between streaming each statement (搶話 theater)
 
 # Repo root + agents/ on sys.path so agents import cleanly.
 _REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -51,6 +53,11 @@ from pydantic import BaseModel, Field  # noqa: E402
 from deg.schemas import (  # noqa: E402
     BiddingProposal,
     Blessing,
+    CommunityAnswer,
+    CommunityQueryResult,
+    CouncilStatement,
+    CouncilVerdict,
+    DebateMessage,
     JudgmentResult,
     LatLng,
     TaskBroadcast,
@@ -58,8 +65,18 @@ from deg.schemas import (  # noqa: E402
     WishAnalysis,
     WuyingOutput,
 )
-from tudigong.agent import create_dynamic_pipeline, get_random_mood  # noqa: E402
-from dijizhu.agent import create_scout  # noqa: E402
+from tudigong.agent import (  # noqa: E402
+    create_community_judge,
+    create_council_judge,
+    create_dynamic_pipeline,
+    get_random_mood,
+)
+from dijizhu.agent import (  # noqa: E402
+    create_community_agent,
+    create_community_scout,
+    create_council_speaker,
+    create_scout,
+)
 from tudigong.blessing_agent import create_blessing_agent  # noqa: E402
 from wuying.agent import create_wuying  # noqa: E402
 from wuying.wish_agent import create_wish_categorizer  # noqa: E402
@@ -68,11 +85,24 @@ from deg.a2ui import create_surface, update_components, update_data_model  # noq
 from deg.a2ui.surfaces import (  # noqa: E402
     SURFACE_ID,
     WISH_SURFACE_ID,
+    COMMUNITY_SURFACE_ID,
+    COUNCIL_SURFACE_ID,
     bid_data,
     debate_data,
     blessing_components,
     broadcast_data,
     clarification_components,
+    community_answer_data,
+    community_input_components,
+    community_negotiation_components,
+    community_summary_components,
+    community_summary_data,
+    council_assembly_components,
+    council_boundary_payload,
+    council_input_components,
+    council_statement_data,
+    council_verdict_components,
+    council_verdict_data,
     intent_input_components,
     judgment_components,
     judgment_data,
@@ -229,6 +259,8 @@ async def _run_scout_round(
             try:
                 res = ScoutResult.model_validate_json(_extract_json(text))
                 results.append(res)
+                if on_event:
+                    await on_event({"type": "scout_result", "data": res})
             except Exception as e:
                 logger.warning("Scout parsing failed: %s, text: %s", e, text)
                 pass
@@ -250,6 +282,156 @@ async def _run_scout_round(
         
     return [r.agent_id for r in top_agents]
 
+
+
+async def _run_community_scout(
+    session_service: InMemorySessionService,
+    question: str,
+    on_event: EventSink | None = None,
+) -> list[str]:
+    from deg.seed.loader import load_agents
+    from deg.schemas import ScoutResult
+    from google.adk.agents import ParallelAgent
+
+    all_li = load_agents()
+    scouts = []
+    for li in all_li:
+        street = li.to_street()
+        scouts.append(create_community_scout(street.street_id, street.name, street.agent_id, li))
+
+    scout_round = ParallelAgent(name="community_scout_round", sub_agents=scouts)
+    runner = Runner(agent=scout_round, app_name="deg", session_service=session_service)
+    session_id = uuid4().hex
+    await session_service.create_session(app_name="deg", user_id="gateway", session_id=session_id)
+    msg = genai_types.Content(role="user", parts=[genai_types.Part(text=question)])
+
+    results: list[ScoutResult] = []
+    async for event in runner.run_async(user_id="gateway", session_id=session_id, new_message=msg):
+        if event.is_final_response() and event.content and event.content.parts:
+            text = event.content.parts[0].text or ""
+            try:
+                res = ScoutResult.model_validate_json(_extract_json(text))
+                results.append(res)
+                if on_event:
+                    await on_event({"type": "scout_result", "data": res})
+            except Exception as e:
+                logger.warning("Community scout parse failed: %s", e)
+
+    results.sort(key=lambda x: x.confidence_score, reverse=True)
+    top = results[:5]
+    if not top:
+        raise RuntimeError("所有地基主均表示與問題無關。")
+    return [r.agent_id for r in top]
+
+
+async def _run_community_answers(
+    session_service: InMemorySessionService,
+    question: str,
+    selected_agent_ids: list[str],
+) -> list[CommunityAnswer]:
+    from deg.seed.loader import load_agents
+    from google.adk.agents import ParallelAgent
+
+    all_li = {li.to_street().agent_id: li for li in load_agents()}
+    agents = []
+    for agent_id in selected_agent_ids:
+        li = all_li.get(agent_id)
+        if li is None:
+            continue
+        street = li.to_street()
+        agents.append(create_community_agent(street.street_id, street.name, street.agent_id, li))
+
+    if not agents:
+        raise RuntimeError("無可用的地基主回答問題。")
+
+    answer_round = ParallelAgent(name="community_answer_round", sub_agents=agents)
+    runner = Runner(agent=answer_round, app_name="deg", session_service=session_service)
+    session_id = uuid4().hex
+    await session_service.create_session(app_name="deg", user_id="gateway", session_id=session_id)
+    msg = genai_types.Content(role="user", parts=[genai_types.Part(text=question)])
+
+    answers: list[CommunityAnswer] = []
+    async for event in runner.run_async(user_id="gateway", session_id=session_id, new_message=msg):
+        if event.is_final_response() and event.content and event.content.parts:
+            text = event.content.parts[0].text or ""
+            try:
+                answer = CommunityAnswer.model_validate_json(_extract_json(text))
+                answers.append(answer)
+            except Exception as e:
+                logger.warning("Community answer parse failed: %s", e)
+    return answers
+
+
+def _format_council_transcript(statements: list[CouncilStatement]) -> str:
+    if not statements:
+        return "（目前還沒有人發言）"
+    lines = []
+    for s in statements:
+        tag = {"support": "附議", "oppose": "反駁", "question": "提問", "inform": "補充"}.get(s.stance, "")
+        ref = f"（回應 {s.responds_to}）" if s.responds_to else ""
+        lines.append(f"[第{s.round}輪｜{s.street_name}｜{tag}{ref}] {s.statement_text}")
+    return "\n".join(lines)
+
+
+async def _run_council_discussion(
+    session_service: InMemorySessionService,
+    topic: str,
+    selected_agent_ids: list[str],
+    on_statement: Callable[[CouncilStatement], Awaitable[None]] | None = None,
+) -> list[CouncilStatement]:
+    """Free-for-all 里長大會: each round every selected 里 sees the running transcript.
+
+    Within a round speakers are parallel; across rounds they see prior turns.
+    Non-silent statements are streamed via on_statement. Stops early if a whole
+    round is silent.
+    """
+    from deg.seed.loader import load_agents
+    from google.adk.agents import ParallelAgent
+
+    all_li = {li.to_street().agent_id: li for li in load_agents()}
+    resolved = [(aid, all_li[aid]) for aid in selected_agent_ids if aid in all_li]
+    if not resolved:
+        raise RuntimeError("無可用的地基主參與大會。")
+
+    transcript: list[CouncilStatement] = []
+    for r in range(1, _COUNCIL_MAX_ROUNDS + 1):
+        speakers = []
+        for _aid, li in resolved:
+            street = li.to_street()
+            speakers.append(create_council_speaker(street.street_id, street.name, street.agent_id, li))
+
+        round_agent = ParallelAgent(name=f"council_round_{r}", sub_agents=speakers)
+        runner = Runner(agent=round_agent, app_name="deg", session_service=session_service)
+        session_id = uuid4().hex
+        await session_service.create_session(app_name="deg", user_id="gateway", session_id=session_id)
+        prompt = (
+            f"【議題】{topic}\n\n"
+            f"【目前討論記錄（逐字稿）】\n{_format_council_transcript(transcript)}\n\n"
+            f"這是第 {r} 輪。請以你轄區的立場發言，或回 silent 把舞台讓給別人。"
+        )
+        msg = genai_types.Content(role="user", parts=[genai_types.Part(text=prompt)])
+
+        spoke_this_round = False
+        async for event in runner.run_async(user_id="gateway", session_id=session_id, new_message=msg):
+            if event.is_final_response() and event.content and event.content.parts:
+                text = event.content.parts[0].text or ""
+                try:
+                    stmt = CouncilStatement.model_validate_json(_extract_json(text))
+                except Exception as e:
+                    logger.warning("Council statement parse failed: %s", e)
+                    continue
+                stmt.round = r
+                if stmt.stance == "silent" or not stmt.statement_text.strip():
+                    continue
+                spoke_this_round = True
+                transcript.append(stmt)
+                if on_statement:
+                    await on_statement(stmt)
+
+        if not spoke_this_round:
+            break
+
+    return transcript
 
 
 async def _run_pipeline(
@@ -506,14 +688,24 @@ def create_app() -> FastAPI:
                 raise RuntimeError("五營兵將未能生成招標令，請再試一次。")
                 
             await ws.send_json({"a2uiPhase": "routing"})
-            selected_agent_ids = await _run_scout_round(session_service, tb, on_event=None)
-
-            await ws.send_json({"a2uiPhase": "negotiating"})
             await ws.send_json(update_components(SURFACE_ID, negotiation_components()))
             await ws.send_json(update_data_model(SURFACE_ID, "/broadcast", broadcast_data(tb)))
+            await ws.send_json(update_data_model(SURFACE_ID, "/scouts", []))
             await ws.send_json(update_data_model(SURFACE_ID, "/bids", []))
             await ws.send_json(update_data_model(SURFACE_ID, "/debates", []))
             await ws.send_json({"a2uiResumeToken": tb.model_dump(mode="json")})
+
+            scout_index = 0
+            async def scout_sink(msg: dict[str, Any]) -> None:
+                nonlocal scout_index
+                if msg.get("type") == "scout_result":
+                    from deg.a2ui.surfaces import scout_data
+                    await ws.send_json(update_data_model(SURFACE_ID, f"/scouts/{scout_index}", scout_data(msg["data"])))
+                    scout_index += 1
+
+            selected_agent_ids = await _run_scout_round(session_service, tb, on_event=scout_sink)
+
+            await ws.send_json({"a2uiPhase": "negotiating"})
 
             # Prepare dynamic pipeline
             pipeline_runner = Runner(
@@ -677,6 +869,188 @@ def create_app() -> FastAPI:
             except Exception:
                 pass
         except Exception as exc:
+            try:
+                await ws.send_json({"a2uiError": str(exc)})
+            except Exception:
+                pass
+        finally:
+            try:
+                await ws.close()
+            except Exception:
+                pass
+
+    @app.websocket("/ws/ask/a2ui")
+    async def ws_ask_a2ui(ws: WebSocket) -> None:
+        await ws.accept()
+        try:
+            await ws.send_json(create_surface(COMMUNITY_SURFACE_ID, send_data_model=True))
+            await ws.send_json(update_components(COMMUNITY_SURFACE_ID, community_input_components()))
+            await ws.send_json(update_data_model(COMMUNITY_SURFACE_ID, "/community", {"question": ""}))
+
+            req_data = await ws.receive_json()
+            question: str = req_data.get("question", "").strip()
+            if not question:
+                await ws.send_json({"a2uiError": "請輸入問題"})
+                return
+
+            await ws.send_json({"a2uiPhase": "routing"})
+            await ws.send_json(update_components(COMMUNITY_SURFACE_ID, community_negotiation_components()))
+            await ws.send_json(update_data_model(COMMUNITY_SURFACE_ID, "/community/question", question))
+            await ws.send_json(update_data_model(COMMUNITY_SURFACE_ID, "/scouts", []))
+            await ws.send_json(update_data_model(COMMUNITY_SURFACE_ID, "/answers", []))
+
+            scout_index = 0
+            async def scout_sink(msg: dict[str, Any]) -> None:
+                nonlocal scout_index
+                if msg.get("type") == "scout_result":
+                    from deg.a2ui.surfaces import scout_data
+                    await ws.send_json(update_data_model(COMMUNITY_SURFACE_ID, f"/scouts/{scout_index}", scout_data(msg["data"])))
+                    scout_index += 1
+
+            selected_ids = await _run_community_scout(session_service, question, on_event=scout_sink)
+
+            await ws.send_json({"a2uiPhase": "answering"})
+
+            answers = await _run_community_answers(session_service, question, selected_ids)
+
+            for i, answer in enumerate(answers):
+                await ws.send_json(
+                    update_data_model(COMMUNITY_SURFACE_ID, f"/answers/{i}", community_answer_data(answer))
+                )
+
+            judge_runner = Runner(
+                agent=create_community_judge(), app_name="deg", session_service=session_service
+            )
+            session_id = uuid4().hex
+            await session_service.create_session(app_name="deg", user_id="gateway", session_id=session_id)
+            answers_text = "\n\n".join(
+                f"[{a.street_name}] {a.answer_text}" for a in answers
+            )
+            judge_msg = genai_types.Content(
+                role="user",
+                parts=[genai_types.Part(
+                    text=f"問題：{question}\n\n各地基主回答：\n{answers_text}"
+                )],
+            )
+            verdict_text = ""
+            async for event in judge_runner.run_async(
+                user_id="gateway", session_id=session_id, new_message=judge_msg
+            ):
+                if event.is_final_response() and event.content and event.content.parts:
+                    verdict_text = event.content.parts[0].text or ""
+
+            if verdict_text:
+                try:
+                    result = CommunityQueryResult.model_validate_json(_extract_json(verdict_text))
+                    await ws.send_json(update_components(COMMUNITY_SURFACE_ID, community_summary_components()))
+                    await ws.send_json(
+                        update_data_model(COMMUNITY_SURFACE_ID, "/community", community_summary_data(result))
+                    )
+                except Exception as e:
+                    logger.warning("Community judge parse failed: %s", e)
+
+            await ws.send_json({"a2uiDone": True})
+        except WebSocketDisconnect:
+            return
+        except Exception as exc:
+            logger.error("Community WS error:\n%s", traceback.format_exc())
+            try:
+                await ws.send_json({"a2uiError": str(exc)})
+            except Exception:
+                pass
+        finally:
+            try:
+                await ws.close()
+            except Exception:
+                pass
+
+    @app.websocket("/ws/council/a2ui")
+    async def ws_council_a2ui(ws: WebSocket) -> None:
+        await ws.accept()
+        try:
+            await ws.send_json(create_surface(COUNCIL_SURFACE_ID, send_data_model=True))
+            await ws.send_json(update_components(COUNCIL_SURFACE_ID, council_input_components()))
+            await ws.send_json(update_data_model(COUNCIL_SURFACE_ID, "/council", {"topic": ""}))
+
+            req_data = await ws.receive_json()
+            topic: str = req_data.get("topic", "").strip()
+            if not topic:
+                await ws.send_json({"a2uiError": "請輸入議題"})
+                return
+
+            # 1) relevance selection (reuse the community scout)
+            await ws.send_json({"a2uiPhase": "routing"})
+            selected_ids = await _run_community_scout(session_service, topic)
+
+            # 2) open the assembly: draw boundaries + empty transcript
+            from deg.seed.loader import load_agents
+            all_li = {li.to_street().agent_id: li for li in load_agents()}
+            selected_li = [all_li[aid] for aid in selected_ids if aid in all_li]
+
+            await ws.send_json({"a2uiPhase": "assembling"})
+            await ws.send_json(update_components(COUNCIL_SURFACE_ID, council_assembly_components()))
+            await ws.send_json(update_data_model(COUNCIL_SURFACE_ID, "/council/topic", topic))
+            await ws.send_json(
+                update_data_model(COUNCIL_SURFACE_ID, "/boundaries", council_boundary_payload(selected_li))
+            )
+            await ws.send_json(update_data_model(COUNCIL_SURFACE_ID, "/statements", []))
+
+            # 3) discussion rounds — stream each statement (staggered for 搶話 feel)
+            stream_index = 0
+
+            async def on_statement(stmt: CouncilStatement) -> None:
+                nonlocal stream_index
+                await ws.send_json(
+                    update_data_model(
+                        COUNCIL_SURFACE_ID, f"/statements/{stream_index}", council_statement_data(stmt)
+                    )
+                )
+                stream_index += 1
+                await asyncio.sleep(_COUNCIL_STAGGER)
+
+            statements = await _run_council_discussion(
+                session_service, topic, selected_ids, on_statement=on_statement
+            )
+
+            # 4) 土地公 chair closes with a verdict + consensus alignments
+            judge_runner = Runner(
+                agent=create_council_judge(), app_name="deg", session_service=session_service
+            )
+            session_id = uuid4().hex
+            await session_service.create_session(app_name="deg", user_id="gateway", session_id=session_id)
+            judge_prompt = (
+                f"【議題】{topic}\n\n"
+                f"【完整討論逐字稿】\n{_format_council_transcript(statements)}"
+            )
+            judge_msg = genai_types.Content(role="user", parts=[genai_types.Part(text=judge_prompt)])
+            verdict_text = ""
+            async for event in judge_runner.run_async(
+                user_id="gateway", session_id=session_id, new_message=judge_msg
+            ):
+                if event.is_final_response() and event.content and event.content.parts:
+                    verdict_text = event.content.parts[0].text or ""
+
+            if verdict_text:
+                try:
+                    verdict = CouncilVerdict.model_validate_json(_extract_json(verdict_text))
+                    vdata = council_verdict_data(verdict)
+                    await ws.send_json(update_components(COUNCIL_SURFACE_ID, council_verdict_components()))
+                    # Subpaths, not the whole /council object, so /council/topic survives.
+                    await ws.send_json(
+                        update_data_model(COUNCIL_SURFACE_ID, "/council/tudigong_summary",
+                                          vdata["tudigong_summary"])
+                    )
+                    await ws.send_json(
+                        update_data_model(COUNCIL_SURFACE_ID, "/council/alignments", vdata["alignments"])
+                    )
+                except Exception as e:
+                    logger.warning("Council judge parse failed: %s", e)
+
+            await ws.send_json({"a2uiDone": True})
+        except WebSocketDisconnect:
+            return
+        except Exception as exc:
+            logger.error("Council WS error:\n%s", traceback.format_exc())
             try:
                 await ws.send_json({"a2uiError": str(exc)})
             except Exception:
