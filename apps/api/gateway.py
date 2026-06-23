@@ -51,6 +51,9 @@ from pydantic import BaseModel, Field  # noqa: E402
 from deg.schemas import (  # noqa: E402
     BiddingProposal,
     Blessing,
+    CommunityAnswer,
+    CommunityQueryResult,
+    DebateMessage,
     JudgmentResult,
     LatLng,
     TaskBroadcast,
@@ -58,8 +61,8 @@ from deg.schemas import (  # noqa: E402
     WishAnalysis,
     WuyingOutput,
 )
-from tudigong.agent import create_dynamic_pipeline, get_random_mood  # noqa: E402
-from dijizhu.agent import create_scout  # noqa: E402
+from tudigong.agent import create_community_judge, create_dynamic_pipeline, get_random_mood  # noqa: E402
+from dijizhu.agent import create_community_agent, create_community_scout, create_scout  # noqa: E402
 from tudigong.blessing_agent import create_blessing_agent  # noqa: E402
 from wuying.agent import create_wuying  # noqa: E402
 from wuying.wish_agent import create_wish_categorizer  # noqa: E402
@@ -68,11 +71,17 @@ from deg.a2ui import create_surface, update_components, update_data_model  # noq
 from deg.a2ui.surfaces import (  # noqa: E402
     SURFACE_ID,
     WISH_SURFACE_ID,
+    COMMUNITY_SURFACE_ID,
     bid_data,
     debate_data,
     blessing_components,
     broadcast_data,
     clarification_components,
+    community_answer_data,
+    community_input_components,
+    community_negotiation_components,
+    community_summary_components,
+    community_summary_data,
     intent_input_components,
     judgment_components,
     judgment_data,
@@ -250,6 +259,81 @@ async def _run_scout_round(
         
     return [r.agent_id for r in top_agents]
 
+
+
+async def _run_community_scout(
+    session_service: InMemorySessionService,
+    question: str,
+) -> list[str]:
+    from deg.seed.loader import load_agents
+    from deg.schemas import ScoutResult
+    from google.adk.agents import ParallelAgent
+
+    all_li = load_agents()
+    scouts = []
+    for li in all_li:
+        street = li.to_street()
+        scouts.append(create_community_scout(street.street_id, street.name, street.agent_id, li))
+
+    scout_round = ParallelAgent(name="community_scout_round", sub_agents=scouts)
+    runner = Runner(agent=scout_round, app_name="deg", session_service=session_service)
+    session_id = uuid4().hex
+    await session_service.create_session(app_name="deg", user_id="gateway", session_id=session_id)
+    msg = genai_types.Content(role="user", parts=[genai_types.Part(text=question)])
+
+    results: list[ScoutResult] = []
+    async for event in runner.run_async(user_id="gateway", session_id=session_id, new_message=msg):
+        if event.is_final_response() and event.content and event.content.parts:
+            text = event.content.parts[0].text or ""
+            try:
+                res = ScoutResult.model_validate_json(_extract_json(text))
+                results.append(res)
+            except Exception as e:
+                logger.warning("Community scout parse failed: %s", e)
+
+    results.sort(key=lambda x: x.confidence_score, reverse=True)
+    top = results[:5]
+    if not top:
+        raise RuntimeError("所有地基主均表示與問題無關。")
+    return [r.agent_id for r in top]
+
+
+async def _run_community_answers(
+    session_service: InMemorySessionService,
+    question: str,
+    selected_agent_ids: list[str],
+) -> list[CommunityAnswer]:
+    from deg.seed.loader import load_agents
+    from google.adk.agents import ParallelAgent
+
+    all_li = {li.to_street().agent_id: li for li in load_agents()}
+    agents = []
+    for agent_id in selected_agent_ids:
+        li = all_li.get(agent_id)
+        if li is None:
+            continue
+        street = li.to_street()
+        agents.append(create_community_agent(street.street_id, street.name, street.agent_id, li))
+
+    if not agents:
+        raise RuntimeError("無可用的地基主回答問題。")
+
+    answer_round = ParallelAgent(name="community_answer_round", sub_agents=agents)
+    runner = Runner(agent=answer_round, app_name="deg", session_service=session_service)
+    session_id = uuid4().hex
+    await session_service.create_session(app_name="deg", user_id="gateway", session_id=session_id)
+    msg = genai_types.Content(role="user", parts=[genai_types.Part(text=question)])
+
+    answers: list[CommunityAnswer] = []
+    async for event in runner.run_async(user_id="gateway", session_id=session_id, new_message=msg):
+        if event.is_final_response() and event.content and event.content.parts:
+            text = event.content.parts[0].text or ""
+            try:
+                answer = CommunityAnswer.model_validate_json(_extract_json(text))
+                answers.append(answer)
+            except Exception as e:
+                logger.warning("Community answer parse failed: %s", e)
+    return answers
 
 
 async def _run_pipeline(
@@ -677,6 +761,81 @@ def create_app() -> FastAPI:
             except Exception:
                 pass
         except Exception as exc:
+            try:
+                await ws.send_json({"a2uiError": str(exc)})
+            except Exception:
+                pass
+        finally:
+            try:
+                await ws.close()
+            except Exception:
+                pass
+
+    @app.websocket("/ws/ask/a2ui")
+    async def ws_ask_a2ui(ws: WebSocket) -> None:
+        await ws.accept()
+        try:
+            await ws.send_json(create_surface(COMMUNITY_SURFACE_ID, send_data_model=True))
+            await ws.send_json(update_components(COMMUNITY_SURFACE_ID, community_input_components()))
+            await ws.send_json(update_data_model(COMMUNITY_SURFACE_ID, "/community", {"question": ""}))
+
+            req_data = await ws.receive_json()
+            question: str = req_data.get("question", "").strip()
+            if not question:
+                await ws.send_json({"a2uiError": "請輸入問題"})
+                return
+
+            await ws.send_json({"a2uiPhase": "routing"})
+            selected_ids = await _run_community_scout(session_service, question)
+
+            await ws.send_json({"a2uiPhase": "answering"})
+            await ws.send_json(update_components(COMMUNITY_SURFACE_ID, community_negotiation_components()))
+            await ws.send_json(update_data_model(COMMUNITY_SURFACE_ID, "/community/question", question))
+            await ws.send_json(update_data_model(COMMUNITY_SURFACE_ID, "/answers", []))
+
+            answers = await _run_community_answers(session_service, question, selected_ids)
+
+            for i, answer in enumerate(answers):
+                await ws.send_json(
+                    update_data_model(COMMUNITY_SURFACE_ID, f"/answers/{i}", community_answer_data(answer))
+                )
+
+            judge_runner = Runner(
+                agent=create_community_judge(), app_name="deg", session_service=session_service
+            )
+            session_id = uuid4().hex
+            await session_service.create_session(app_name="deg", user_id="gateway", session_id=session_id)
+            answers_text = "\n\n".join(
+                f"[{a.street_name}] {a.answer_text}" for a in answers
+            )
+            judge_msg = genai_types.Content(
+                role="user",
+                parts=[genai_types.Part(
+                    text=f"問題：{question}\n\n各地基主回答：\n{answers_text}"
+                )],
+            )
+            verdict_text = ""
+            async for event in judge_runner.run_async(
+                user_id="gateway", session_id=session_id, new_message=judge_msg
+            ):
+                if event.is_final_response() and event.content and event.content.parts:
+                    verdict_text = event.content.parts[0].text or ""
+
+            if verdict_text:
+                try:
+                    result = CommunityQueryResult.model_validate_json(_extract_json(verdict_text))
+                    await ws.send_json(update_components(COMMUNITY_SURFACE_ID, community_summary_components()))
+                    await ws.send_json(
+                        update_data_model(COMMUNITY_SURFACE_ID, "/community", community_summary_data(result))
+                    )
+                except Exception as e:
+                    logger.warning("Community judge parse failed: %s", e)
+
+            await ws.send_json({"a2uiDone": True})
+        except WebSocketDisconnect:
+            return
+        except Exception as exc:
+            logger.error("Community WS error:\n%s", traceback.format_exc())
             try:
                 await ws.send_json({"a2uiError": str(exc)})
             except Exception:
