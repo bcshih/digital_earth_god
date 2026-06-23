@@ -163,5 +163,35 @@ def create_community_judge() -> LlmAgent:
     )
 
 
+_COUNCIL_JUDGE_INSTRUCTION = """你是土地公，台南中西區的守護神，也是這場「里長大會」的主席。
+
+各里地基主已就一個議題輪番發言（以 CouncilStatement 逐字稿呈現在對話記錄中，含每個里的 stance 立場與 responds_to）。
+
+【裁示步驟】
+1. 閱讀整份討論逐字稿，理解各里的立場、附議與反駁。
+2. 以中立主席的角度，公允地統整出共識與分歧所在。
+3. 以土地公口吻（慈悲、幽默、充滿台南語感）寫下 tudigong_summary（至少 3 句）：
+   先點出議題、再講共識與爭點、最後給個接地氣的方向或提醒。
+4. 為「每一個有參與發言的里」各填一筆 alignments，標出它最終的立場 final_stance
+   （support / oppose / question / inform；若它整場只是中性補充就用 inform）。
+
+【回傳格式】必須回傳完整的 CouncilVerdict JSON：
+- topic: 本次議題（從對話中取出）
+- tudigong_summary: 土地公口吻的整體裁示（繁體中文，至少 3 句）
+- alignments: 每個參與里的 {agent_id, street_name, final_stance}"""
+
+
+def create_council_judge() -> LlmAgent:
+    """Create the 土地公 council chair that closes the 里長大會 with a CouncilVerdict."""
+    from deg.schemas import CouncilVerdict  # noqa: PLC0415
+    return LlmAgent(
+        name="tudigong_council_judge",
+        model=_MODEL,
+        description="土地公：里長大會主席，統整各里討論並給出裁示與共識立場。",
+        instruction=_COUNCIL_JUDGE_INSTRUCTION,
+        output_schema=CouncilVerdict,
+    )
+
+
 # Temporary root_agent for static checks if needed.
 root_agent = create_dynamic_pipeline(["street_wutiaogang_node"])

@@ -257,6 +257,81 @@ def create_community_agent(
         output_schema=CommunityAnswer,
     )
 
+def create_council_speaker(
+    street_id: str,
+    street_name: str,
+    agent_id: str,
+    li_data: LiAgentData | None = None,
+) -> LlmAgent:
+    """里長大會 participant: weighs in on a topic, reacting to the running transcript.
+
+    Same layer_2 + layer_4 injection as create_community_agent, but the user
+    message also carries the shared transcript so far. Outputs CouncilStatement;
+    may choose stance='silent' to pass when it has nothing relevant to add.
+    """
+    if li_data is None:
+        agents = load_agents()
+        for a in agents:
+            if a.id.endswith(street_id.capitalize()) or a.id.endswith(street_id):
+                li_data = a
+                break
+        else:
+            raise ValueError(f"Agent data for {street_id} not found.")
+
+    activities = []
+    if li_data.layer_2_dynamic_activities and "value" in li_data.layer_2_dynamic_activities:
+        activities = li_data.layer_2_dynamic_activities["value"]
+    opinions = []
+    if li_data.layer_4_citizen_opinions and "value" in li_data.layer_4_citizen_opinions:
+        opinions = li_data.layer_4_citizen_opinions["value"]
+
+    activities_json = json.dumps(activities, ensure_ascii=False, indent=2)
+    opinions_json = json.dumps(opinions, ensure_ascii=False, indent=2)
+
+    instruction = f"""你是「{street_name}」的地基主 (agent_id: {agent_id})，正在參加由土地公主持的「里長大會」。
+
+━━━━━━ 你的轄區資料庫（已預載） ━━━━━━
+
+【動態活動（近期活動、展覽、攤販等）】
+{activities_json}
+
+【市民意見與通報（居民反映的問題與狀態）】
+{opinions_json}
+
+━━━━━━ 大會規則 ━━━━━━
+
+使用者的訊息會包含「議題」與「目前討論記錄（逐字稿）」。請依你轄區的立場與資料發言。
+- 先決定你的 stance（立場）：
+  · support＝附議/支持別人的觀點
+  · oppose＝反駁/有不同意見
+  · question＝提出疑問
+  · inform＝中性補充你轄區的資訊
+  · silent＝這一輪你沒有相關的話要說（statement_text 留空）
+- 若你的發言是針對某個里，把對方的 agent_id 填進 responds_to；否則留 null。
+- statement_text 用繁體中文，接地氣、有神明威嚴，緊扣你轄區的真實資料（引用 title / content 並放進 sources）。
+- ⚠️ 只在你轄區真的與議題相關時才發言；無關就回 silent，把舞台讓給別人。
+
+⚠️ 回傳必須是 CouncilStatement JSON：
+{{
+  "agent_id": "{agent_id}",
+  "street_name": "{street_name}",
+  "round": <目前輪數，整數>,
+  "stance": "support|oppose|question|inform|silent",
+  "responds_to": "<對方 agent_id 或 null>",
+  "statement_text": "...",
+  "sources": ["來源標題1", ...]
+}}"""
+
+    from deg.schemas import CouncilStatement  # noqa: PLC0415
+    return LlmAgent(
+        name=f"dijizhu_council_{street_id}",
+        model=_MODEL,
+        description=f"台南{street_name}的地基主，參與里長大會討論",
+        instruction=instruction,
+        output_schema=CouncilStatement,
+    )
+
+
 # Module-level root_agent required by `adk run dijizhu`.
 root_agent = create_dijizhu(
     street_id="wutiaogang",
