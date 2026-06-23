@@ -10,6 +10,7 @@ COPY pyproject.toml ./
 COPY deg/ ./deg/
 COPY agents/ ./agents/
 COPY dijizu_agent_new/ ./dijizu_agent_new/
+COPY apps/__init__.py ./apps/__init__.py
 COPY apps/api/ ./apps/api/
 COPY data/ ./data/
 
