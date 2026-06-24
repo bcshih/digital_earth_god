@@ -1525,6 +1525,53 @@ body::before {
 .council-legend__dot--question { background: #60a5fa; color: #60a5fa; }
 .council-legend__dot--inform   { background: #c9b894; color: #c9b894; }
 
+/* ── Council transcript compact rows ─────────────────────── */
+.stmt-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem 0.55rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.83rem;
+  line-height: 1.5;
+}
+.stmt-row:last-child { border-bottom: none; }
+
+.stmt-name {
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+.stmt-name--support  { color: #4ade80; }
+.stmt-name--oppose   { color: #f87171; }
+.stmt-name--question { color: #60a5fa; }
+.stmt-name--inform   { color: #c9b894; }
+
+.stmt-badge {
+  font-size: 0.7rem;
+  padding: 0.06em 0.4em;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+}
+.stmt-badge--support  { color: #4ade80; }
+.stmt-badge--oppose   { color: #f87171; }
+.stmt-badge--question { color: #60a5fa; }
+.stmt-badge--inform   { color: #c9b894; }
+
+.stmt-responds {
+  font-size: 0.72rem;
+  opacity: 0.5;
+  white-space: nowrap;
+}
+
+.stmt-text {
+  flex: 1 1 100%;
+  color: var(--parchment, #c9b894);
+  margin-top: 0.05rem;
+}
+
 /* ============================================================
    Negotiation Board (Compact UI)
    ============================================================ */

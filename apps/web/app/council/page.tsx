@@ -140,9 +140,23 @@ export default function CouncilPage() {
     return Array.isArray(a) ? (a as CouncilAlignmentRow[]) : [];
   }, [state.dataModel]);
 
-  // Mount the Leaflet council map in place of the `council-map` placeholder.
+  // agent_id → street_name lookup for the "responds_to" display
+  const nameById = useMemo(
+    () => new Map(boundaries.map((b) => [b.agent_id, b.street_name])),
+    [boundaries],
+  );
+
+  const STANCE_LABEL: Record<string, string> = {
+    support: "附議",
+    oppose: "反駁",
+    question: "提問",
+    inform: "補充",
+  };
+
+  // Mount the Leaflet council map in place of the `council-map` placeholder,
+  // and replace statement-card with a compact inline row.
   const decorate = useCallback<Decorator>(
-    ({ id }) => {
+    ({ id, scope }) => {
       if (id === "council-map" && boundaries.length > 0) {
         return (
           <div key="council-map-shell" className="council-map-shell">
@@ -156,9 +170,25 @@ export default function CouncilPage() {
           </div>
         );
       }
+      if (id === "statement-card") {
+        const idx = parseInt(scope.replace("/statements/", ""), 10);
+        const stmt = !isNaN(idx) ? statements[idx] : undefined;
+        if (!stmt || stmt.stance === "silent") return null;
+        const respondName = stmt.responds_to ? nameById.get(stmt.responds_to) : null;
+        return (
+          <div key={`stmt-${idx}`} className="stmt-row">
+            <span className={`stmt-name stmt-name--${stmt.stance}`}>{stmt.street_name}</span>
+            <span className={`stmt-badge stmt-badge--${stmt.stance}`}>
+              {STANCE_LABEL[stmt.stance] ?? stmt.stance}
+            </span>
+            {respondName && <span className="stmt-responds">→ {respondName}</span>}
+            <span className="stmt-text">{stmt.statement_text}</span>
+          </div>
+        );
+      }
       return null;
     },
-    [boundaries, statements, alignments],
+    [boundaries, statements, alignments, nameById],
   );
 
   const offline = conn === "failed";

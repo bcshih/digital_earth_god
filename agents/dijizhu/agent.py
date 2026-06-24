@@ -309,6 +309,7 @@ def create_council_speaker(
   · silent＝這一輪你沒有相關的話要說（statement_text 留空）
 - 若你的發言是針對某個里，把對方的 agent_id 填進 responds_to；否則留 null。
 - statement_text 用繁體中文，接地氣、有神明威嚴，緊扣你轄區的真實資料（引用 title / content 並放進 sources）。
+- ⚠️ statement_text 不超過 40 字，簡短有力，不要引言或客套語，直接說重點。
 - ⚠️ 只在你轄區真的與議題相關時才發言；無關就回 silent，把舞台讓給別人。
 
 ⚠️ 回傳必須是 CouncilStatement JSON：

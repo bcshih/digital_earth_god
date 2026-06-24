@@ -66,9 +66,9 @@ export default function CouncilMapInner({
   const centroidRef = useRef<Map<string, [number, number]>>(new Map());
   const linesRef = useRef<L.Polyline[]>([]);
 
-  // Build the map + boundary polygons once.
+  // Create the map once on mount; destroy on unmount.
   useEffect(() => {
-    if (!elRef.current || mapRef.current) return;
+    if (!elRef.current) return;
 
     const map = L.map(elRef.current, {
       center: TAINAN_CENTER,
@@ -85,6 +85,23 @@ export default function CouncilMapInner({
       maxZoom: 20,
     }).addTo(map);
 
+    const t = setTimeout(() => map.invalidateSize(), 240);
+
+    return () => {
+      clearTimeout(t);
+      map.remove();
+      mapRef.current = null;
+      polysRef.current.clear();
+      centroidRef.current.clear();
+      linesRef.current = [];
+    };
+  }, []); // mount only — never re-initialize
+
+  // Draw boundary polygons the first time they arrive; skip on subsequent re-renders.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || boundaries.length === 0 || polysRef.current.size > 0) return;
+
     const allBounds: [number, number][] = [];
     for (const b of boundaries) {
       if (!b.polygon || b.polygon.length === 0) continue;
@@ -97,16 +114,6 @@ export default function CouncilMapInner({
     if (allBounds.length > 0) {
       map.fitBounds(allBounds, { padding: [40, 40], maxZoom: 16 });
     }
-    const t = setTimeout(() => map.invalidateSize(), 240);
-
-    return () => {
-      clearTimeout(t);
-      map.remove();
-      mapRef.current = null;
-      polysRef.current.clear();
-      centroidRef.current.clear();
-      linesRef.current = [];
-    };
   }, [boundaries]);
 
   // React to the transcript: recolor by latest stance, highlight the speaker,
