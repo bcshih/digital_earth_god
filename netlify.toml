@@ -1,10 +1,11 @@
 [build]
   base    = "apps/web"
   command = "npm run build"
-  publish = "apps/web/out"
+  publish = "out"
 
 [build.environment]
   NODE_VERSION = "20"
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"
   NEXT_PUBLIC_GATEWAY_WS          = "wss://digital-earth-god-backend-production.up.railway.app/ws/explore/a2ui"
   NEXT_PUBLIC_GATEWAY_WS_COMMUNITY = "wss://digital-earth-god-backend-production.up.railway.app/ws/ask/a2ui"
   NEXT_PUBLIC_GATEWAY_WS_COUNCIL   = "wss://digital-earth-god-backend-production.up.railway.app/ws/council/a2ui"
