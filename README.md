@@ -6,6 +6,9 @@
 >
 > A Multi-Agent System (MAS) that reimagines Tainan City's cultural heritage exploration through the metaphor of Taiwanese folk religion — where a **土地公 (Earth God)** orchestrates **20 地基主 (Street Guardians)** to bid, debate, and negotiate the best travel itineraries and community insights for you.
 
+**🌐 Live Demo:** [https://digital-earth-god.netlify.app](https://digital-earth-god.netlify.app)  
+*(Backend on Railway · Frontend on Netlify)*
+
 ---
 
 ## ✨ Features
@@ -22,9 +25,11 @@
 - **Contract Net Protocol** — Decentralized task allocation: broadcast → scout → bid → debate → judge
 - **A2UI (Agent-to-UI)** — Server pushes component trees + data patches over WebSocket; the frontend renders them with a generic renderer + domain-specific decorators (seal stamps, jiaobei divination, incense backgrounds)
 - **5 Agent Types** — 土地公 (orchestrator), 20× 地基主 (street guardians), 虎爺 (Tiger God), 巡境使 (Patrol Officer), 五營兵將 (Five Camps)
-- **20 Autonomous Street Agents** — Each guardian has pre-loaded spatial data (POIs, history, social posts) for one neighborhood in Tainan's West Central District
+- **20 Autonomous Street Agents** — Each guardian has real NLSC village boundary polygons (from official 臺灣國土測繪中心 shapefiles) and pre-loaded spatial data (POIs, history, social posts) for one neighborhood in Tainan's West Central District
+- **Council: up to 15 participants** — Multi-round deliberation across the most relevant guardians; map stays at static overview (no per-statement zoom); compact inline transcript
 - **Divine Personality** — Random "mood of the day" phrases inject personality into the Earth God's judgments
-- **Theatrical UI** — Vermillion seal-stamp animations, jiaobei (擲筊) divination reveals, incense smoke backgrounds, and chat-room-style scout reports
+- **Theatrical UI** — Vermillion seal-stamp animations, jiaobei (擲筊) divination reveals, incense smoke backgrounds, chat-room-style scout reports, and mobile-friendly slide-out panels
+- **Cloud Deployed** — Backend on Railway (Docker/FastAPI), Frontend on Netlify (Next.js static export)
 
 ---
 
@@ -82,8 +87,9 @@
 | LLM | Google Gemini 3.1 Flash Lite |
 | Agent Framework | [Google ADK](https://google.github.io/adk-docs/) (Agent Development Kit) |
 | Agent Communication | [A2A Protocol](https://github.com/google/A2A) (Agent-to-Agent) |
-| Backend | FastAPI + WebSocket |
-| Frontend | Next.js 16 (Turbopack) + Motion (Framer Motion) + Leaflet |
+| Backend | FastAPI + WebSocket · deployed on **Railway** (Docker) |
+| Frontend | Next.js 16 (Turbopack) + Motion (Framer Motion) + Leaflet · deployed on **Netlify** (static export) |
+| Boundary Data | Official NLSC shapefiles (國土測繪中心) — real village polygon coordinates |
 | Data | NGSI-LD inspired 5-layer model (spatial, dynamic, historical, citizen opinions, metadata) |
 
 ---
@@ -238,9 +244,10 @@ Navigate to **http://localhost:3000** and start exploring Tainan!
 ### Council Flow (里長大會)
 
 1. Raise a topic for discussion (e.g., "海安路的交通改善")
-2. Multi-round deliberation: guardians take stances (support/oppose/question/inform/silent)
-3. Each round's statements stream in with stance indicators and boundary maps
-4. Earth God delivers a final verdict summarizing consensus and disagreements
+2. Up to 15 most relevant guardians join; up to 3 deliberation rounds
+3. Each guardian picks a stance (support / oppose / question / inform / silent) and speaks in ≤ 40 characters — compact statements stream in real-time
+4. The council map highlights the speaking boundary in gold; stance colors update as the debate unfolds; response lines connect who is replying to whom
+5. Earth God delivers a final verdict summarizing consensus and disagreements
 
 ---
 
