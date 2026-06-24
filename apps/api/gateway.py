@@ -31,8 +31,9 @@ _PIPELINE_TIMEOUT = 120.0  # seconds per full Contract Net round-trip
 _WISH_TIMEOUT = 60.0
 _PIPELINE_MAX_ATTEMPTS = 5
 _PIPELINE_BACKOFF_CAP = 30  # seconds
-_COUNCIL_MAX_ROUNDS = 3  # 里長大會 discussion rounds (cost cap; early-break on a silent round)
-_COUNCIL_STAGGER = 0.6   # seconds between streaming each statement (搶話 theater)
+_COUNCIL_MAX_ROUNDS = 3   # 里長大會 discussion rounds (cost cap; early-break on a silent round)
+_COUNCIL_STAGGER = 0.6    # seconds between streaming each statement (搶話 theater)
+_COUNCIL_SCOUT_TOP = 15   # max 里 joining the council (more = livelier, scout filters relevance)
 
 # Repo root + agents/ on sys.path so agents import cleanly.
 _REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -289,6 +290,7 @@ async def _run_community_scout(
     session_service: InMemorySessionService,
     question: str,
     on_event: EventSink | None = None,
+    top_n: int = 5,
 ) -> list[str]:
     from deg.seed.loader import load_agents
     from deg.schemas import ScoutResult
@@ -319,7 +321,7 @@ async def _run_community_scout(
                 logger.warning("Community scout parse failed: %s", e)
 
     results.sort(key=lambda x: x.confidence_score, reverse=True)
-    top = results[:5]
+    top = results[:top_n]
     if not top:
         raise RuntimeError("所有地基主均表示與問題無關。")
     return [r.agent_id for r in top]
@@ -1001,7 +1003,7 @@ def create_app() -> FastAPI:
 
             # 1) relevance selection (reuse the community scout)
             await ws.send_json({"a2uiPhase": "routing"})
-            selected_ids = await _run_community_scout(session_service, topic)
+            selected_ids = await _run_community_scout(session_service, topic, top_n=_COUNCIL_SCOUT_TOP)
 
             # 2) open the assembly: draw boundaries + empty transcript
             from deg.seed.loader import load_agents

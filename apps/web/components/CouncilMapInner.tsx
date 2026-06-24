@@ -126,8 +126,6 @@ export default function CouncilMapInner({
     if (speaker) {
       speaker.setStyle(speakingStyle());
       speaker.bringToFront();
-      const c = centroidRef.current.get(current.agent_id);
-      if (c) map.flyTo(c, Math.max(map.getZoom(), 15), { duration: 0.8 });
     }
 
     // Response line: from the addressed 里 to the speaker.
