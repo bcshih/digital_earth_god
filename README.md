@@ -259,6 +259,16 @@ pytest tests/test_gateway.py
 
 ---
 
+## 🛠️ Utilities
+
+The project includes a visual **Agent Editor** to easily manage and edit the JSON-LD NGSI-LD files of the 20 street guardians.
+
+1. Run the local backend: `python scripts/agent_editor.py`
+2. Open your browser to [http://localhost:8081](http://localhost:8081)
+3. Select any neighborhood from the left sidebar to edit the agent's persona, boundaries, and add infinite "Local Observations". Changes are saved directly to the local files.
+
+---
+
 ## 📐 Data Model
 
 The system uses a standard JSON-LD graph structure based on NGSI-LD. Each neighborhood contains a dataset with multiple entities:

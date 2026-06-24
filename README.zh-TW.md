@@ -188,6 +188,16 @@ cd apps/web && npm run dev
 
 ---
 
+## 🛠️ 開發工具 (Utilities)
+
+本專案提供了一個視覺化的 **Agent 編輯器 (Agent Editor)**，方便您直接修改 20 個里的 JSON-LD NGSI-LD 資料。
+
+1. 在終端機執行：`python scripts/agent_editor.py`
+2. 開啟瀏覽器進入 [http://localhost:8081](http://localhost:8081)
+3. 您可以在左側選擇任意一個里，右側會帶出表單供您編輯地基主性格、邊界座標以及無限新增「在地觀察」。點擊儲存後會自動覆寫本地檔案。
+
+---
+
 ## 📐 資料模型
 
 本系統採用基於 NGSI-LD 標準的 JSON-LD 圖形架構。每個里的資料集包含多個實體：

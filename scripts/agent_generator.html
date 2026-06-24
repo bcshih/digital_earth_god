@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>地基主 NGSI-LD Agent 生成器</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; background-color: #f3f4f6; }
+    .card { background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 1rem; }
+    .input-group { margin-bottom: 1rem; }
+    label { display: block; font-weight: 600; margin-bottom: 0.25rem; font-size: 0.875rem; color: #374151; }
+    input[type="text"], input[type="number"], textarea, select {
+      width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem;
+    }
+    textarea { min-height: 80px; }
+  </style>
+</head>
+<body class="p-6">
+
+<div class="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6">
+
+  <!-- Left: Village Agent Info -->
+  <div class="w-full lg:w-1/3 space-y-4">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">🏠 街區代理人 (VillageAgent)</h2>
+    
+    <div class="card">
+      <div class="input-group">
+        <label>Agent 內部 ID (例如: Wutiaogang)</label>
+        <input type="text" id="va_agentId" placeholder="Wutiaogang" value="Wutiaogang">
+      </div>
+      <div class="input-group">
+        <label>街區名稱 (Name)</label>
+        <input type="text" id="va_name" placeholder="五條港里" value="五條港里">
+      </div>
+      <div class="input-group">
+        <label>行政區 (District)</label>
+        <input type="text" id="va_district" placeholder="WestCentral" value="WestCentral">
+      </div>
+      <div class="input-group">
+        <label>神明性格 (Persona)</label>
+        <input type="text" id="va_persona" placeholder="熱心護航在地、講話直率" value="熱心護航在地、講話直率">
+      </div>
+      <div class="input-group">
+        <label>街區歷史與概述 (History)</label>
+        <textarea id="va_history" placeholder="五條港過去曾是清代台南最繁華的商業水路..."></textarea>
+      </div>
+      <div class="input-group">
+        <label>邊界座標 (GeoJSON Polygon 陣列)</label>
+        <textarea id="va_polygon" placeholder="[[[120.196, 22.999], [120.199, 22.999], [120.196, 22.999]]]">[[[120.196, 22.999], [120.199, 22.999], [120.199, 23.002], [120.196, 23.002], [120.196, 22.999]]]</textarea>
+        <p class="text-xs text-gray-500 mt-1">格式: [[[lng, lat], [lng, lat], ...]]</p>
+      </div>
+    </div>
+    
+    <button onclick="exportJSON()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded shadow-lg transition">
+      ⬇️ 匯出 JSON-LD 檔案
+    </button>
+  </div>
+
+  <!-- Right: Observations -->
+  <div class="w-full lg:w-2/3">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-2xl font-bold text-gray-800">📌 在地觀察 (LocalObservations)</h2>
+      <button onclick="addObservation()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm transition">
+        ＋ 新增觀察節點
+      </button>
+    </div>
+    
+    <div id="observationsList" class="space-y-4">
+      <!-- Cards will be injected here -->
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let obsCount = 0;
+
+  function createObservationCard(idNum) {
+    const categories = [
+      {val: "poi", label: "景點 / 地標 (POI)"},
+      {val: "daily_activity", label: "日常活動 / 事件 (Daily Activity)"},
+      {val: "local_history", label: "在地歷史 (Local History)"},
+      {val: "new_shop", label: "新店情報 (New Shop)"},
+      {val: "weather", label: "天氣感測 (Weather)"},
+      {val: "citizen_feedback", label: "市民意見/通報 (Citizen Feedback)"}
+    ];
+    
+    let catOptions = categories.map(c => `<option value="${c.val}">${c.label}</option>`).join("");
+
+    return `
+      <div class="card relative" id="obs_${idNum}">
+        <button onclick="removeObservation(${idNum})" class="absolute top-4 right-4 text-red-500 hover:text-red-700 text-sm font-bold">X 移除</button>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="input-group">
+            <label>類別 (Category)</label>
+            <select class="obs-category">${catOptions}</select>
+          </div>
+          <div class="input-group">
+            <label>名稱 (Name)</label>
+            <input type="text" class="obs-name" placeholder="例如: 神農街、週末市集...">
+          </div>
+          <div class="input-group md:col-span-2">
+            <label>詳細描述 (Description)</label>
+            <textarea class="obs-desc" placeholder="簡單介紹或紀錄內容..."></textarea>
+          </div>
+          <div class="input-group">
+            <label>標籤 (Tags, 以逗號分隔)</label>
+            <input type="text" class="obs-tags" placeholder="例如: 歷史, 老屋, 咖啡">
+          </div>
+          <div class="input-group">
+            <label>座標 (緯度,經度)</label>
+            <div class="flex gap-2">
+               <input type="number" step="0.000001" class="obs-lat" placeholder="22.999..." value="22.999">
+               <input type="number" step="0.000001" class="obs-lng" placeholder="120.196..." value="120.196">
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function addObservation() {
+    obsCount++;
+    const list = document.getElementById("observationsList");
+    list.insertAdjacentHTML('afterbegin', createObservationCard(obsCount));
+  }
+
+  function removeObservation(idNum) {
+    document.getElementById(`obs_${idNum}`).remove();
+  }
+
+  // Add one default observation
+  addObservation();
+
+  function generateJSON() {
+    const district = document.getElementById('va_district').value || "Tainan";
+    const agentIdSuffix = document.getElementById('va_agentId').value || "Unknown";
+    const vaUrn = `urn:ngsi-ld:VillageAgent:Tainan:${district}:${agentIdSuffix}`;
+    
+    // Parse Polygon
+    let polyCoords = [];
+    try {
+      polyCoords = JSON.parse(document.getElementById('va_polygon').value || "[]");
+    } catch(e) {
+      alert("邊界座標格式錯誤，請確保是合法的 JSON 陣列。");
+      return null;
+    }
+
+    const villageAgent = {
+      "id": vaUrn,
+      "type": "VillageAgent",
+      "agentId": agentIdSuffix.toLowerCase(),
+      "name": document.getElementById('va_name').value,
+      "persona": document.getElementById('va_persona').value,
+      "district": district,
+      "history": document.getElementById('va_history').value,
+      "spatialBoundary": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Polygon",
+          "coordinates": polyCoords
+        }
+      }
+    };
+
+    const graph = [villageAgent];
+
+    const obsCards = document.querySelectorAll('#observationsList .card');
+    obsCards.forEach((card, index) => {
+      const category = card.querySelector('.obs-category').value;
+      const name = card.querySelector('.obs-name').value;
+      const desc = card.querySelector('.obs-desc').value;
+      const tagsStr = card.querySelector('.obs-tags').value;
+      const lat = parseFloat(card.querySelector('.obs-lat').value);
+      const lng = parseFloat(card.querySelector('.obs-lng').value);
+
+      const tags = tagsStr.split(',').map(s => s.trim()).filter(s => s);
+      const obsId = `urn:ngsi-ld:LocalObservation:Tainan:manual-${agentIdSuffix}-${Date.now()}-${index}`;
+
+      const obs = {
+        "id": obsId,
+        "type": "LocalObservation",
+        "agentId": agentIdSuffix.toLowerCase(),
+        "category": { "type": "Property", "value": category },
+        "name": { "type": "Property", "value": name },
+        "description": { "type": "Property", "value": desc },
+        "tags": { "type": "Property", "value": tags },
+        "location": {
+          "type": "GeoProperty",
+          "value": {
+            "type": "Point",
+            "coordinates": [lng, lat]
+          }
+        }
+      };
+      
+      graph.push(obs);
+    });
+
+    const finalJSON = {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation"
+        }
+      ],
+      "@graph": graph
+    };
+
+    return finalJSON;
+  }
+
+  function exportJSON() {
+    const data = generateJSON();
+    if (!data) return;
+
+    const jsonString = JSON.stringify(data, null, 2);
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = document.getElementById('va_name').value + ".json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+</script>
+
+</body>
+</html>

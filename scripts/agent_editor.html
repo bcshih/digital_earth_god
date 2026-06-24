@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>地基主 Agent 編輯器 (NGSI-LD)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; background-color: #f3f4f6; margin: 0; height: 100vh; overflow: hidden; }
+    .card { background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 1rem; }
+    .input-group { margin-bottom: 1rem; }
+    label { display: block; font-weight: 600; margin-bottom: 0.25rem; font-size: 0.875rem; color: #374151; }
+    input[type="text"], input[type="number"], textarea, select {
+      width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem;
+    }
+    textarea { min-height: 80px; }
+    .sidebar-item { cursor: pointer; padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; transition: background 0.2s; }
+    .sidebar-item:hover { background-color: #e5e7eb; }
+    .sidebar-item.active { background-color: #dbeafe; border-left: 4px solid #3b82f6; font-weight: bold; color: #1e40af; }
+    
+    #layout { display: flex; height: 100vh; }
+    #sidebar { width: 280px; background: white; border-right: 1px solid #d1d5db; display: flex; flex-direction: column; }
+    #sidebar-header { padding: 1rem; border-bottom: 1px solid #d1d5db; background: #f9fafb; font-weight: bold; }
+    #sidebar-list { flex: 1; overflow-y: auto; }
+    #main-content { flex: 1; overflow-y: auto; padding: 1.5rem; }
+  </style>
+</head>
+<body>
+
+<div id="layout">
+  <!-- Left Sidebar -->
+  <div id="sidebar">
+    <div id="sidebar-header" class="flex justify-between items-center">
+      <span>📁 Agent 列表</span>
+      <button onclick="createNewAgent()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs py-1 px-2 rounded transition">
+        ＋新增
+      </button>
+    </div>
+    <div id="sidebar-list">
+      <!-- Agent items injected here -->
+      <div class="p-4 text-gray-500 text-sm text-center">正在載入清單...</div>
+    </div>
+  </div>
+
+  <!-- Right Main Content -->
+  <div id="main-content">
+    <div id="editor-container" class="hidden max-w-6xl mx-auto flex-col lg:flex-row gap-6">
+      
+      <!-- Center: Village Agent Info -->
+      <div class="w-full lg:w-1/3 space-y-4">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">🏠 街區代理人 (VillageAgent)</h2>
+        
+        <div class="card">
+          <div class="input-group">
+            <label>目前檔案名稱</label>
+            <input type="text" id="va_filename" placeholder="例如: 測試里.json" class="bg-gray-100" readonly>
+          </div>
+          <div class="input-group">
+            <label>Agent 內部 ID (例如: Wutiaogang)</label>
+            <input type="text" id="va_agentId" placeholder="Wutiaogang">
+          </div>
+          <div class="input-group">
+            <label>街區名稱 (Name)</label>
+            <input type="text" id="va_name" placeholder="五條港里">
+          </div>
+          <div class="input-group">
+            <label>行政區 (District)</label>
+            <input type="text" id="va_district" placeholder="WestCentral">
+          </div>
+          <div class="input-group">
+            <label>神明性格 (Persona)</label>
+            <input type="text" id="va_persona" placeholder="熱心護航在地、講話直率">
+          </div>
+          <div class="input-group">
+            <label>街區歷史與概述 (History)</label>
+            <textarea id="va_history" placeholder="五條港過去曾是清代台南最繁華的商業水路..."></textarea>
+          </div>
+          <div class="input-group">
+            <label>邊界座標 (GeoJSON Polygon 陣列)</label>
+            <textarea id="va_polygon" placeholder="[[[120.196, 22.999], [120.199, 22.999]]]">[]</textarea>
+            <p class="text-xs text-gray-500 mt-1">格式: [[[lng, lat], [lng, lat], ...]]</p>
+          </div>
+        </div>
+        
+        <button onclick="saveAgent()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded shadow-lg transition">
+          💾 儲存並覆寫本地檔案
+        </button>
+        <p id="save-status" class="text-center text-sm font-bold mt-2 text-green-600 hidden">✅ 儲存成功！</p>
+      </div>
+
+      <!-- Right: Observations -->
+      <div class="w-full lg:w-2/3">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-2xl font-bold text-gray-800">📌 在地觀察 (LocalObservations)</h2>
+          <button onclick="addObservation()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm transition">
+            ＋ 新增觀察節點
+          </button>
+        </div>
+        
+        <div id="observationsList" class="space-y-4">
+          <!-- Cards will be injected here -->
+        </div>
+      </div>
+
+    </div>
+    
+    <div id="empty-state" class="flex items-center justify-center h-full">
+      <div class="text-center text-gray-500">
+        <div class="text-6xl mb-4">⬅️</div>
+        <h2 class="text-2xl font-bold">請從左側選擇一個里</h2>
+        <p>或點擊上方「新增」來建立全新的 Agent 資料檔。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let obsCount = 0;
+  let currentFilename = null;
+  let allFiles = [];
+
+  // Initialize
+  window.onload = () => {
+    fetchAgentsList();
+  };
+
+  async function fetchAgentsList() {
+    try {
+      const res = await fetch('/api/agents');
+      if (!res.ok) throw new Error("Failed to fetch");
+      allFiles = await res.json();
+      
+      const listEl = document.getElementById('sidebar-list');
+      listEl.innerHTML = '';
+      
+      if (allFiles.length === 0) {
+        listEl.innerHTML = '<div class="p-4 text-gray-500 text-sm text-center">無檔案</div>';
+      } else {
+        allFiles.forEach(file => {
+          const item = document.createElement('div');
+          item.className = 'sidebar-item';
+          item.textContent = file;
+          item.onclick = () => loadAgent(file, item);
+          listEl.appendChild(item);
+        });
+      }
+    } catch(e) {
+      document.getElementById('sidebar-list').innerHTML = `<div class="p-4 text-red-500 text-sm text-center">載入失敗: ${e.message}</div>`;
+    }
+  }
+
+  async function loadAgent(filename, elItem) {
+    // UI selection
+    document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+    if (elItem) elItem.classList.add('active');
+
+    // Fetch data
+    try {
+      const res = await fetch(`/api/agents/${filename}`);
+      if (!res.ok) throw new Error("Failed to load file");
+      const data = await res.json();
+      populateForm(filename, data);
+    } catch(e) {
+      alert(`載入 ${filename} 失敗: ${e.message}`);
+    }
+  }
+
+  function createNewAgent() {
+    let name = prompt("請輸入新的檔案名稱 (例如: 測試里.json):", "新里.json");
+    if (!name) return;
+    if (!name.endsWith(".json")) name += ".json";
+    
+    document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+    
+    const blankData = {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation"
+        }
+      ],
+      "@graph": [
+        {
+          "id": "urn:ngsi-ld:VillageAgent:Tainan:Unknown:Unknown",
+          "type": "VillageAgent",
+          "agentId": "unknown",
+          "name": "新建立的里",
+          "persona": "熱心護航在地",
+          "district": "Unknown",
+          "history": "",
+          "spatialBoundary": { "type": "GeoProperty", "value": { "type": "Polygon", "coordinates": [] } }
+        }
+      ]
+    };
+    
+    populateForm(name, blankData);
+    document.getElementById('va_filename').readOnly = false; // Allow rename for new
+  }
+
+  function getVal(node, key, def="") {
+    if(!node || node[key] === undefined) return def;
+    const v = node[key];
+    if (v && typeof v === "object" && v.value !== undefined) return v.value;
+    return v;
+  }
+
+  function populateForm(filename, data) {
+    document.getElementById('empty-state').style.display = 'none';
+    document.getElementById('editor-container').style.display = 'flex';
+    document.getElementById('save-status').classList.add('hidden');
+    
+    currentFilename = filename;
+    document.getElementById('va_filename').value = filename;
+    document.getElementById('va_filename').readOnly = true;
+
+    const graph = data["@graph"] || [];
+    const village = graph.find(item => item.type === "VillageAgent");
+    const observations = graph.filter(item => item.type === "LocalObservation");
+
+    if (village) {
+      document.getElementById('va_agentId').value = getVal(village, "agentId");
+      document.getElementById('va_name').value = getVal(village, "name");
+      document.getElementById('va_district').value = getVal(village, "district");
+      document.getElementById('va_persona').value = getVal(village, "persona");
+      document.getElementById('va_history').value = getVal(village, "history");
+      
+      const boundary = getVal(village, "spatialBoundary");
+      if (boundary && boundary.coordinates) {
+        document.getElementById('va_polygon').value = JSON.stringify(boundary.coordinates);
+      } else {
+        document.getElementById('va_polygon').value = "[]";
+      }
+    }
+
+    const list = document.getElementById("observationsList");
+    list.innerHTML = "";
+    obsCount = 0;
+
+    observations.forEach(obs => {
+      obsCount++;
+      const idNum = obsCount;
+      list.insertAdjacentHTML('beforeend', createObservationCard(idNum));
+      
+      const card = document.getElementById(`obs_${idNum}`);
+      card.querySelector('.obs-category').value = getVal(obs, "category", "poi");
+      card.querySelector('.obs-name').value = getVal(obs, "name");
+      card.querySelector('.obs-desc').value = getVal(obs, "description");
+      
+      const tags = getVal(obs, "tags", []);
+      card.querySelector('.obs-tags').value = Array.isArray(tags) ? tags.join(", ") : tags;
+      
+      const loc = getVal(obs, "location");
+      if (loc && loc.coordinates) {
+        card.querySelector('.obs-lng').value = loc.coordinates[0];
+        card.querySelector('.obs-lat').value = loc.coordinates[1];
+      }
+    });
+  }
+
+  function createObservationCard(idNum) {
+    const categories = [
+      {val: "poi", label: "景點 / 地標 (POI)"},
+      {val: "daily_activity", label: "日常活動 / 事件 (Daily Activity)"},
+      {val: "local_history", label: "在地歷史 (Local History)"},
+      {val: "new_shop", label: "新店情報 (New Shop)"},
+      {val: "weather", label: "天氣感測 (Weather)"},
+      {val: "citizen_feedback", label: "市民意見/通報 (Citizen Feedback)"}
+    ];
+    let catOptions = categories.map(c => `<option value="${c.val}">${c.label}</option>`).join("");
+
+    return `
+      <div class="card relative" id="obs_${idNum}">
+        <button onclick="removeObservation(${idNum})" class="absolute top-4 right-4 text-red-500 hover:text-red-700 text-sm font-bold">X 移除</button>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="input-group">
+            <label>類別 (Category)</label>
+            <select class="obs-category">${catOptions}</select>
+          </div>
+          <div class="input-group">
+            <label>名稱 (Name)</label>
+            <input type="text" class="obs-name" placeholder="例如: 神農街、週末市集...">
+          </div>
+          <div class="input-group md:col-span-2">
+            <label>詳細描述 (Description)</label>
+            <textarea class="obs-desc" placeholder="簡單介紹或紀錄內容..."></textarea>
+          </div>
+          <div class="input-group">
+            <label>標籤 (Tags, 以逗號分隔)</label>
+            <input type="text" class="obs-tags" placeholder="例如: 歷史, 老屋, 咖啡">
+          </div>
+          <div class="input-group">
+            <label>座標 (緯度,經度)</label>
+            <div class="flex gap-2">
+               <input type="number" step="0.000001" class="obs-lat" placeholder="22.999..." value="22.999">
+               <input type="number" step="0.000001" class="obs-lng" placeholder="120.196..." value="120.196">
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function addObservation() {
+    obsCount++;
+    const list = document.getElementById("observationsList");
+    list.insertAdjacentHTML('afterbegin', createObservationCard(obsCount));
+  }
+
+  function removeObservation(idNum) {
+    document.getElementById(`obs_${idNum}`).remove();
+  }
+
+  function generateJSON() {
+    const district = document.getElementById('va_district').value || "Tainan";
+    const agentIdSuffix = document.getElementById('va_agentId').value || "Unknown";
+    const vaUrn = `urn:ngsi-ld:VillageAgent:Tainan:${district}:${agentIdSuffix}`;
+    
+    let polyCoords = [];
+    try {
+      polyCoords = JSON.parse(document.getElementById('va_polygon').value || "[]");
+    } catch(e) {
+      alert("邊界座標格式錯誤，請確保是合法的 JSON 陣列。");
+      return null;
+    }
+
+    const villageAgent = {
+      "id": vaUrn,
+      "type": "VillageAgent",
+      "agentId": agentIdSuffix.toLowerCase(),
+      "name": document.getElementById('va_name').value,
+      "persona": document.getElementById('va_persona').value,
+      "district": district,
+      "history": document.getElementById('va_history').value,
+      "spatialBoundary": {
+        "type": "GeoProperty",
+        "value": {
+          "type": "Polygon",
+          "coordinates": polyCoords
+        }
+      }
+    };
+
+    const graph = [villageAgent];
+
+    const obsCards = document.querySelectorAll('#observationsList .card');
+    obsCards.forEach((card, index) => {
+      const category = card.querySelector('.obs-category').value;
+      const name = card.querySelector('.obs-name').value;
+      const desc = card.querySelector('.obs-desc').value;
+      const tagsStr = card.querySelector('.obs-tags').value;
+      const lat = parseFloat(card.querySelector('.obs-lat').value);
+      const lng = parseFloat(card.querySelector('.obs-lng').value);
+
+      const tags = tagsStr.split(',').map(s => s.trim()).filter(s => s);
+      const obsId = `urn:ngsi-ld:LocalObservation:Tainan:manual-${agentIdSuffix}-${Date.now()}-${index}`;
+
+      const obs = {
+        "id": obsId,
+        "type": "LocalObservation",
+        "agentId": agentIdSuffix.toLowerCase(),
+        "category": { "type": "Property", "value": category },
+        "name": { "type": "Property", "value": name },
+        "description": { "type": "Property", "value": desc },
+        "tags": { "type": "Property", "value": tags },
+        "location": {
+          "type": "GeoProperty",
+          "value": {
+            "type": "Point",
+            "coordinates": [lng || 120.196, lat || 22.999]
+          }
+        }
+      };
+      
+      graph.push(obs);
+    });
+
+    return {
+      "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+        {
+          "@vocab": "https://digital-tudigong.example.org/ngsi-ld/",
+          "VillageAgent": "https://digital-tudigong.example.org/ngsi-ld/VillageAgent",
+          "LocalObservation": "https://digital-tudigong.example.org/ngsi-ld/LocalObservation"
+        }
+      ],
+      "@graph": graph
+    };
+  }
+
+  async function saveAgent() {
+    const data = generateJSON();
+    if (!data) return;
+    
+    const filename = document.getElementById('va_filename').value;
+    if (!filename) {
+      alert("請輸入檔案名稱");
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/agents/${filename}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(err);
+      }
+      
+      const statusEl = document.getElementById('save-status');
+      statusEl.classList.remove('hidden');
+      setTimeout(() => statusEl.classList.add('hidden'), 3000);
+      
+      // If new file, refresh list
+      if (!allFiles.includes(filename)) {
+        fetchAgentsList();
+      }
+
+    } catch (e) {
+      alert(`儲存失敗: ${e.message}`);
+    }
+  }
+</script>
+
+</body>
+</html>

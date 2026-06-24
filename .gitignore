@@ -24,3 +24,6 @@ Thumbs.db
 # Warm-data store
 data/warmdata.db
 *.db
+
+# Local Netlify folder
+.netlify
