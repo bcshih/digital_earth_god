@@ -525,11 +525,11 @@ def _agent_name_map() -> dict[str, str]:
 def _readable_agent_event(text: str, names: dict[str, str]) -> dict[str, Any] | None:
     """Turn a raw 地基主 event into a chat-friendly agent_event.
 
-    Tries BiddingProposal then DebateMessage; returns a readable event with the
-    real 里名 (and an attachedSpot for bids). Drops anything that looks like JSON
-    but parses as neither (so raw JSON never leaks into the chat). Plain text is
-    passed through unchanged.
+    Tries BiddingProposal then DebateMessage; falls back to extracting
+    reasoning/debate_text directly from partial JSON so messages always surface.
+    Drops only true garbage (JSON with no recognisable text field).
     """
+    import json as _json
     stripped = text.strip()
     json_str = _extract_json(text)
     if "debate_text" in json_str:
@@ -537,14 +537,35 @@ def _readable_agent_event(text: str, names: dict[str, str]) -> dict[str, Any] | 
             debate = DebateMessage.model_validate_json(json_str)
             return debate_to_agent_event(debate, names.get(debate.agent_id, debate.agent_id))
         except Exception:
-            return None
+            pass
     if stripped.startswith("{") or stripped.startswith("["):
         try:
             bid = BiddingProposal.model_validate_json(json_str)
             return bidding_to_agent_event(bid, names.get(bid.agent_id, bid.agent_id))
         except Exception:
-            return None  # JSON we can't read — never surface raw
-    # Plain prose (rare) — pass through.
+            pass
+        # Full validation failed — try extracting readable fields from partial JSON
+        try:
+            obj = _json.loads(json_str)
+            if isinstance(obj, dict):
+                agent_id = obj.get("agent_id", "")
+                readable = (
+                    obj.get("reasoning")
+                    or obj.get("debate_text")
+                    or obj.get("text")
+                    or ""
+                )
+                if readable and agent_id:
+                    return {
+                        "type": "agent_event",
+                        "agent": agent_id,
+                        "agent_name": names.get(agent_id, agent_id),
+                        "text": readable,
+                    }
+        except Exception:
+            pass
+        return None  # JSON with no readable field — never surface raw
+    # Plain prose — pass through.
     return {"type": "agent_event", "agent": None, "agent_name": "", "text": text}
 
 
